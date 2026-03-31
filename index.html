@@ -83,6 +83,39 @@
                 .stock-grid    { grid-template-columns: 1fr; }
                 .tradingview-wrap { height: 400px; }
             }
+
+            /* 레이아웃 오버라이드: 사이드바 제거 + 풀 와이드 */
+            #sidebar { display: none !important; }
+
+            #wrapper {
+                display: block !important;
+                max-width: 1200px !important;
+                margin: 0 auto !important;
+                padding: 0 2em !important;
+            }
+
+            #main {
+                width: 100% !important;
+                max-width: 100% !important;
+                border-left: none !important;
+                padding-left: 0 !important;
+            }
+
+            #main .post {
+                max-width: 100% !important;
+            }
+
+            /* 카드 그리드 더 넓게 */
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 600px;
+            }
+            .stock-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            @media (max-width: 900px) {
+                .stock-grid { grid-template-columns: repeat(2, 1fr); }
+            }
         </style>
     </head>
     <body class="is-preload">
