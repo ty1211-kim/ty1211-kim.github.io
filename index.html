@@ -341,6 +341,81 @@
         .chart-meta { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
         .chart-meta-name { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; }
         .chart-meta-sub  { font-size: 14px; color: var(--text2); }
+        .chart-overview {
+            margin-bottom: 18px;
+            display: grid;
+            gap: 14px;
+        }
+        .chart-hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(58,58,60,0.56), rgba(44,44,46,0.92));
+        }
+        .chart-hero-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text2);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .chart-hero-price {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+        .chart-hero-change {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .chart-hero-side {
+            text-align: right;
+            display: grid;
+            gap: 6px;
+            min-width: 170px;
+        }
+        .chart-hero-updated,
+        .chart-hero-source {
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .chart-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .chart-stat {
+            background: rgba(58,58,60,0.6);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 16px 14px;
+            min-width: 0;
+        }
+        .chart-stat-label {
+            font-size: 11px;
+            color: var(--text2);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .chart-stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text1);
+            line-height: 1.35;
+            word-break: keep-all;
+        }
+        .chart-status-line {
+            font-size: 12px;
+            color: var(--text2);
+            padding: 2px 2px 0;
+        }
         .chart-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
         .chart-links { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
         .chart-link-btn {
@@ -356,35 +431,8 @@
             transition: background 0.15s;
         }
         .chart-link-btn:hover { background: rgba(10,132,255,0.25); }
+        .chart-link-btn.hidden { display: none; }
         .chart-provider { font-size: 11px; color: var(--text2); text-align: right; margin-top: 8px; }
-
-        .naver-frame-shell {
-            position: relative;
-            background: rgba(28,28,30,0.65);
-        }
-        .naver-frame-shell.loading::after {
-            content: '모바일 네이버 증권을 불러오는 중...';
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            color: var(--text2);
-            background: linear-gradient(180deg, rgba(28,28,30,0.25), rgba(28,28,30,0.6));
-            pointer-events: none;
-        }
-        .naver-fallback {
-            margin-top: 14px;
-            padding: 14px 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: rgba(58,58,60,0.5);
-            font-size: 13px;
-            color: var(--text2);
-            display: none;
-        }
-        .naver-fallback.visible { display: block; }
 
         /* ── Music Player ── */
         .music-player {
@@ -436,6 +484,9 @@
                 padding: 10px 14px 12px;
                 gap: 10px;
             }
+            .chart-stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
             .menubar-left,
             .menubar-macro-wrap {
                 width: 100%;
@@ -481,6 +532,16 @@
             .chart-meta-name { font-size: 22px; }
             .chart-links { gap: 8px; }
             .chart-link-btn { font-size: 12px; }
+            .chart-hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .chart-hero-side {
+                text-align: left;
+                min-width: 0;
+            }
+            .chart-hero-price { font-size: 28px; }
+            .chart-stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -716,33 +777,60 @@
                             <span class="chart-meta-sub"  id="chart-subtitle"></span>
                         </div>
 
-                        <div id="chart-tradingview">
-                            <div class="chart-wrap"><div id="tradingview-container"></div></div>
-                            <div class="chart-provider">차트 제공: <a href="https://www.tradingview.com" target="_blank" style="color:var(--text2)">TradingView</a></div>
+                        <div class="chart-overview">
+                            <div class="chart-hero">
+                                <div>
+                                    <div class="chart-hero-label">시세 요약</div>
+                                    <div class="chart-hero-price" id="chart-price-main">—</div>
+                                    <div class="chart-hero-change flat-text" id="chart-price-change">데이터를 불러오는 중...</div>
+                                </div>
+                                <div class="chart-hero-side">
+                                    <div class="chart-hero-updated" id="chart-updated-at">업데이트: —</div>
+                                    <div class="chart-hero-source" id="chart-data-source">자체 요약 카드 + TradingView 차트</div>
+                                </div>
+                            </div>
+
+                            <div class="chart-stats-grid" id="chart-stats-grid">
+                                <div class="chart-stat">
+                                    <div class="chart-stat-label" id="chart-stat-label-1">항목 1</div>
+                                    <div class="chart-stat-value" id="chart-stat-value-1">—</div>
+                                </div>
+                                <div class="chart-stat">
+                                    <div class="chart-stat-label" id="chart-stat-label-2">항목 2</div>
+                                    <div class="chart-stat-value" id="chart-stat-value-2">—</div>
+                                </div>
+                                <div class="chart-stat">
+                                    <div class="chart-stat-label" id="chart-stat-label-3">항목 3</div>
+                                    <div class="chart-stat-value" id="chart-stat-value-3">—</div>
+                                </div>
+                                <div class="chart-stat">
+                                    <div class="chart-stat-label" id="chart-stat-label-4">항목 4</div>
+                                    <div class="chart-stat-value" id="chart-stat-value-4">—</div>
+                                </div>
+                                <div class="chart-stat">
+                                    <div class="chart-stat-label" id="chart-stat-label-5">항목 5</div>
+                                    <div class="chart-stat-value" id="chart-stat-value-5">—</div>
+                                </div>
+                                <div class="chart-stat">
+                                    <div class="chart-stat-label" id="chart-stat-label-6">항목 6</div>
+                                    <div class="chart-stat-value" id="chart-stat-value-6">—</div>
+                                </div>
+                            </div>
+
+                            <div class="chart-status-line" id="chart-status-line">
+                                모바일 네이버 페이지를 직접 넣는 대신, 이 페이지에서 핵심 지표를 바로 보여주고 차트는 안정적인 위젯으로 표시합니다.
+                            </div>
                         </div>
 
-                        <div id="chart-naver" style="display:none">
-                            <div class="chart-wrap naver-frame-shell loading" id="naver-frame-shell">
-                                <iframe
-                                    id="naver-chart-frame"
-                                    width="100%"
-                                    height="920"
-                                    style="display:block; background:#1c1c1e;"
-                                    frameborder="0"
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade">
-                                </iframe>
-                            </div>
+                        <div id="chart-tradingview">
+                            <div class="chart-wrap"><div id="tradingview-container"></div></div>
+                            <div class="chart-provider">차트 제공: <a href="https://www.tradingview.com" target="_blank" rel="noopener noreferrer" style="color:var(--text2)">TradingView</a></div>
+                        </div>
 
-                            <div class="naver-fallback" id="naver-fallback">
-                                모바일 네이버 증권 페이지는 브라우저의 보안 정책(X-Frame-Options / CSP)에 따라 iframe에서 차단될 수 있습니다.
-                                아래 버튼으로 직접 열면 항상 모바일 환경으로 볼 수 있습니다.
-                            </div>
-
-                            <div class="chart-links">
-                                <a id="naver-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">📱 모바일 네이버 증권에서 열기</a>
-                                <a id="tradingview-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">📈 TradingView에서 보기</a>
-                            </div>
+                        <div class="chart-links">
+                            <a id="naver-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn hidden">📱 모바일 네이버 증권에서 열기</a>
+                            <a id="quote-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">🧾 원본 시세 페이지 열기</a>
+                            <a id="tradingview-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">📈 TradingView에서 보기</a>
                         </div>
                     </div>
                 </div>
@@ -800,7 +888,7 @@
     // ── YouTube IFrame API ───────────────────────────────────────
     let ytPlayer;
     let ytReady = false;
-    let naverFallbackTimer = null;
+    let activeChartId = null;
 
     function onYouTubeIframeAPIReady() {
         ytPlayer = new YT.Player('yt-player', {
@@ -843,56 +931,127 @@
 
     // ── 차트 정보 ────────────────────────────────────────────────
     const CHART_INFO = {
-        // 대표 지수
-        nasdaq: { name: '나스닥 100', subtitle: 'NASDAQ-100 Index (NDX)', type: 'tradingview', symbol: 'NASDAQ:NDX', from: 'index' },
-        sp500:  { name: 'S&P 500', subtitle: 'S&P 500 Index (CBOE)', type: 'tradingview', symbol: 'CBOE:SPX', from: 'index' },
-        kospi:  {
+        nasdaq: {
+            name: '나스닥',
+            subtitle: 'NASDAQ Composite (^IXIC)',
+            symbol: 'NASDAQ:IXIC',
+            tv_url: 'https://www.tradingview.com/chart/?symbol=NASDAQ%3AIXIC',
+            quote_url: 'https://finance.yahoo.com/quote/%5EIXIC',
+            data_kind: 'market',
+            data_ticker: '%5EIXIC',
+            from: 'index'
+        },
+        sp500: {
+            name: 'S&P 500',
+            subtitle: 'S&P 500 Index (^GSPC)',
+            symbol: 'CBOE:SPX',
+            tv_url: 'https://www.tradingview.com/chart/?symbol=CBOE%3ASPX',
+            quote_url: 'https://finance.yahoo.com/quote/%5EGSPC',
+            data_kind: 'market',
+            data_ticker: '%5EGSPC',
+            from: 'index'
+        },
+        kospi: {
             name: '코스피',
-            subtitle: 'KOSPI Index',
-            type: 'naver-index',
-            naver_url: 'https://m.stock.naver.com/domestic/index/KOSPI/total',
+            subtitle: 'KOSPI Index (^KS11)',
+            symbol: 'KRX:KOSPI',
             tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3AKOSPI',
+            quote_url: 'https://finance.yahoo.com/quote/%5EKS11',
+            naver_url: 'https://m.stock.naver.com/domestic/index/KOSPI/total',
+            data_kind: 'market',
+            data_ticker: '%5EKS11',
             from: 'index'
         },
         kosdaq: {
             name: '코스닥',
-            subtitle: 'KOSDAQ Index',
-            type: 'naver-index',
-            naver_url: 'https://m.stock.naver.com/domestic/index/KOSDAQ/total',
+            subtitle: 'KOSDAQ Index (^KQ11)',
+            symbol: 'KRX:KOSDAQ',
             tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3AKOSDAQ',
+            quote_url: 'https://finance.yahoo.com/quote/%5EKQ11',
+            naver_url: 'https://m.stock.naver.com/domestic/index/KOSDAQ/total',
+            data_kind: 'market',
+            data_ticker: '%5EKQ11',
             from: 'index'
         },
-        // 개별 종목
         samsung: {
             name: '삼성전자',
             subtitle: 'KRX · 005930',
-            type: 'naver',
-            code: '005930',
-            naver_url: 'https://m.stock.naver.com/domestic/stock/005930/total',
+            symbol: 'KRX:005930',
             tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3A005930',
+            quote_url: 'https://finance.yahoo.com/quote/005930.KS',
+            naver_url: 'https://m.stock.naver.com/domestic/stock/005930/total',
+            data_kind: 'market',
+            data_ticker: '005930.KS',
             from: 'stocks'
         },
         hynix: {
             name: 'SK하이닉스',
             subtitle: 'KRX · 000660',
-            type: 'naver',
-            code: '000660',
-            naver_url: 'https://m.stock.naver.com/domestic/stock/000660/total',
+            symbol: 'KRX:000660',
             tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3A000660',
+            quote_url: 'https://finance.yahoo.com/quote/000660.KS',
+            naver_url: 'https://m.stock.naver.com/domestic/stock/000660/total',
+            data_kind: 'market',
+            data_ticker: '000660.KS',
             from: 'stocks'
         },
-        micron:  { name: '마이크론', subtitle: 'NASDAQ · MU', type: 'tradingview', symbol: 'NASDAQ:MU', from: 'stocks' },
-        // 코인
-        btc: { name: '비트코인', subtitle: 'BTC / USDT', type: 'tradingview', symbol: 'BINANCE:BTCUSDT', from: 'coin' },
-        eth: { name: '이더리움', subtitle: 'ETH / USDT', type: 'tradingview', symbol: 'BINANCE:ETHUSDT', from: 'coin' },
-        sol: { name: '솔라나',   subtitle: 'SOL / USDT', type: 'tradingview', symbol: 'BINANCE:SOLUSDT', from: 'coin' },
-        xrp: { name: '리플',     subtitle: 'XRP / USDT', type: 'tradingview', symbol: 'BINANCE:XRPUSDT', from: 'coin' },
+        micron: {
+            name: '마이크론',
+            subtitle: 'NASDAQ · MU',
+            symbol: 'NASDAQ:MU',
+            tv_url: 'https://www.tradingview.com/chart/?symbol=NASDAQ%3AMU',
+            quote_url: 'https://finance.yahoo.com/quote/MU',
+            data_kind: 'market',
+            data_ticker: 'MU',
+            from: 'stocks'
+        },
+        btc: {
+            name: '비트코인',
+            subtitle: 'BTC / USDT',
+            symbol: 'BINANCE:BTCUSDT',
+            tv_url: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
+            quote_url: 'https://www.coingecko.com/en/coins/bitcoin',
+            data_kind: 'coin',
+            gecko_id: 'bitcoin',
+            from: 'coin'
+        },
+        eth: {
+            name: '이더리움',
+            subtitle: 'ETH / USDT',
+            symbol: 'BINANCE:ETHUSDT',
+            tv_url: 'https://www.tradingview.com/chart/?symbol=BINANCE%3AETHUSDT',
+            quote_url: 'https://www.coingecko.com/en/coins/ethereum',
+            data_kind: 'coin',
+            gecko_id: 'ethereum',
+            from: 'coin'
+        },
+        sol: {
+            name: '솔라나',
+            subtitle: 'SOL / USDT',
+            symbol: 'BINANCE:SOLUSDT',
+            tv_url: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ASOLUSDT',
+            quote_url: 'https://www.coingecko.com/en/coins/solana',
+            data_kind: 'coin',
+            gecko_id: 'solana',
+            from: 'coin'
+        },
+        xrp: {
+            name: '리플',
+            subtitle: 'XRP / USDT',
+            symbol: 'BINANCE:XRPUSDT',
+            tv_url: 'https://www.tradingview.com/chart/?symbol=BINANCE%3AXRPUSDT',
+            quote_url: 'https://www.coingecko.com/en/coins/xrp',
+            data_kind: 'coin',
+            gecko_id: 'ripple',
+            from: 'coin'
+        },
     };
 
     const FROM_LABELS = { index: '대표 지수', stocks: '개별 종목', coin: '코인' };
 
     function showChart(id) {
         const info = CHART_INFO[id];
+        activeChartId = id;
         showOnly('page-chart');
 
         document.getElementById('chart-title').textContent = info.name;
@@ -911,42 +1070,21 @@
              <span class="crumb" onclick="${fromFnStr}">${fromLabel}</span>
              <span class="sep">›</span><span>${info.name}</span>`;
 
-        const isNaver = info.type === 'naver' || info.type === 'naver-index';
-        document.getElementById('chart-naver').style.display = isNaver ? '' : 'none';
-        document.getElementById('chart-tradingview').style.display = isNaver ? 'none' : '';
-
-        if (isNaver) {
-            setupNaverFrame(info);
-        } else {
-            renderTradingView(info);
-        }
-    }
-
-    function setupNaverFrame(info) {
-        const frame = document.getElementById('naver-chart-frame');
-        const shell = document.getElementById('naver-frame-shell');
-        const fallback = document.getElementById('naver-fallback');
-
-        clearTimeout(naverFallbackTimer);
-        shell.classList.add('loading');
-        fallback.classList.remove('visible');
-
-        frame.onload = function() {
-            shell.classList.remove('loading');
-        };
-        frame.onerror = function() {
-            shell.classList.remove('loading');
-            fallback.classList.add('visible');
-        };
-
-        naverFallbackTimer = setTimeout(() => {
-            shell.classList.remove('loading');
-            fallback.classList.add('visible');
-        }, 3500);
-
-        frame.src = info.naver_url;
-        document.getElementById('naver-link').href = info.naver_url;
         document.getElementById('tradingview-link').href = info.tv_url;
+        document.getElementById('quote-link').href = info.quote_url;
+
+        const naverBtn = document.getElementById('naver-link');
+        if (info.naver_url) {
+            naverBtn.href = info.naver_url;
+            naverBtn.classList.remove('hidden');
+        } else {
+            naverBtn.href = '#';
+            naverBtn.classList.add('hidden');
+        }
+
+        setChartLoadingState(info);
+        renderTradingView(info);
+        loadChartOverview(id);
     }
 
     function renderTradingView(info) {
@@ -982,6 +1120,46 @@
         }
     }
 
+    function setChartLoadingState(info) {
+        document.getElementById('chart-price-main').textContent = '—';
+        document.getElementById('chart-price-change').className = 'chart-hero-change flat-text';
+        document.getElementById('chart-price-change').textContent = '데이터를 불러오는 중...';
+        document.getElementById('chart-updated-at').textContent = '업데이트: —';
+        document.getElementById('chart-data-source').textContent =
+            info.data_kind === 'coin'
+                ? 'CoinGecko 요약 + TradingView 차트'
+                : '자체 요약 카드 + TradingView 차트';
+        document.getElementById('chart-status-line').textContent =
+            info.naver_url
+                ? '모바일 네이버 페이지를 직접 넣는 대신, 핵심 지표를 이 화면에서 바로 보고 필요할 때 모바일 네이버 링크로 이동할 수 있게 했습니다.'
+                : '핵심 지표를 이 화면에서 바로 확인하고, 상세 차트는 TradingView로 볼 수 있습니다.';
+
+        for (let i = 1; i <= 6; i += 1) {
+            document.getElementById(`chart-stat-label-${i}`).textContent = `항목 ${i}`;
+            document.getElementById(`chart-stat-value-${i}`).textContent = '—';
+        }
+    }
+
+    async function loadChartOverview(id) {
+        const info = CHART_INFO[id];
+
+        try {
+            const data = info.data_kind === 'coin'
+                ? await fetchCoinOverview(info)
+                : await fetchMarketOverview(info);
+
+            if (activeChartId !== id) return;
+            applyChartOverview(info, data);
+        } catch (error) {
+            if (activeChartId !== id) return;
+            document.getElementById('chart-price-main').textContent = '—';
+            document.getElementById('chart-price-change').className = 'chart-hero-change flat-text';
+            document.getElementById('chart-price-change').textContent = '요약 데이터를 불러오지 못했습니다.';
+            document.getElementById('chart-status-line').textContent =
+                '요약 데이터 로딩에 실패했습니다. 잠시 뒤 다시 시도하거나 아래 링크로 원본 시세 페이지를 열어보세요.';
+        }
+    }
+
     // ── 시세 데이터 ──────────────────────────────────────────────
     const INDEX_STOCKS = [
         { id: 'nasdaq', ticker: '%5EIXIC', currency: 'USD' },
@@ -994,6 +1172,155 @@
         { id: 'hynix',   ticker: '000660.KS', currency: 'KRW' },
         { id: 'micron',  ticker: 'MU', currency: 'USD' },
     ];
+
+    function makeProxiedUrl(rawUrl) {
+        return `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`;
+    }
+
+    function formatPercent(pct) {
+        const sign = pct >= 0 ? '+' : '';
+        return `${sign}${pct.toFixed(2)}%`;
+    }
+
+    function formatDateTime(dateObj) {
+        if (!dateObj) return '업데이트: —';
+        return '업데이트: ' + dateObj.toLocaleString('ko-KR', {
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function formatCompactNumber(value, currency) {
+        if (value == null || Number.isNaN(value)) return '—';
+        const abs = Math.abs(value);
+
+        if (currency === 'KRW') {
+            if (abs >= 1e12) return `${(value / 1e12).toFixed(2)}조원`;
+            if (abs >= 1e8) return `${(value / 1e8).toFixed(0)}억원`;
+            return Math.round(value).toLocaleString('ko-KR') + '원';
+        }
+
+        return '$' + new Intl.NumberFormat('en-US', {
+            notation: 'compact',
+            maximumFractionDigits: 2
+        }).format(value);
+    }
+
+    function formatVolume(value) {
+        if (value == null || Number.isNaN(value)) return '—';
+        return new Intl.NumberFormat('en-US', {
+            notation: 'compact',
+            maximumFractionDigits: 2
+        }).format(value);
+    }
+
+    function formatRange(low, high, currency) {
+        if (low == null || high == null) return '—';
+        return `${fmtPrice(low, currency)} ~ ${fmtPrice(high, currency)}`;
+    }
+
+    function formatAbsoluteChange(change, currency) {
+        if (change == null || Number.isNaN(change)) return '—';
+        if (currency === 'KRW') {
+            const sign = change >= 0 ? '+' : '';
+            return `${sign}${Math.round(change).toLocaleString('ko-KR')}원`;
+        }
+        const sign = change >= 0 ? '+' : '';
+        return `${sign}${change.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    function setChartStats(items) {
+        const normalized = [...items];
+        while (normalized.length < 6) normalized.push({ label: '—', value: '—' });
+        normalized.slice(0, 6).forEach((item, index) => {
+            document.getElementById(`chart-stat-label-${index + 1}`).textContent = item.label;
+            document.getElementById(`chart-stat-value-${index + 1}`).textContent = item.value;
+        });
+    }
+
+    function applyChartOverview(info, data) {
+        const changeDir = data.change > 0 ? 'up' : data.change < 0 ? 'down' : 'flat';
+        const arrow = data.change > 0 ? '▲' : data.change < 0 ? '▼' : '—';
+
+        document.getElementById('chart-price-main').textContent = fmtPrice(data.price, data.currency);
+        document.getElementById('chart-price-change').className = `chart-hero-change ${changeDir}-text`;
+        document.getElementById('chart-price-change').textContent =
+            `${arrow} ${formatAbsoluteChange(data.change, data.currency)} (${formatPercent(data.changePct)})`;
+        document.getElementById('chart-updated-at').textContent = formatDateTime(data.updatedAt);
+        document.getElementById('chart-data-source').textContent = data.sourceText;
+        document.getElementById('chart-status-line').textContent = data.statusText;
+        setChartStats(data.stats);
+    }
+
+    async function fetchMarketOverview(info) {
+        const [chartResp, quoteResp] = await Promise.all([
+            fetch(makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${info.data_ticker}?interval=1d&range=1y`), { cache: 'no-store' }),
+            fetch(makeProxiedUrl(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${info.data_ticker}`), { cache: 'no-store' })
+        ]);
+
+        const chartJson = await chartResp.json();
+        const quoteJson = await quoteResp.json();
+
+        const chartResult = chartJson?.chart?.result?.[0];
+        const quote = quoteJson?.quoteResponse?.result?.[0] || {};
+        if (!chartResult) throw new Error('chart result missing');
+
+        const meta = chartResult.meta || {};
+        const price = quote.regularMarketPrice ?? meta.regularMarketPrice;
+        const prev = quote.regularMarketPreviousClose ?? meta.chartPreviousClose ?? meta.previousClose;
+        const change = price - prev;
+        const changePct = prev ? (change / prev) * 100 : 0;
+        const currency = quote.currency ?? meta.currency ?? 'USD';
+
+        const stats = [
+            { label: '시가', value: fmtPrice(quote.regularMarketOpen ?? meta.regularMarketOpen, currency) },
+            { label: '전일 종가', value: fmtPrice(prev, currency) },
+            { label: '당일 범위', value: formatRange(quote.regularMarketDayLow ?? meta.regularMarketDayLow, quote.regularMarketDayHigh ?? meta.regularMarketDayHigh, currency) },
+            { label: '52주 범위', value: formatRange(quote.fiftyTwoWeekLow ?? meta.fiftyTwoWeekLow, quote.fiftyTwoWeekHigh ?? meta.fiftyTwoWeekHigh, currency) },
+            { label: '거래량', value: formatVolume(quote.regularMarketVolume ?? meta.regularMarketVolume) },
+            { label: quote.marketCap ? '시가총액' : '통화', value: quote.marketCap ? formatCompactNumber(quote.marketCap, currency) : currency }
+        ];
+
+        return {
+            price,
+            currency,
+            change,
+            changePct,
+            updatedAt: quote.regularMarketTime ? new Date(quote.regularMarketTime * 1000) : new Date(),
+            sourceText: 'Yahoo Finance 요약 + TradingView 차트',
+            statusText: info.naver_url
+                ? '핵심 수치와 차트를 이 페이지에서 바로 보고, 필요할 때만 모바일 네이버 증권으로 넘어갈 수 있게 구성했습니다.'
+                : '핵심 수치와 차트를 이 페이지에서 바로 확인할 수 있습니다.',
+            stats
+        };
+    }
+
+    async function fetchCoinOverview(info) {
+        const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${info.gecko_id}&price_change_percentage=24h`;
+        const arr = await (await fetch(url, { cache: 'no-store' })).json();
+        const coin = arr?.[0];
+        if (!coin) throw new Error('coin data missing');
+
+        return {
+            price: coin.current_price,
+            currency: 'USD',
+            change: coin.price_change_24h,
+            changePct: coin.price_change_percentage_24h ?? 0,
+            updatedAt: coin.last_updated ? new Date(coin.last_updated) : new Date(),
+            sourceText: 'CoinGecko 요약 + TradingView 차트',
+            statusText: '코인은 현재가와 핵심 수치를 직접 보여주고, 차트는 TradingView로 확인할 수 있습니다.',
+            stats: [
+                { label: '24시간 고가', value: fmtPrice(coin.high_24h, 'USD') },
+                { label: '24시간 저가', value: fmtPrice(coin.low_24h, 'USD') },
+                { label: '24시간 변동률', value: formatPercent(coin.price_change_percentage_24h ?? 0) },
+                { label: '시가총액', value: formatCompactNumber(coin.market_cap, 'USD') },
+                { label: '24시간 거래대금', value: formatCompactNumber(coin.total_volume, 'USD') },
+                { label: '사상 최고가', value: fmtPrice(coin.ath, 'USD') }
+            ]
+        };
+    }
 
     function fmtPrice(v, cur) {
         return cur === 'KRW'
