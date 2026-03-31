@@ -4,6 +4,7 @@
     <title>TY의 주식공부</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --bg:        #1c1c1e;
@@ -433,6 +434,7 @@
         .chart-link-btn:hover { background: rgba(10,132,255,0.25); }
         .chart-link-btn.hidden { display: none; }
         .chart-provider { font-size: 11px; color: var(--text2); text-align: right; margin-top: 8px; }
+        #chart-chartjs .chart-wrap { height: 420px; }
 
         /* ── Music Player ── */
         .music-player {
@@ -827,6 +829,13 @@
                             <div class="chart-provider">차트 제공: <a href="https://www.tradingview.com" target="_blank" rel="noopener noreferrer" style="color:var(--text2)">TradingView</a></div>
                         </div>
 
+                        <div id="chart-chartjs" style="display:none">
+                            <div class="chart-wrap" style="padding:20px 16px 12px; background:rgba(44,44,46,0.5);">
+                                <canvas id="chartjs-canvas"></canvas>
+                            </div>
+                            <div class="chart-provider">차트 제공: Yahoo Finance (3개월 일봉)</div>
+                        </div>
+
                         <div class="chart-links">
                             <a id="naver-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn hidden">📱 모바일 네이버 증권에서 열기</a>
                             <a id="quote-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">🧾 원본 시세 페이지 열기</a>
@@ -889,6 +898,7 @@
     let ytPlayer;
     let ytReady = false;
     let activeChartId = null;
+    let chartInstance = null;
 
     function onYouTubeIframeAPIReady() {
         ytPlayer = new YT.Player('yt-player', {
@@ -977,7 +987,7 @@
         kospi: {
             name: '코스피',
             subtitle: 'KOSPI Index (^KS11)',
-            symbol: 'KRX:KOSPI',
+            chart_type: 'chartjs',
             tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3AKOSPI',
             quote_url: 'https://finance.yahoo.com/quote/%5EKS11',
             naver_url: 'https://m.stock.naver.com/domestic/index/KOSPI/total',
@@ -988,7 +998,7 @@
         kosdaq: {
             name: '코스닥',
             subtitle: 'KOSDAQ Index (^KQ11)',
-            symbol: 'KRX:KOSDAQ',
+            chart_type: 'chartjs',
             tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3AKOSDAQ',
             quote_url: 'https://finance.yahoo.com/quote/%5EKQ11',
             naver_url: 'https://m.stock.naver.com/domestic/index/KOSDAQ/total',
@@ -999,7 +1009,7 @@
         samsung: {
             name: '삼성전자',
             subtitle: 'KRX · 005930',
-            symbol: 'KRX:005930',
+            chart_type: 'chartjs',
             tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3A005930',
             quote_url: 'https://finance.yahoo.com/quote/005930.KS',
             naver_url: 'https://m.stock.naver.com/domestic/stock/005930/total',
@@ -1010,7 +1020,7 @@
         hynix: {
             name: 'SK하이닉스',
             subtitle: 'KRX · 000660',
-            symbol: 'KRX:000660',
+            chart_type: 'chartjs',
             tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3A000660',
             quote_url: 'https://finance.yahoo.com/quote/000660.KS',
             naver_url: 'https://m.stock.naver.com/domestic/stock/000660/total',
@@ -1108,11 +1118,115 @@
         }
 
         setChartLoadingState(info);
-        renderTradingView(info);
+        renderChart(id, info);
         loadChartOverview(id);
 
         if (updateHash) {
             setRoute(`chart:${id}`);
+        }
+    }
+
+    function renderChart(id, info) {
+        const useChartJS = info.chart_type === 'chartjs';
+        document.getElementById('chart-tradingview').style.display = useChartJS ? 'none' : '';
+        document.getElementById('chart-chartjs').style.display    = useChartJS ? '' : 'none';
+        if (useChartJS) renderChartJS(id, info);
+        else renderTradingView(info);
+    }
+
+    async function renderChartJS(id, info) {
+        if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+        const canvas = document.getElementById('chartjs-canvas');
+        canvas.style.opacity = '0.4';
+
+        try {
+            const resp = await fetch(
+                makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${info.data_ticker}?interval=1d&range=3mo`),
+                { cache: 'no-store' }
+            );
+            const json = await resp.json();
+            const result = json?.chart?.result?.[0];
+            if (!result) throw new Error('no data');
+            if (activeChartId !== id) return;
+
+            const meta = result.meta || {};
+            const currency = meta.currency || 'KRW';
+            const timestamps = result.timestamp || [];
+            const q = result.indicators?.quote?.[0] || {};
+            const closes = q.close || [];
+
+            const points = timestamps
+                .map((ts, i) => ({ ts, close: closes[i] }))
+                .filter(d => d.close != null);
+
+            if (points.length < 2) throw new Error('insufficient data');
+
+            const first = points[0].close, last = points[points.length - 1].close;
+            const rising = last >= first;
+            const lineColor = rising ? '#30d158' : '#ff453a';
+            const fillColor = rising ? 'rgba(48,209,88,0.10)' : 'rgba(255,69,58,0.10)';
+
+            const labels = points.map(d => {
+                const dt = new Date(d.ts * 1000);
+                return `${dt.getMonth() + 1}/${dt.getDate()}`;
+            });
+
+            canvas.style.opacity = '1';
+            chartInstance = new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: points.map(d => d.close),
+                        borderColor: lineColor,
+                        borderWidth: 2,
+                        fill: true,
+                        backgroundColor: fillColor,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        tension: 0.2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => '  ' + fmtPrice(ctx.parsed.y, currency)
+                            },
+                            backgroundColor: 'rgba(44,44,46,0.95)',
+                            titleColor: '#98989d',
+                            bodyColor: '#f5f5f7',
+                            borderColor: 'rgba(255,255,255,0.10)',
+                            borderWidth: 1,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#98989d', font: { size: 11 }, maxTicksLimit: 8, maxRotation: 0 },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        },
+                        y: {
+                            position: 'right',
+                            ticks: {
+                                color: '#98989d',
+                                font: { size: 11 },
+                                callback: v => fmtPrice(v, currency)
+                            },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+            canvas.parentElement.style.height = '420px';
+        } catch {
+            canvas.style.opacity = '1';
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('chart-chartjs').querySelector('.chart-provider').textContent =
+                '차트 데이터를 불러오지 못했습니다. 아래 링크로 확인하세요.';
         }
     }
 
