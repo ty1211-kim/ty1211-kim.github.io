@@ -280,10 +280,39 @@
                 <!-- ⑥ 코인 -->
                 <article class="post" id="page-coin" style="display:none">
                     <header>
-                        <div class="title"><h2>코인</h2><p>준비 중입니다</p></div>
+                        <div class="title">
+                            <h2>코인</h2>
+                            <p>종목을 클릭하면 차트를 볼 수 있습니다</p>
+                        </div>
                     </header>
                     <div class="breadcrumb"><span onclick="goHome()">홈</span> › 코인</div>
-                    <p>코인 데이터는 곧 추가될 예정입니다.</p>
+                    <div class="stock-grid">
+                        <div class="stock-card clickable" id="card-btc" onclick="showChart('btc')">
+                            <div class="name">비트코인 (BTC)</div>
+                            <div class="price" id="price-btc">—</div>
+                            <div class="change" id="change-btc">불러오는 중...</div>
+                            <div class="hint">클릭하여 차트 보기 →</div>
+                        </div>
+                        <div class="stock-card clickable" id="card-eth" onclick="showChart('eth')">
+                            <div class="name">이더리움 (ETH)</div>
+                            <div class="price" id="price-eth">—</div>
+                            <div class="change" id="change-eth">불러오는 중...</div>
+                            <div class="hint">클릭하여 차트 보기 →</div>
+                        </div>
+                        <div class="stock-card clickable" id="card-sol" onclick="showChart('sol')">
+                            <div class="name">솔라나 (SOL)</div>
+                            <div class="price" id="price-sol">—</div>
+                            <div class="change" id="change-sol">불러오는 중...</div>
+                            <div class="hint">클릭하여 차트 보기 →</div>
+                        </div>
+                        <div class="stock-card clickable" id="card-xrp" onclick="showChart('xrp')">
+                            <div class="name">리플 (XRP)</div>
+                            <div class="price" id="price-xrp">—</div>
+                            <div class="change" id="change-xrp">불러오는 중...</div>
+                            <div class="hint">클릭하여 차트 보기 →</div>
+                        </div>
+                    </div>
+                    <p class="stock-updated" id="updated-coin"></p>
                 </article>
 
             </div>
@@ -321,7 +350,10 @@
 
         function goHome()       { showOnly('page-home'); }
         function showStockSub() { showOnly('page-stock-sub'); }
-        function showCoin()     { showOnly('page-coin'); }
+        function showCoin() {
+            showOnly('page-coin');
+            loadCoins();
+        }
 
         function showIndex() {
             showOnly('page-index');
@@ -335,6 +367,10 @@
 
         // ── 차트 정보 ─────────────────────────────────────────────
         const CHART_INFO = {
+            btc: { name: '비트코인', subtitle: 'BTC / USDT', type: 'tradingview', symbol: 'BINANCE:BTCUSDT' },
+            eth: { name: '이더리움', subtitle: 'ETH / USDT', type: 'tradingview', symbol: 'BINANCE:ETHUSDT' },
+            sol: { name: '솔라나',   subtitle: 'SOL / USDT', type: 'tradingview', symbol: 'BINANCE:SOLUSDT'  },
+            xrp: { name: '리플',     subtitle: 'XRP / USDT', type: 'tradingview', symbol: 'BINANCE:XRPUSDT'  },
             samsung: {
                 name: '삼성전자', subtitle: 'KRX · 005930', type: 'naver',
                 code: '005930',
@@ -482,9 +518,49 @@
             if (el) el.textContent = '업데이트: ' + new Date().toLocaleString('ko-KR');
         }
 
+        // ── 코인 가격 (CoinGecko 무료 API) ──────────────────────
+        async function loadCoins() {
+            try {
+                const url = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple&vs_currencies=usd&include_24hr_change=true';
+                const res  = await fetch(url);
+                const data = await res.json();
+
+                const coins = [
+                    { id: 'btc', gecko: 'bitcoin'  },
+                    { id: 'eth', gecko: 'ethereum' },
+                    { id: 'sol', gecko: 'solana'   },
+                    { id: 'xrp', gecko: 'ripple'   },
+                ];
+
+                coins.forEach(({ id, gecko }) => {
+                    const d      = data[gecko];
+                    const price  = d.usd;
+                    const pct    = d.usd_24h_change;
+                    const dir    = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
+                    const arrow  = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
+                    const sign   = pct >= 0 ? '+' : '';
+
+                    const card = document.getElementById('card-' + id);
+                    if (card) card.className = 'stock-card clickable ' + dir;
+                    document.getElementById('price-'  + id).textContent = '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const el = document.getElementById('change-' + id);
+                    el.textContent = `${arrow} ${sign}${pct.toFixed(2)}% (24h)`;
+                    el.className   = 'change ' + dir;
+                });
+
+                document.getElementById('updated-coin').textContent = '업데이트: ' + new Date().toLocaleString('ko-KR');
+            } catch (e) {
+                ['btc','eth','sol','xrp'].forEach(id => {
+                    const el = document.getElementById('change-' + id);
+                    if (el) el.textContent = '불러오기 실패';
+                });
+            }
+        }
+
         setInterval(() => {
             if (document.getElementById('page-index').style.display  !== 'none') loadGroup(INDEX_STOCKS, 'updated-index');
             if (document.getElementById('page-stocks').style.display !== 'none') loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
+            if (document.getElementById('page-coin').style.display   !== 'none') loadCoins();
         }, 60000);
         </script>
 
