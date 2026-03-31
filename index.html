@@ -92,43 +92,111 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(255,255,255,0.72);
+            background: rgba(255,255,255,0.82);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(0,0,0,0.08);
-            height: 52px;
+            height: 64px;
             display: flex;
             align-items: center;
-            padding: 0 28px;
-            gap: 32px;
+            padding: 0 32px;
+            gap: 36px;
         }
         .menubar-logo {
-            font-size: 15px;
+            font-size: 17px;
             font-weight: 700;
             color: #1d1d1f;
             cursor: pointer;
             letter-spacing: -0.3px;
             user-select: none;
+            white-space: nowrap;
         }
         .menubar-nav {
             display: flex;
-            gap: 24px;
+            gap: 28px;
             flex: 1;
         }
         .menubar-nav a {
-            font-size: 13px;
+            font-size: 14px;
             color: #6e6e73;
             text-decoration: none;
             cursor: pointer;
             transition: color 0.15s;
+            font-weight: 500;
         }
         .menubar-nav a:hover { color: #1d1d1f; }
 
+        /* ── 전체 레이아웃 (메인 + 우측 사이드바) ── */
+        .layout {
+            display: flex;
+            align-items: flex-start;
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 24px;
+            gap: 24px;
+        }
+
         /* ── Page wrapper ── */
         .page {
-            max-width: 1080px;
-            margin: 0 auto;
-            padding: 48px 28px 80px;
+            flex: 1;
+            min-width: 0;
+            padding: 40px 0 80px;
+        }
+
+        /* ── 우측 매크로 사이드바 ── */
+        .macro-sidebar {
+            width: 210px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 80px;
+            padding: 20px 0 40px;
+        }
+        .macro-sidebar-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #aeaeb2;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        .macro-item {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .macro-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #aeaeb2;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+        .macro-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1d1d1f;
+            letter-spacing: -0.3px;
+            margin-bottom: 3px;
+        }
+        .macro-change {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .macro-updated {
+            font-size: 10px;
+            color: #c7c7cc;
+            margin-top: 14px;
+            padding: 0 4px;
+            text-align: right;
+        }
+        @media (max-width: 900px) {
+            .macro-sidebar { display: none; }
         }
 
         /* ── Page sections ── */
@@ -392,6 +460,7 @@
         </div>
     </nav>
 
+    <div class="layout">
     <div class="page">
 
         <!-- ① 홈 -->
@@ -583,6 +652,41 @@
         </div>
 
     </div><!-- /.page -->
+
+    <!-- 우측 매크로 사이드바 -->
+    <aside class="macro-sidebar">
+        <div class="macro-sidebar-title">글로벌 매크로</div>
+
+        <div class="macro-item">
+            <div class="macro-label">원 / 달러</div>
+            <div class="macro-value" id="macro-usdkrw">—</div>
+            <div class="macro-change" id="macro-usdkrw-chg">—</div>
+        </div>
+        <div class="macro-item">
+            <div class="macro-label">국제 금시세</div>
+            <div class="macro-value" id="macro-gold">—</div>
+            <div class="macro-change" id="macro-gold-chg">—</div>
+        </div>
+        <div class="macro-item">
+            <div class="macro-label">국제 유가 (WTI)</div>
+            <div class="macro-value" id="macro-oil">—</div>
+            <div class="macro-change" id="macro-oil-chg">—</div>
+        </div>
+        <div class="macro-item">
+            <div class="macro-label">미국 금리 (10Y)</div>
+            <div class="macro-value" id="macro-us-rate">—</div>
+            <div class="macro-change" id="macro-us-rate-chg">—</div>
+        </div>
+        <div class="macro-item">
+            <div class="macro-label">한국 금리 (10Y)</div>
+            <div class="macro-value" id="macro-kr-rate">—</div>
+            <div class="macro-change" id="macro-kr-rate-chg">—</div>
+        </div>
+
+        <div class="macro-updated" id="macro-updated"></div>
+    </aside>
+
+    </div><!-- /.layout -->
 
     <script>
     // ── 뮤직 플레이어 ────────────────────────────────────────────
@@ -793,6 +897,43 @@
             });
         }
     }
+
+    // ── 매크로 지표 (10분마다 갱신) ─────────────────────────────
+    const MACRO_ITEMS = [
+        { id: 'usdkrw',  ticker: 'KRW%3DX',   label: '원/달러', fmt: (v) => v.toLocaleString('ko-KR', {maximumFractionDigits:2}) + '원', isYield: false },
+        { id: 'gold',    ticker: 'GC%3DF',     label: '금',      fmt: (v) => '$' + v.toLocaleString('en-US', {maximumFractionDigits:1}), isYield: false },
+        { id: 'oil',     ticker: 'CL%3DF',     label: '유가',    fmt: (v) => '$' + v.toLocaleString('en-US', {maximumFractionDigits:2}), isYield: false },
+        { id: 'us-rate', ticker: '%5ETNX',     label: '미국금리', fmt: (v) => v.toFixed(2) + '%', isYield: true },
+        { id: 'kr-rate', ticker: 'KR10YT%3DRR',label: '한국금리', fmt: (v) => v.toFixed(2) + '%', isYield: true },
+    ];
+
+    async function loadMacro() {
+        for (const item of MACRO_ITEMS) {
+            try {
+                const url  = `https://corsproxy.io/?https://query2.finance.yahoo.com/v8/finance/chart/${item.ticker}?interval=1d&range=1d`;
+                const data = await (await fetch(url)).json();
+                const meta = data.chart.result[0].meta;
+                const price  = meta.regularMarketPrice;
+                const prev   = meta.chartPreviousClose || meta.previousClose;
+                const change = price - prev;
+                const pct    = (change / prev) * 100;
+                const dir    = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
+                const arrow  = change > 0 ? '▲' : change < 0 ? '▼' : '—';
+                const sign   = change >= 0 ? '+' : '';
+
+                document.getElementById(`macro-${item.id}`).textContent = item.fmt(price);
+                const chgEl = document.getElementById(`macro-${item.id}-chg`);
+                chgEl.innerHTML = `<span class="${dir}-text">${arrow} ${sign}${pct.toFixed(2)}%</span>`;
+            } catch (e) {
+                document.getElementById(`macro-${item.id}`).textContent = '—';
+            }
+        }
+        document.getElementById('macro-updated').textContent =
+            '10분마다 갱신\n' + new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'});
+    }
+
+    loadMacro();
+    setInterval(loadMacro, 600000); // 10분
 
     // 1분 자동 갱신
     setInterval(() => {
