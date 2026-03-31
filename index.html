@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="stylesheet" href="assets/css/main.css" />
         <style>
-            /* 카테고리 카드 (홈 / 주식 서브메뉴) */
+            /* 카테고리 카드 */
             .category-grid {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
@@ -28,20 +28,9 @@
                 transform: translateY(-3px);
                 box-shadow: 0 6px 20px rgba(74,118,177,0.15);
             }
-            .category-card .icon {
-                font-size: 2.4em;
-                margin-bottom: 0.4em;
-            }
-            .category-card .label {
-                font-size: 1.3em;
-                font-weight: 700;
-                color: #222;
-            }
-            .category-card .desc {
-                font-size: 0.85em;
-                color: #999;
-                margin-top: 0.3em;
-            }
+            .category-card .icon  { font-size: 2.4em; margin-bottom: 0.4em; }
+            .category-card .label { font-size: 1.3em; font-weight: 700; color: #222; }
+            .category-card .desc  { font-size: 0.85em; color: #999; margin-top: 0.3em; }
 
             /* 주가 카드 */
             .stock-grid {
@@ -57,10 +46,12 @@
                 border-left: 4px solid #ccc;
                 transition: box-shadow 0.2s;
             }
-            .stock-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
-            .stock-card .name { font-size: 0.8em; color: #888; margin-bottom: 0.3em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-            .stock-card .price { font-size: 1.6em; font-weight: 700; color: #222; margin-bottom: 0.2em; }
-            .stock-card .change { font-size: 0.9em; font-weight: 600; }
+            .stock-card.clickable { cursor: pointer; }
+            .stock-card.clickable:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.13); transform: translateY(-2px); }
+            .stock-card .name    { font-size: 0.8em; color: #888; margin-bottom: 0.3em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+            .stock-card .price   { font-size: 1.6em; font-weight: 700; color: #222; margin-bottom: 0.2em; }
+            .stock-card .change  { font-size: 0.9em; font-weight: 600; }
+            .stock-card .hint    { font-size: 0.75em; color: #bbb; margin-top: 0.4em; }
             .stock-card.up   { border-left-color: #2e7d5a; }
             .stock-card.down { border-left-color: #c0392b; }
             .stock-card.flat { border-left-color: #aaa; }
@@ -69,19 +60,28 @@
             .change.flat { color: #888; }
 
             /* 브레드크럼 */
-            .breadcrumb {
-                font-size: 0.85em;
-                color: #aaa;
-                margin-bottom: 1.2em;
-            }
+            .breadcrumb { font-size: 0.85em; color: #aaa; margin-bottom: 1.2em; }
             .breadcrumb span { cursor: pointer; color: #4a76b1; }
             .breadcrumb span:hover { text-decoration: underline; }
 
             .stock-updated { font-size: 0.78em; color: #aaa; margin-top: 1em; text-align: right; }
 
+            /* 차트 페이지 */
+            .chart-header { display: flex; align-items: center; gap: 1em; margin-bottom: 1.2em; flex-wrap: wrap; }
+            .chart-name   { font-size: 1.4em; font-weight: 700; color: #222; }
+            .chart-price  { font-size: 1.1em; font-weight: 600; }
+            .tradingview-wrap {
+                width: 100%;
+                height: 580px;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1px solid #e0e0e0;
+            }
+
             @media (max-width: 600px) {
                 .category-grid { grid-template-columns: 1fr; }
                 .stock-grid    { grid-template-columns: 1fr; }
+                .tradingview-wrap { height: 400px; }
             }
         </style>
     </head>
@@ -91,10 +91,10 @@
 
             <!-- Header -->
             <header id="header">
-                <h1><a href="#" onclick="goHome()">TY의 주식공부</a></h1>
+                <h1><a href="#" onclick="goHome(); return false;">TY의 주식공부</a></h1>
                 <nav class="links">
                     <ul>
-                        <li><a href="#" onclick="goHome()">홈</a></li>
+                        <li><a href="#" onclick="goHome(); return false;">홈</a></li>
                     </ul>
                 </nav>
                 <nav class="main">
@@ -108,8 +108,8 @@
             <section id="menu">
                 <section>
                     <ul class="links">
-                        <li><a href="#" onclick="goHome()"><h3>홈</h3><p>주식 · 코인</p></a></li>
-                        <li><a href="#" onclick="showStockSub()"><h3>주식</h3><p>대표 지수 · 개별 종목</p></a></li>
+                        <li><a href="#" onclick="goHome(); return false;"><h3>홈</h3><p>주식 · 코인</p></a></li>
+                        <li><a href="#" onclick="showStockSub(); return false;"><h3>주식</h3><p>대표 지수 · 개별 종목</p></a></li>
                     </ul>
                 </section>
             </section>
@@ -117,7 +117,7 @@
             <!-- Main -->
             <div id="main">
 
-                <!-- ① 홈: 주식 / 코인 -->
+                <!-- ① 홈 -->
                 <article class="post" id="page-home">
                     <header>
                         <div class="title">
@@ -139,15 +139,12 @@
                     </div>
                 </article>
 
-                <!-- ② 주식 서브메뉴: 대표 지수 / 개별 종목 -->
+                <!-- ② 주식 서브메뉴 -->
                 <article class="post" id="page-stock-sub" style="display:none">
                     <header>
-                        <div class="title">
-                            <h2>주식</h2>
-                            <p>카테고리를 선택하세요</p>
-                        </div>
+                        <div class="title"><h2>주식</h2><p>카테고리를 선택하세요</p></div>
                     </header>
-                    <div class="breadcrumb"><span onclick="goHome()">홈</span> &rsaquo; 주식</div>
+                    <div class="breadcrumb"><span onclick="goHome()">홈</span> › 주식</div>
                     <div class="category-grid">
                         <div class="category-card" onclick="showIndex()">
                             <div class="icon">🌐</div>
@@ -171,8 +168,8 @@
                         </div>
                     </header>
                     <div class="breadcrumb">
-                        <span onclick="goHome()">홈</span> &rsaquo;
-                        <span onclick="showStockSub()">주식</span> &rsaquo; 대표 지수
+                        <span onclick="goHome()">홈</span> ›
+                        <span onclick="showStockSub()">주식</span> › 대표 지수
                     </div>
                     <div class="stock-grid">
                         <div class="stock-card" id="card-nasdaq">
@@ -199,47 +196,69 @@
                     <p class="stock-updated" id="updated-index"></p>
                 </article>
 
-                <!-- ④ 개별 종목 -->
+                <!-- ④ 개별 종목 목록 -->
                 <article class="post" id="page-stocks" style="display:none">
                     <header>
                         <div class="title">
                             <h2>개별 종목</h2>
-                            <p>삼성전자 · SK하이닉스 · 마이크론 — 1분마다 자동 갱신</p>
+                            <p>종목을 클릭하면 차트를 볼 수 있습니다</p>
                         </div>
                     </header>
                     <div class="breadcrumb">
-                        <span onclick="goHome()">홈</span> &rsaquo;
-                        <span onclick="showStockSub()">주식</span> &rsaquo; 개별 종목
+                        <span onclick="goHome()">홈</span> ›
+                        <span onclick="showStockSub()">주식</span> › 개별 종목
                     </div>
                     <div class="stock-grid">
-                        <div class="stock-card" id="card-samsung">
+                        <div class="stock-card clickable" id="card-samsung" onclick="showChart('samsung')">
                             <div class="name">삼성전자 (005930)</div>
                             <div class="price" id="price-samsung">—</div>
                             <div class="change" id="change-samsung">불러오는 중...</div>
+                            <div class="hint">클릭하여 차트 보기 →</div>
                         </div>
-                        <div class="stock-card" id="card-hynix">
+                        <div class="stock-card clickable" id="card-hynix" onclick="showChart('hynix')">
                             <div class="name">SK하이닉스 (000660)</div>
                             <div class="price" id="price-hynix">—</div>
                             <div class="change" id="change-hynix">불러오는 중...</div>
+                            <div class="hint">클릭하여 차트 보기 →</div>
                         </div>
-                        <div class="stock-card" id="card-micron">
+                        <div class="stock-card clickable" id="card-micron" onclick="showChart('micron')">
                             <div class="name">마이크론 (MU)</div>
                             <div class="price" id="price-micron">—</div>
                             <div class="change" id="change-micron">불러오는 중...</div>
+                            <div class="hint">클릭하여 차트 보기 →</div>
                         </div>
                     </div>
                     <p class="stock-updated" id="updated-stocks"></p>
                 </article>
 
-                <!-- ⑤ 코인 (준비 중) -->
-                <article class="post" id="page-coin" style="display:none">
+                <!-- ⑤ 종목 차트 -->
+                <article class="post" id="page-chart" style="display:none">
                     <header>
                         <div class="title">
-                            <h2>코인</h2>
-                            <p>준비 중입니다</p>
+                            <h2 id="chart-title">차트</h2>
+                            <p id="chart-subtitle"></p>
                         </div>
                     </header>
-                    <div class="breadcrumb"><span onclick="goHome()">홈</span> &rsaquo; 코인</div>
+                    <div class="breadcrumb">
+                        <span onclick="goHome()">홈</span> ›
+                        <span onclick="showStockSub()">주식</span> ›
+                        <span onclick="showStocks()">개별 종목</span> ›
+                        <span id="chart-breadcrumb">—</span>
+                    </div>
+                    <div class="tradingview-wrap">
+                        <div id="tradingview-container"></div>
+                    </div>
+                    <p style="font-size:0.78em;color:#bbb;margin-top:0.8em;text-align:right">
+                        차트 제공: <a href="https://www.tradingview.com" target="_blank">TradingView</a>
+                    </p>
+                </article>
+
+                <!-- ⑥ 코인 -->
+                <article class="post" id="page-coin" style="display:none">
+                    <header>
+                        <div class="title"><h2>코인</h2><p>준비 중입니다</p></div>
+                    </header>
+                    <div class="breadcrumb"><span onclick="goHome()">홈</span> › 코인</div>
                     <p>코인 데이터는 곧 추가될 예정입니다.</p>
                 </article>
 
@@ -260,7 +279,6 @@
 
         </div>
 
-        <!-- Scripts -->
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/browser.min.js"></script>
         <script src="assets/js/breakpoints.min.js"></script>
@@ -268,8 +286,8 @@
         <script src="assets/js/main.js"></script>
 
         <script>
-        // --- 페이지 전환 ---
-        const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-coin'];
+        // ── 페이지 전환 ──────────────────────────────────────────
+        const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-coin'];
 
         function showOnly(id) {
             PAGES.forEach(p => document.getElementById(p).style.display = 'none');
@@ -291,12 +309,66 @@
             loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
         }
 
-        // --- 주가 데이터 ---
+        // ── TradingView 차트 ──────────────────────────────────────
+        const CHART_INFO = {
+            samsung: { symbol: 'KRX:005930',  name: '삼성전자',    subtitle: 'KRX · 005930' },
+            hynix:   { symbol: 'KRX:000660',  name: 'SK하이닉스',  subtitle: 'KRX · 000660' },
+            micron:  { symbol: 'NASDAQ:MU',   name: '마이크론',    subtitle: 'NASDAQ · MU'  },
+        };
+
+        function showChart(id) {
+            const info = CHART_INFO[id];
+            showOnly('page-chart');
+
+            document.getElementById('chart-title').textContent = info.name;
+            document.getElementById('chart-subtitle').textContent = info.subtitle;
+            document.getElementById('chart-breadcrumb').textContent = info.name;
+
+            // 기존 위젯 제거 후 재생성
+            const container = document.getElementById('tradingview-container');
+            container.innerHTML = '';
+
+            const script = document.createElement('script');
+            script.src = 'https://s3.tradingview.com/tv.js';
+            script.onload = function() {
+                new TradingView.widget({
+                    container_id: 'tradingview-container',
+                    width: '100%',
+                    height: 560,
+                    symbol: info.symbol,
+                    interval: 'D',
+                    timezone: 'Asia/Seoul',
+                    theme: 'light',
+                    style: '1',          // 1 = 캔들스틱
+                    locale: 'ko',
+                    toolbar_bg: '#f1f3f6',
+                    enable_publishing: false,
+                    allow_symbol_change: true,
+                    studies: [
+                        'MASimple@tv-basicstudies',   // 이동평균
+                        'RSI@tv-basicstudies',         // RSI
+                        'MACD@tv-basicstudies',        // MACD
+                        'BB@tv-basicstudies',          // 볼린저밴드
+                    ],
+                    show_popup_button: true,
+                    popup_width: '1000',
+                    popup_height: '650',
+                });
+            };
+            // 이미 로드된 경우
+            if (typeof TradingView !== 'undefined') {
+                script.onload();
+            } else {
+                document.head.appendChild(script);
+            }
+        }
+
+        // ── 주가 데이터 (Yahoo Finance) ──────────────────────────
         const INDEX_STOCKS = [
-            { id: 'nasdaq', ticker: '%5EIXIC',  currency: 'USD' },
-            { id: 'sp500',  ticker: '%5EGSPC',  currency: 'USD' },
-            { id: 'kospi',  ticker: '%5EKS11',  currency: 'KRW' },
-            { id: 'kosdaq', ticker: '%5EKQ11',  currency: 'KRW' },
+            { id: 'nasdaq', ticker: '%5EIXIC', currency: 'USD' },
+            { id: 'sp500',  ticker: '%5EGSPC', currency: 'USD' },
+            { id: 'kospi',  ticker: '%5EKS11', currency: 'KRW' },
+            { id: 'kosdaq', ticker: '%5EKQ11', currency: 'KRW' },
         ];
 
         const INDIVIDUAL_STOCKS = [
@@ -329,12 +401,13 @@
 
         function updateCard(id, price, prev, currency) {
             const change = price - prev;
-            const pct = (change / prev) * 100;
-            const dir = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
-            const arrow = change > 0 ? '▲' : change < 0 ? '▼' : '—';
+            const pct    = (change / prev) * 100;
+            const dir    = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
+            const arrow  = change > 0 ? '▲' : change < 0 ? '▼' : '—';
 
-            document.getElementById('card-' + id).className = 'stock-card ' + dir;
-            document.getElementById('price-' + id).textContent = formatPrice(price, currency);
+            const card = document.getElementById('card-' + id);
+            if (card) card.className = card.className.replace(/\b(up|down|flat)\b/g, '').trim() + ' ' + dir;
+            document.getElementById('price-'  + id).textContent = formatPrice(price, currency);
             const el = document.getElementById('change-' + id);
             el.textContent = arrow + ' ' + formatChange(change, pct);
             el.className = 'change ' + dir;
@@ -346,19 +419,17 @@
                     const { price, prev, currency } = await fetchStock(stock);
                     updateCard(stock.id, price, prev, currency);
                 } catch (e) {
-                    document.getElementById('change-' + stock.id).textContent = '불러오기 실패';
+                    const el = document.getElementById('change-' + stock.id);
+                    if (el) el.textContent = '불러오기 실패';
                 }
             }
-            document.getElementById(updatedId).textContent =
-                '업데이트: ' + new Date().toLocaleString('ko-KR');
+            const el = document.getElementById(updatedId);
+            if (el) el.textContent = '업데이트: ' + new Date().toLocaleString('ko-KR');
         }
 
-        // 자동 갱신 (현재 보이는 페이지 기준)
         setInterval(() => {
-            if (document.getElementById('page-index').style.display !== 'none')
-                loadGroup(INDEX_STOCKS, 'updated-index');
-            if (document.getElementById('page-stocks').style.display !== 'none')
-                loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
+            if (document.getElementById('page-index').style.display  !== 'none') loadGroup(INDEX_STOCKS, 'updated-index');
+            if (document.getElementById('page-stocks').style.display !== 'none') loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
         }, 60000);
         </script>
 
