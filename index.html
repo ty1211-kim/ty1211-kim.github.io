@@ -1203,7 +1203,7 @@
     ];
 
     function makeProxiedUrl(rawUrl) {
-        return `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`;
+        return `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
     }
 
     function formatPercent(pct) {
@@ -1284,32 +1284,29 @@
     }
 
     async function fetchMarketOverview(info) {
-        const [chartResp, quoteResp] = await Promise.all([
-            fetch(makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${info.data_ticker}?interval=1d&range=1y`), { cache: 'no-store' }),
-            fetch(makeProxiedUrl(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${info.data_ticker}`), { cache: 'no-store' })
-        ]);
-
+        const chartResp = await fetch(
+            makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${info.data_ticker}?interval=1d&range=1d`),
+            { cache: 'no-store' }
+        );
         const chartJson = await chartResp.json();
-        const quoteJson = await quoteResp.json();
 
         const chartResult = chartJson?.chart?.result?.[0];
-        const quote = quoteJson?.quoteResponse?.result?.[0] || {};
         if (!chartResult) throw new Error('chart result missing');
 
         const meta = chartResult.meta || {};
-        const price = quote.regularMarketPrice ?? meta.regularMarketPrice;
-        const prev = quote.regularMarketPreviousClose ?? meta.chartPreviousClose ?? meta.previousClose;
+        const price = meta.regularMarketPrice;
+        const prev = meta.chartPreviousClose ?? meta.previousClose;
         const change = price - prev;
         const changePct = prev ? (change / prev) * 100 : 0;
-        const currency = quote.currency ?? meta.currency ?? 'USD';
+        const currency = meta.currency ?? 'USD';
 
         const stats = [
-            { label: '시가', value: fmtPrice(quote.regularMarketOpen ?? meta.regularMarketOpen, currency) },
+            { label: '시가', value: fmtPrice(meta.regularMarketOpen, currency) },
             { label: '전일 종가', value: fmtPrice(prev, currency) },
-            { label: '당일 범위', value: formatRange(quote.regularMarketDayLow ?? meta.regularMarketDayLow, quote.regularMarketDayHigh ?? meta.regularMarketDayHigh, currency) },
-            { label: '52주 범위', value: formatRange(quote.fiftyTwoWeekLow ?? meta.fiftyTwoWeekLow, quote.fiftyTwoWeekHigh ?? meta.fiftyTwoWeekHigh, currency) },
-            { label: '거래량', value: formatVolume(quote.regularMarketVolume ?? meta.regularMarketVolume) },
-            { label: quote.marketCap ? '시가총액' : '통화', value: quote.marketCap ? formatCompactNumber(quote.marketCap, currency) : currency }
+            { label: '당일 범위', value: formatRange(meta.regularMarketDayLow, meta.regularMarketDayHigh, currency) },
+            { label: '52주 범위', value: formatRange(meta.fiftyTwoWeekLow, meta.fiftyTwoWeekHigh, currency) },
+            { label: '거래량', value: formatVolume(meta.regularMarketVolume) },
+            { label: '통화', value: currency }
         ];
 
         return {
@@ -1362,7 +1359,7 @@
     }
 
     async function fetchStock(stock) {
-        const url = `https://corsproxy.io/?${encodeURIComponent(`https://query2.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=1d`)}`;
+        const url = makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=1d`);
         const data = await (await fetch(url, { cache: 'no-store' })).json();
         const meta = data.chart.result[0].meta;
         return {
@@ -1452,9 +1449,10 @@
     }
 
     async function fetchMacroQuote(item) {
-        const rawUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${item.ticker}?interval=1d&range=1d`;
-        const proxied = `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`;
-        const data = await (await fetch(proxied, { cache: 'no-store' })).json();
+        const data = await (await fetch(
+            makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${item.ticker}?interval=1d&range=1d`),
+            { cache: 'no-store' }
+        )).json();
         const meta = data.chart.result[0].meta;
         const price = meta.regularMarketPrice;
         const prev = meta.chartPreviousClose || meta.previousClose;
@@ -1478,8 +1476,7 @@
     }
 
     async function fetchProxiedText(url) {
-        const proxied = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-        return await (await fetch(proxied, { cache: 'no-store' })).text();
+        return await (await fetch(makeProxiedUrl(url), { cache: 'no-store' })).text();
     }
 
     function htmlToText(html) {
