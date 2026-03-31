@@ -919,15 +919,38 @@
     // ── 페이지 전환 ──────────────────────────────────────────────
     const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-coin'];
 
-    function showOnly(id) {
-        PAGES.forEach(p => document.getElementById(p).classList.toggle('active', p === id));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    function showOnly(id, doScroll = true) {
+        PAGES.forEach(p => {
+            const el = document.getElementById(p);
+            if (el) el.classList.toggle('active', p === id);
+        });
+
+        if (doScroll) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
-    function goHome()       { showOnly('page-home'); }
-    function showStockSub() { showOnly('page-stock-sub'); }
-    function showCoin()     { showOnly('page-coin'); loadCoins(); }
-    function showIndex()    { showOnly('page-index');  loadGroup(INDEX_STOCKS, 'updated-index'); }
-    function showStocks()   { showOnly('page-stocks'); loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks'); }
+
+    function setRoute(hash, replace = false) {
+        const next = '#' + hash;
+
+        if (location.hash === next) {
+            applyRoute();
+            return;
+        }
+
+        if (replace) {
+            history.replaceState(null, '', next);
+            applyRoute();
+        } else {
+            location.hash = next;
+        }
+    }
+
+    function goHome()       { setRoute('home'); }
+    function showStockSub() { setRoute('stock'); }
+    function showCoin()     { setRoute('coin'); }
+    function showIndex()    { setRoute('index'); }
+    function showStocks()   { setRoute('stocks'); }
 
     // ── 차트 정보 ────────────────────────────────────────────────
     const CHART_INFO = {
@@ -1049,10 +1072,12 @@
 
     const FROM_LABELS = { index: '대표 지수', stocks: '개별 종목', coin: '코인' };
 
-    function showChart(id) {
+    function showChart(id, updateHash = true) {
         const info = CHART_INFO[id];
+        if (!info) return;
+
         activeChartId = id;
-        showOnly('page-chart');
+        showOnly('page-chart', updateHash);
 
         document.getElementById('chart-title').textContent = info.name;
         document.getElementById('chart-subtitle').textContent = info.subtitle;
@@ -1085,6 +1110,10 @@
         setChartLoadingState(info);
         renderTradingView(info);
         loadChartOverview(id);
+
+        if (updateHash) {
+            setRoute(`chart:${id}`);
+        }
     }
 
     function renderTradingView(info) {
@@ -1517,6 +1546,48 @@
         ]);
     }
 
+    function applyRoute() {
+        const hash = (location.hash || '#home').replace('#', '');
+
+        if (hash === 'home') {
+            showOnly('page-home', false);
+            return;
+        }
+
+        if (hash === 'stock') {
+            showOnly('page-stock-sub', false);
+            return;
+        }
+
+        if (hash === 'index') {
+            showOnly('page-index', false);
+            loadGroup(INDEX_STOCKS, 'updated-index');
+            return;
+        }
+
+        if (hash === 'stocks') {
+            showOnly('page-stocks', false);
+            loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
+            return;
+        }
+
+        if (hash === 'coin') {
+            showOnly('page-coin', false);
+            loadCoins();
+            return;
+        }
+
+        if (hash.startsWith('chart:')) {
+            const chartId = hash.split(':')[1];
+            if (CHART_INFO[chartId]) {
+                showChart(chartId, false);
+                return;
+            }
+        }
+
+        showOnly('page-home', false);
+    }
+
     // 1분 자동갱신
     setInterval(() => {
         if (document.getElementById('page-index').classList.contains('active')) loadGroup(INDEX_STOCKS, 'updated-index');
@@ -1524,7 +1595,14 @@
         if (document.getElementById('page-coin').classList.contains('active')) loadCoins();
     }, 60000);
 
-    // 거시지표 자동갱신
+    // 거시지표 자동갱신 및 라우팅 초기화
+    window.addEventListener('hashchange', applyRoute);
+
+    if (!location.hash) {
+        history.replaceState(null, '', '#home');
+    }
+
+    applyRoute();
     loadMacro();
     setInterval(loadMacro, 600000);
     </script>
