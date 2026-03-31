@@ -5,6 +5,77 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <style>
+        /* ── Music Player ── */
+        .music-player {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 40px;
+            padding: 10px 18px 10px 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+        .music-player:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        .music-player:active { transform: scale(0.97); }
+        .music-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #1d1d1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .music-info { line-height: 1.3; }
+        .music-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1d1d1f;
+            max-width: 160px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .music-status { font-size: 11px; color: #6e6e73; }
+        .music-eq {
+            display: none;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+            margin-left: 4px;
+        }
+        .music-eq.playing { display: flex; }
+        .music-eq span {
+            width: 3px;
+            background: #007AFF;
+            border-radius: 2px;
+            animation: eq 0.8s infinite ease-in-out;
+        }
+        .music-eq span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+        .music-eq span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+        .music-eq span:nth-child(3) { height: 8px;  animation-delay: 0.3s; }
+        .music-eq span:nth-child(4) { height: 14px; animation-delay: 0.1s; }
+        @keyframes eq {
+            0%, 100% { transform: scaleY(0.4); }
+            50%       { transform: scaleY(1); }
+        }
+
         /* ── Reset & Base ── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -294,6 +365,23 @@
 </head>
 <body>
 
+    <!-- YouTube 숨김 플레이어 -->
+    <iframe id="yt-player"
+        src="https://www.youtube-nocookie.com/embed/RWQ-jvnzvhM?enablejsapi=1&autoplay=0&controls=0&loop=1&playlist=RWQ-jvnzvhM"
+        style="display:none" allow="autoplay"></iframe>
+
+    <!-- 뮤직 플레이어 버튼 -->
+    <div class="music-player" id="music-player" onclick="toggleMusic()">
+        <div class="music-btn" id="music-btn">▶</div>
+        <div class="music-info">
+            <div class="music-title">Lofi Chill Mix</div>
+            <div class="music-status" id="music-status">클릭하여 재생</div>
+        </div>
+        <div class="music-eq" id="music-eq">
+            <span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
     <!-- Menubar -->
     <nav class="menubar">
         <div class="menubar-logo" onclick="goHome()">TY의 주식공부</div>
@@ -497,6 +585,27 @@
     </div><!-- /.page -->
 
     <script>
+    // ── 뮤직 플레이어 ────────────────────────────────────────────
+    let isPlaying = false;
+    const ytPlayer = document.getElementById('yt-player');
+
+    function toggleMusic() {
+        isPlaying = !isPlaying;
+        if (isPlaying) {
+            ytPlayer.contentWindow.postMessage(
+                '{"event":"command","func":"playVideo","args":""}', '*');
+            document.getElementById('music-btn').textContent    = '⏸';
+            document.getElementById('music-status').textContent = '재생 중';
+            document.getElementById('music-eq').classList.add('playing');
+        } else {
+            ytPlayer.contentWindow.postMessage(
+                '{"event":"command","func":"pauseVideo","args":""}', '*');
+            document.getElementById('music-btn').textContent    = '▶';
+            document.getElementById('music-status').textContent = '일시정지';
+            document.getElementById('music-eq').classList.remove('playing');
+        }
+    }
+
     // ── 페이지 전환 ──────────────────────────────────────────────
     const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-coin'];
 
