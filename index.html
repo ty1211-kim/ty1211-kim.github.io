@@ -5,84 +5,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <style>
-        /* ── Music Player ── */
-        .music-player {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.82);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0,0,0,0.08);
-            border-radius: 40px;
-            padding: 10px 18px 10px 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            user-select: none;
-        }
-        .music-player:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-        }
-        .music-player:active { transform: scale(0.97); }
-        .music-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #1d1d1f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-        .music-info { line-height: 1.3; }
-        .music-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #1d1d1f;
-            max-width: 160px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .music-status { font-size: 11px; color: #6e6e73; }
-        .music-eq {
-            display: none;
-            align-items: flex-end;
-            gap: 2px;
-            height: 14px;
-            margin-left: 4px;
-        }
-        .music-eq.playing { display: flex; }
-        .music-eq span {
-            width: 3px;
-            background: #007AFF;
-            border-radius: 2px;
-            animation: eq 0.8s infinite ease-in-out;
-        }
-        .music-eq span:nth-child(1) { height: 6px;  animation-delay: 0s; }
-        .music-eq span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
-        .music-eq span:nth-child(3) { height: 8px;  animation-delay: 0.3s; }
-        .music-eq span:nth-child(4) { height: 14px; animation-delay: 0.1s; }
-        @keyframes eq {
-            0%, 100% { transform: scaleY(0.4); }
-            50%       { transform: scaleY(1); }
+        :root {
+            --bg:        #1c1c1e;
+            --bg2:       #2c2c2e;
+            --bg3:       #3a3a3c;
+            --card:      rgba(44,44,46,0.92);
+            --border:    rgba(255,255,255,0.10);
+            --text1:     #f5f5f7;
+            --text2:     #98989d;
+            --accent:    #0a84ff;
+            --green:     #30d158;
+            --red:       #ff453a;
+            --yellow:    #ffd60a;
+            --menubar:   rgba(28,28,30,0.88);
         }
 
-        /* ── Reset & Base ── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-            background: #f5f5f7;
-            color: #1d1d1f;
+            background: var(--bg);
+            color: var(--text1);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
@@ -91,11 +34,11 @@
         .menubar {
             position: sticky;
             top: 0;
-            z-index: 100;
-            background: rgba(255,255,255,0.82);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.08);
+            z-index: 200;
+            background: var(--menubar);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
             height: 64px;
             display: flex;
             align-items: center;
@@ -105,101 +48,39 @@
         .menubar-logo {
             font-size: 17px;
             font-weight: 700;
-            color: #1d1d1f;
+            color: var(--text1);
             cursor: pointer;
             letter-spacing: -0.3px;
             user-select: none;
             white-space: nowrap;
         }
-        .menubar-nav {
-            display: flex;
-            gap: 28px;
-            flex: 1;
-        }
+        .menubar-nav { display: flex; gap: 28px; flex: 1; }
         .menubar-nav a {
             font-size: 14px;
-            color: #6e6e73;
+            font-weight: 500;
+            color: var(--text2);
             text-decoration: none;
             cursor: pointer;
             transition: color 0.15s;
-            font-weight: 500;
         }
-        .menubar-nav a:hover { color: #1d1d1f; }
+        .menubar-nav a:hover { color: var(--text1); }
 
-        /* ── 전체 레이아웃 (메인 + 우측 사이드바) ── */
+        /* ── Layout ── */
         .layout {
             display: flex;
             align-items: flex-start;
-            max-width: 1320px;
+            max-width: 1360px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 28px;
             gap: 24px;
         }
-
-        /* ── Page wrapper ── */
         .page {
             flex: 1;
             min-width: 0;
-            padding: 40px 0 80px;
+            padding: 36px 0 80px;
         }
 
-        /* ── 우측 매크로 사이드바 ── */
-        .macro-sidebar {
-            width: 210px;
-            flex-shrink: 0;
-            position: sticky;
-            top: 80px;
-            padding: 20px 0 40px;
-        }
-        .macro-sidebar-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: #aeaeb2;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            padding: 0 4px;
-        }
-        .macro-item {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 14px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        .macro-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #aeaeb2;
-            letter-spacing: 0.3px;
-            margin-bottom: 6px;
-        }
-        .macro-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1d1d1f;
-            letter-spacing: -0.3px;
-            margin-bottom: 3px;
-        }
-        .macro-change {
-            font-size: 11px;
-            font-weight: 500;
-        }
-        .macro-updated {
-            font-size: 10px;
-            color: #c7c7cc;
-            margin-top: 14px;
-            padding: 0 4px;
-            text-align: right;
-        }
-        @media (max-width: 900px) {
-            .macro-sidebar { display: none; }
-        }
-
-        /* ── Page sections ── */
+        /* ── Section ── */
         .section { display: none; }
         .section.active { display: block; }
 
@@ -209,223 +90,275 @@
             align-items: center;
             gap: 6px;
             font-size: 13px;
-            color: #6e6e73;
-            margin-bottom: 28px;
+            color: var(--text2);
+            margin-bottom: 24px;
         }
-        .breadcrumb .crumb {
-            cursor: pointer;
-            color: #007AFF;
-            transition: opacity 0.15s;
-        }
-        .breadcrumb .crumb:hover { opacity: 0.7; }
-        .breadcrumb .sep { color: #c7c7cc; font-size: 11px; }
+        .crumb { cursor: pointer; color: var(--accent); }
+        .crumb:hover { opacity: 0.75; }
+        .sep { color: var(--bg3); font-size: 11px; }
 
-        /* ── Section Header ── */
-        .section-header { margin-bottom: 32px; }
-        .section-header h1 {
-            font-size: 34px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #1d1d1f;
-            margin-bottom: 6px;
-        }
-        .section-header p {
-            font-size: 15px;
-            color: #6e6e73;
-        }
-
-        /* ── Category Cards (홈) ── */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            max-width: 560px;
-        }
-        .category-card {
-            background: rgba(255,255,255,0.85);
+        /* ── macOS Window ── */
+        .window {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 18px;
-            padding: 32px 28px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         }
-        .category-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.10);
+        .window-titlebar {
+            background: rgba(58,58,60,0.95);
+            border-bottom: 1px solid var(--border);
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
         }
-        .category-card:active { transform: scale(0.98); }
-        .category-card .icon { font-size: 36px; margin-bottom: 12px; }
-        .category-card .label {
-            font-size: 19px;
+        .traffic-lights { display: flex; gap: 8px; align-items: center; }
+        .tl {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            cursor: default;
+            transition: filter 0.15s;
+        }
+        .tl:hover { filter: brightness(1.2); }
+        .tl.red    { background: #ff5f57; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
+        .tl.yellow { background: #febc2e; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
+        .tl.green  { background: #28c840; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
+        .window-title {
+            font-size: 13px;
             font-weight: 600;
-            color: #1d1d1f;
-            margin-bottom: 4px;
+            color: var(--text2);
+            flex: 1;
+            text-align: center;
+            margin-right: 52px; /* offset traffic lights */
         }
-        .category-card .desc { font-size: 13px; color: #6e6e73; }
+        .window-body { padding: 28px; }
 
-        /* ── Sub Category (주식 하위) ── */
+        /* ── Section Header ── */
+        .section-header { margin-bottom: 28px; }
+        .section-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text1);
+            margin-bottom: 6px;
+        }
+        .section-header p { font-size: 15px; color: var(--text2); }
+
+        /* ── Folder Grid (홈) ── */
+        .folder-grid {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            padding: 8px 4px;
+        }
+        .folder-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            width: 90px;
+            transition: transform 0.15s;
+        }
+        .folder-item:hover { transform: scale(1.06); }
+        .folder-item:active { transform: scale(0.97); }
+        .folder-icon-wrap {
+            position: relative;
+            width: 80px;
+            height: 68px;
+        }
+        /* macOS 폴더 모양 CSS */
+        .folder-shape {
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(160deg, #3a8ef5 0%, #1d6cd4 100%);
+            border-radius: 6px 10px 10px 10px;
+            position: absolute;
+            bottom: 0;
+            box-shadow: 0 4px 16px rgba(29,108,212,0.4);
+        }
+        .folder-shape::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 36px;
+            height: 12px;
+            background: linear-gradient(160deg, #5aa3f7 0%, #2f7ee8 100%);
+            border-radius: 6px 6px 0 0;
+        }
+        .folder-coin .folder-shape {
+            background: linear-gradient(160deg, #ff9f0a 0%, #d4700a 100%);
+            box-shadow: 0 4px 16px rgba(212,112,10,0.4);
+        }
+        .folder-coin .folder-shape::before {
+            background: linear-gradient(160deg, #ffb830 0%, #e88a20 100%);
+        }
+        .folder-emoji {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+        }
+        .folder-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text1);
+            text-align: center;
+        }
+
+        /* ── Sub card grid ── */
         .sub-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
-            max-width: 640px;
         }
         .sub-card {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 18px;
-            padding: 28px 24px;
+            background: rgba(58,58,60,0.7);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px 20px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.18s, background 0.18s;
         }
-        .sub-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 28px rgba(0,0,0,0.10);
-        }
+        .sub-card:hover { background: rgba(72,72,74,0.9); transform: translateY(-2px); }
         .sub-card:active { transform: scale(0.98); }
-        .sub-card .icon { font-size: 28px; margin-bottom: 10px; }
-        .sub-card .label { font-size: 17px; font-weight: 600; color: #1d1d1f; margin-bottom: 4px; }
-        .sub-card .desc  { font-size: 13px; color: #6e6e73; }
+        .sub-card .icon  { font-size: 26px; margin-bottom: 10px; }
+        .sub-card .label { font-size: 17px; font-weight: 600; color: var(--text1); margin-bottom: 4px; }
+        .sub-card .desc  { font-size: 13px; color: var(--text2); }
 
         /* ── Ticker Grid ── */
         .ticker-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            margin-bottom: 16px;
+            gap: 12px;
         }
         .ticker-card {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 16px;
-            padding: 20px 18px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: rgba(58,58,60,0.7);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 16px;
+            transition: transform 0.18s, background 0.18s;
         }
         .ticker-card.clickable { cursor: pointer; }
-        .ticker-card.clickable:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-        }
+        .ticker-card.clickable:hover { background: rgba(72,72,74,0.9); transform: translateY(-2px); }
         .ticker-card:active { transform: scale(0.98); }
-        .ticker-name {
-            font-size: 11px;
-            font-weight: 600;
-            color: #6e6e73;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-        .ticker-price {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1d1d1f;
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-        }
-        .ticker-change {
-            font-size: 13px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .ticker-hint {
-            font-size: 11px;
-            color: #c7c7cc;
-            margin-top: 8px;
-        }
-        .ticker-card.up   { border-top: 3px solid #34c759; }
-        .ticker-card.down { border-top: 3px solid #ff3b30; }
-        .ticker-card.flat { border-top: 3px solid #c7c7cc; }
-        .up-text   { color: #34c759; }
-        .down-text { color: #ff3b30; }
-        .flat-text { color: #6e6e73; }
+        .ticker-name  { font-size: 11px; font-weight: 600; color: var(--text2); letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 10px; }
+        .ticker-price { font-size: 20px; font-weight: 700; color: var(--text1); letter-spacing: -0.3px; margin-bottom: 6px; }
+        .ticker-change { font-size: 12px; font-weight: 500; }
+        .ticker-hint  { font-size: 11px; color: var(--bg3); margin-top: 6px; }
+        .ticker-card.up   { border-top: 2px solid var(--green); }
+        .ticker-card.down { border-top: 2px solid var(--red); }
+        .ticker-card.flat { border-top: 2px solid var(--bg3); }
+        .up-text   { color: var(--green); }
+        .down-text { color: var(--red); }
+        .flat-text { color: var(--text2); }
+        .updated-label { font-size: 11px; color: var(--bg3); text-align: right; margin-top: 10px; }
 
-        .updated-label {
-            font-size: 12px;
-            color: #aeaeb2;
-            text-align: right;
-            margin-top: 8px;
-        }
-
-        /* ── Chart area ── */
-        .chart-meta {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .chart-meta-name {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.4px;
-        }
-        .chart-meta-sub {
-            font-size: 14px;
-            color: #6e6e73;
-        }
-        .chart-wrap {
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.08);
-            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-        }
-        .chart-links {
-            display: flex;
-            gap: 16px;
-            margin-top: 14px;
-            flex-wrap: wrap;
-        }
+        /* ── Chart ── */
+        .chart-meta { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+        .chart-meta-name { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; }
+        .chart-meta-sub  { font-size: 14px; color: var(--text2); }
+        .chart-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .chart-links { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
         .chart-link-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-size: 13px;
-            color: #007AFF;
+            color: var(--accent);
             text-decoration: none;
-            background: rgba(0,122,255,0.08);
+            background: rgba(10,132,255,0.15);
             padding: 7px 14px;
             border-radius: 20px;
             transition: background 0.15s;
         }
-        .chart-link-btn:hover { background: rgba(0,122,255,0.14); }
-        .chart-provider {
-            font-size: 11px;
-            color: #aeaeb2;
-            text-align: right;
-            margin-top: 10px;
-        }
+        .chart-link-btn:hover { background: rgba(10,132,255,0.25); }
+        .chart-provider { font-size: 11px; color: var(--text2); text-align: right; margin-top: 8px; }
 
-        /* ── Coming soon ── */
-        .coming-soon {
-            background: rgba(255,255,255,0.85);
-            border-radius: 18px;
-            padding: 48px;
-            text-align: center;
-            border: 1px solid rgba(0,0,0,0.06);
-            color: #6e6e73;
-            font-size: 15px;
+        /* ── 우측 매크로 사이드바 ── */
+        .macro-sidebar {
+            width: 200px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 80px;
+            padding: 28px 0 40px;
         }
-        .coming-soon .big { font-size: 40px; margin-bottom: 12px; }
+        .macro-sidebar-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text2);
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        .macro-item {
+            background: rgba(44,44,46,0.85);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 13px 14px;
+            margin-bottom: 9px;
+        }
+        .macro-label { font-size: 10px; font-weight: 600; color: var(--text2); letter-spacing: 0.3px; margin-bottom: 5px; }
+        .macro-value { font-size: 17px; font-weight: 700; color: var(--text1); letter-spacing: -0.3px; margin-bottom: 3px; }
+        .macro-change { font-size: 11px; font-weight: 500; }
+        .macro-updated { font-size: 10px; color: var(--bg3); margin-top: 12px; padding: 0 4px; text-align: right; white-space: pre-line; }
+
+        /* ── Music Player ── */
+        .music-player {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(44,44,46,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 10px 18px 10px 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+        .music-player:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        .music-player:active { transform: scale(0.97); }
+        .music-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--text1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: var(--bg); flex-shrink: 0;
+        }
+        .music-info { line-height: 1.3; }
+        .music-title  { font-size: 12px; font-weight: 600; color: var(--text1); max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .music-status { font-size: 11px; color: var(--text2); }
+        .music-eq { display: none; align-items: flex-end; gap: 2px; height: 14px; margin-left: 4px; }
+        .music-eq.playing { display: flex; }
+        .music-eq span { width: 3px; background: var(--accent); border-radius: 2px; animation: eq 0.8s infinite ease-in-out; }
+        .music-eq span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+        .music-eq span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+        .music-eq span:nth-child(3) { height: 8px;  animation-delay: 0.3s; }
+        .music-eq span:nth-child(4) { height: 14px; animation-delay: 0.1s; }
+        @keyframes eq { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
 
         /* ── Responsive ── */
-        @media (max-width: 860px) {
-            .ticker-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        @media (max-width: 900px) { .macro-sidebar { display: none; } }
+        @media (max-width: 700px) { .ticker-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 560px) {
-            .page { padding: 32px 16px 60px; }
-            .category-grid, .sub-grid { grid-template-columns: 1fr; max-width: 100%; }
-            .ticker-grid { grid-template-columns: repeat(2, 1fr); }
+            .page { padding: 24px 0 60px; }
+            .layout { padding: 0 16px; }
+            .sub-grid { grid-template-columns: 1fr; }
             .section-header h1 { font-size: 26px; }
             .menubar { padding: 0 16px; gap: 20px; }
         }
@@ -433,12 +366,11 @@
 </head>
 <body>
 
-    <!-- YouTube 숨김 플레이어 -->
-    <iframe id="yt-player"
-        src="https://www.youtube-nocookie.com/embed/RWQ-jvnzvhM?enablejsapi=1&autoplay=0&controls=0&loop=1&playlist=RWQ-jvnzvhM"
-        style="display:none" allow="autoplay"></iframe>
+    <!-- YouTube IFrame API -->
+    <div id="yt-player" style="display:none"></div>
+    <script src="https://www.youtube.com/iframe_api"></script>
 
-    <!-- 뮤직 플레이어 버튼 -->
+    <!-- Music Player -->
     <div class="music-player" id="music-player" onclick="toggleMusic()">
         <div class="music-btn" id="music-btn">▶</div>
         <div class="music-info">
@@ -461,24 +393,42 @@
     </nav>
 
     <div class="layout">
+
+    <!-- Main content -->
     <div class="page">
 
         <!-- ① 홈 -->
         <div class="section active" id="page-home">
-            <div class="section-header">
-                <h1>TY의 주식공부</h1>
-                <p>카테고리를 선택하세요</p>
-            </div>
-            <div class="category-grid">
-                <div class="category-card" onclick="showStockSub()">
-                    <div class="icon">📈</div>
-                    <div class="label">주식</div>
-                    <div class="desc">대표 지수 · 개별 종목</div>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="traffic-lights">
+                        <span class="tl red"></span>
+                        <span class="tl yellow"></span>
+                        <span class="tl green"></span>
+                    </div>
+                    <div class="window-title">TY의 주식공부</div>
                 </div>
-                <div class="category-card" onclick="showCoin()">
-                    <div class="icon">🪙</div>
-                    <div class="label">코인</div>
-                    <div class="desc">BTC · ETH · SOL · XRP</div>
+                <div class="window-body">
+                    <div class="section-header">
+                        <h1>TY의 주식공부</h1>
+                        <p>카테고리를 선택하세요</p>
+                    </div>
+                    <div class="folder-grid">
+                        <div class="folder-item" onclick="showStockSub()">
+                            <div class="folder-icon-wrap">
+                                <div class="folder-shape"></div>
+                                <div class="folder-emoji">📈</div>
+                            </div>
+                            <div class="folder-label">주식</div>
+                        </div>
+                        <div class="folder-item folder-coin" onclick="showCoin()">
+                            <div class="folder-icon-wrap">
+                                <div class="folder-shape"></div>
+                                <div class="folder-emoji">🪙</div>
+                            </div>
+                            <div class="folder-label">코인</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -487,23 +437,28 @@
         <div class="section" id="page-stock-sub">
             <div class="breadcrumb">
                 <span class="crumb" onclick="goHome()">홈</span>
-                <span class="sep">›</span>
-                <span>주식</span>
+                <span class="sep">›</span><span>주식</span>
             </div>
-            <div class="section-header">
-                <h1>주식</h1>
-                <p>카테고리를 선택하세요</p>
-            </div>
-            <div class="sub-grid">
-                <div class="sub-card" onclick="showIndex()">
-                    <div class="icon">🌐</div>
-                    <div class="label">대표 지수</div>
-                    <div class="desc">나스닥 · S&amp;P500 · 코스피 · 코스닥</div>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="traffic-lights">
+                        <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                    </div>
+                    <div class="window-title">주식</div>
                 </div>
-                <div class="sub-card" onclick="showStocks()">
-                    <div class="icon">🏢</div>
-                    <div class="label">개별 종목</div>
-                    <div class="desc">삼성전자 · 하이닉스 · 마이크론</div>
+                <div class="window-body">
+                    <div class="sub-grid">
+                        <div class="sub-card" onclick="showIndex()">
+                            <div class="icon">🌐</div>
+                            <div class="label">대표 지수</div>
+                            <div class="desc">나스닥 · S&amp;P500 · 코스피 · 코스닥</div>
+                        </div>
+                        <div class="sub-card" onclick="showStocks()">
+                            <div class="icon">🏢</div>
+                            <div class="label">개별 종목</div>
+                            <div class="desc">삼성전자 · 하이닉스 · 마이크론</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -511,102 +466,117 @@
         <!-- ③ 대표 지수 -->
         <div class="section" id="page-index">
             <div class="breadcrumb">
-                <span class="crumb" onclick="goHome()">홈</span>
-                <span class="sep">›</span>
-                <span class="crumb" onclick="showStockSub()">주식</span>
-                <span class="sep">›</span>
+                <span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
+                <span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>
                 <span>대표 지수</span>
             </div>
-            <div class="section-header">
-                <h1>대표 지수</h1>
-                <p>나스닥 · S&amp;P500 · 코스피 · 코스닥</p>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="traffic-lights">
+                        <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                    </div>
+                    <div class="window-title">대표 지수 — 클릭하면 차트 보기</div>
+                </div>
+                <div class="window-body">
+                    <div class="ticker-grid">
+                        <div class="ticker-card clickable" id="card-nasdaq" onclick="showChart('nasdaq')">
+                            <div class="ticker-name">나스닥</div>
+                            <div class="ticker-price" id="price-nasdaq">—</div>
+                            <div class="ticker-change" id="change-nasdaq">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                        <div class="ticker-card clickable" id="card-sp500" onclick="showChart('sp500')">
+                            <div class="ticker-name">S&amp;P 500</div>
+                            <div class="ticker-price" id="price-sp500">—</div>
+                            <div class="ticker-change" id="change-sp500">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                        <div class="ticker-card clickable" id="card-kospi" onclick="showChart('kospi')">
+                            <div class="ticker-name">코스피</div>
+                            <div class="ticker-price" id="price-kospi">—</div>
+                            <div class="ticker-change" id="change-kospi">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                        <div class="ticker-card clickable" id="card-kosdaq" onclick="showChart('kosdaq')">
+                            <div class="ticker-name">코스닥</div>
+                            <div class="ticker-price" id="price-kosdaq">—</div>
+                            <div class="ticker-change" id="change-kosdaq">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                    </div>
+                    <div class="updated-label" id="updated-index"></div>
+                </div>
             </div>
-            <div class="ticker-grid">
-                <div class="ticker-card" id="card-nasdaq">
-                    <div class="ticker-name">나스닥</div>
-                    <div class="ticker-price" id="price-nasdaq">—</div>
-                    <div class="ticker-change" id="change-nasdaq">불러오는 중...</div>
-                </div>
-                <div class="ticker-card" id="card-sp500">
-                    <div class="ticker-name">S&amp;P 500</div>
-                    <div class="ticker-price" id="price-sp500">—</div>
-                    <div class="ticker-change" id="change-sp500">불러오는 중...</div>
-                </div>
-                <div class="ticker-card" id="card-kospi">
-                    <div class="ticker-name">코스피</div>
-                    <div class="ticker-price" id="price-kospi">—</div>
-                    <div class="ticker-change" id="change-kospi">불러오는 중...</div>
-                </div>
-                <div class="ticker-card" id="card-kosdaq">
-                    <div class="ticker-name">코스닥</div>
-                    <div class="ticker-price" id="price-kosdaq">—</div>
-                    <div class="ticker-change" id="change-kosdaq">불러오는 중...</div>
-                </div>
-            </div>
-            <div class="updated-label" id="updated-index"></div>
         </div>
 
         <!-- ④ 개별 종목 -->
         <div class="section" id="page-stocks">
             <div class="breadcrumb">
-                <span class="crumb" onclick="goHome()">홈</span>
-                <span class="sep">›</span>
-                <span class="crumb" onclick="showStockSub()">주식</span>
-                <span class="sep">›</span>
+                <span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
+                <span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>
                 <span>개별 종목</span>
             </div>
-            <div class="section-header">
-                <h1>개별 종목</h1>
-                <p>종목을 클릭하면 차트를 볼 수 있습니다</p>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="traffic-lights">
+                        <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                    </div>
+                    <div class="window-title">개별 종목 — 클릭하면 차트 보기</div>
+                </div>
+                <div class="window-body">
+                    <div class="ticker-grid">
+                        <div class="ticker-card clickable" id="card-samsung" onclick="showChart('samsung')">
+                            <div class="ticker-name">삼성전자 · 005930</div>
+                            <div class="ticker-price" id="price-samsung">—</div>
+                            <div class="ticker-change" id="change-samsung">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                        <div class="ticker-card clickable" id="card-hynix" onclick="showChart('hynix')">
+                            <div class="ticker-name">SK하이닉스 · 000660</div>
+                            <div class="ticker-price" id="price-hynix">—</div>
+                            <div class="ticker-change" id="change-hynix">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                        <div class="ticker-card clickable" id="card-micron" onclick="showChart('micron')">
+                            <div class="ticker-name">마이크론 · MU</div>
+                            <div class="ticker-price" id="price-micron">—</div>
+                            <div class="ticker-change" id="change-micron">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                    </div>
+                    <div class="updated-label" id="updated-stocks"></div>
+                </div>
             </div>
-            <div class="ticker-grid">
-                <div class="ticker-card clickable" id="card-samsung" onclick="showChart('samsung')">
-                    <div class="ticker-name">삼성전자 · 005930</div>
-                    <div class="ticker-price" id="price-samsung">—</div>
-                    <div class="ticker-change" id="change-samsung">불러오는 중...</div>
-                    <div class="ticker-hint">차트 보기 →</div>
-                </div>
-                <div class="ticker-card clickable" id="card-hynix" onclick="showChart('hynix')">
-                    <div class="ticker-name">SK하이닉스 · 000660</div>
-                    <div class="ticker-price" id="price-hynix">—</div>
-                    <div class="ticker-change" id="change-hynix">불러오는 중...</div>
-                    <div class="ticker-hint">차트 보기 →</div>
-                </div>
-                <div class="ticker-card clickable" id="card-micron" onclick="showChart('micron')">
-                    <div class="ticker-name">마이크론 · MU</div>
-                    <div class="ticker-price" id="price-micron">—</div>
-                    <div class="ticker-change" id="change-micron">불러오는 중...</div>
-                    <div class="ticker-hint">차트 보기 →</div>
-                </div>
-            </div>
-            <div class="updated-label" id="updated-stocks"></div>
         </div>
 
         <!-- ⑤ 차트 -->
         <div class="section" id="page-chart">
             <div class="breadcrumb" id="chart-breadcrumb-bar"></div>
-            <div class="chart-meta">
-                <span class="chart-meta-name" id="chart-title">—</span>
-                <span class="chart-meta-sub" id="chart-subtitle"></span>
-            </div>
-
-            <!-- TradingView -->
-            <div id="chart-tradingview">
-                <div class="chart-wrap">
-                    <div id="tradingview-container"></div>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="traffic-lights">
+                        <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                    </div>
+                    <div class="window-title" id="chart-window-title">차트</div>
                 </div>
-                <div class="chart-provider">차트 제공: <a href="https://www.tradingview.com" target="_blank" style="color:#aeaeb2">TradingView</a></div>
-            </div>
-
-            <!-- 네이버 금융 (한국 주식) -->
-            <div id="chart-naver" style="display:none">
-                <div class="chart-wrap">
-                    <iframe id="naver-chart-frame" width="100%" height="900"
-                        style="display:block;" frameborder="0" scrolling="yes"></iframe>
-                </div>
-                <div class="chart-links">
-                    <a id="naver-link" href="#" target="_blank" class="chart-link-btn">📊 네이버 금융 전체 보기</a>
-                    <a id="tradingview-link" href="#" target="_blank" class="chart-link-btn">📈 TradingView에서 보기</a>
+                <div class="window-body">
+                    <div class="chart-meta">
+                        <span class="chart-meta-name" id="chart-title">—</span>
+                        <span class="chart-meta-sub"  id="chart-subtitle"></span>
+                    </div>
+                    <div id="chart-tradingview">
+                        <div class="chart-wrap"><div id="tradingview-container"></div></div>
+                        <div class="chart-provider">차트 제공: <a href="https://www.tradingview.com" target="_blank" style="color:var(--text2)">TradingView</a></div>
+                    </div>
+                    <div id="chart-naver" style="display:none">
+                        <div class="chart-wrap">
+                            <iframe id="naver-chart-frame" width="100%" height="900" style="display:block" frameborder="0" scrolling="yes"></iframe>
+                        </div>
+                        <div class="chart-links">
+                            <a id="naver-link" href="#" target="_blank" class="chart-link-btn">📊 네이버 금융 전체 보기</a>
+                            <a id="tradingview-link" href="#" target="_blank" class="chart-link-btn">📈 TradingView에서 보기</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -614,41 +584,46 @@
         <!-- ⑥ 코인 -->
         <div class="section" id="page-coin">
             <div class="breadcrumb">
-                <span class="crumb" onclick="goHome()">홈</span>
-                <span class="sep">›</span>
+                <span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
                 <span>코인</span>
             </div>
-            <div class="section-header">
-                <h1>코인</h1>
-                <p>종목을 클릭하면 차트를 볼 수 있습니다</p>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="traffic-lights">
+                        <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                    </div>
+                    <div class="window-title">코인 — 클릭하면 차트 보기</div>
+                </div>
+                <div class="window-body">
+                    <div class="ticker-grid">
+                        <div class="ticker-card clickable" id="card-btc" onclick="showChart('btc')">
+                            <div class="ticker-name">비트코인 · BTC</div>
+                            <div class="ticker-price" id="price-btc">—</div>
+                            <div class="ticker-change" id="change-btc">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                        <div class="ticker-card clickable" id="card-eth" onclick="showChart('eth')">
+                            <div class="ticker-name">이더리움 · ETH</div>
+                            <div class="ticker-price" id="price-eth">—</div>
+                            <div class="ticker-change" id="change-eth">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                        <div class="ticker-card clickable" id="card-sol" onclick="showChart('sol')">
+                            <div class="ticker-name">솔라나 · SOL</div>
+                            <div class="ticker-price" id="price-sol">—</div>
+                            <div class="ticker-change" id="change-sol">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                        <div class="ticker-card clickable" id="card-xrp" onclick="showChart('xrp')">
+                            <div class="ticker-name">리플 · XRP</div>
+                            <div class="ticker-price" id="price-xrp">—</div>
+                            <div class="ticker-change" id="change-xrp">불러오는 중...</div>
+                            <div class="ticker-hint">차트 보기 →</div>
+                        </div>
+                    </div>
+                    <div class="updated-label" id="updated-coin"></div>
+                </div>
             </div>
-            <div class="ticker-grid">
-                <div class="ticker-card clickable" id="card-btc" onclick="showChart('btc')">
-                    <div class="ticker-name">비트코인 · BTC</div>
-                    <div class="ticker-price" id="price-btc">—</div>
-                    <div class="ticker-change" id="change-btc">불러오는 중...</div>
-                    <div class="ticker-hint">차트 보기 →</div>
-                </div>
-                <div class="ticker-card clickable" id="card-eth" onclick="showChart('eth')">
-                    <div class="ticker-name">이더리움 · ETH</div>
-                    <div class="ticker-price" id="price-eth">—</div>
-                    <div class="ticker-change" id="change-eth">불러오는 중...</div>
-                    <div class="ticker-hint">차트 보기 →</div>
-                </div>
-                <div class="ticker-card clickable" id="card-sol" onclick="showChart('sol')">
-                    <div class="ticker-name">솔라나 · SOL</div>
-                    <div class="ticker-price" id="price-sol">—</div>
-                    <div class="ticker-change" id="change-sol">불러오는 중...</div>
-                    <div class="ticker-hint">차트 보기 →</div>
-                </div>
-                <div class="ticker-card clickable" id="card-xrp" onclick="showChart('xrp')">
-                    <div class="ticker-name">리플 · XRP</div>
-                    <div class="ticker-price" id="price-xrp">—</div>
-                    <div class="ticker-change" id="change-xrp">불러오는 중...</div>
-                    <div class="ticker-hint">차트 보기 →</div>
-                </div>
-            </div>
-            <div class="updated-label" id="updated-coin"></div>
         </div>
 
     </div><!-- /.page -->
@@ -656,7 +631,6 @@
     <!-- 우측 매크로 사이드바 -->
     <aside class="macro-sidebar">
         <div class="macro-sidebar-title">글로벌 매크로</div>
-
         <div class="macro-item">
             <div class="macro-label">원 / 달러</div>
             <div class="macro-value" id="macro-usdkrw">—</div>
@@ -682,122 +656,126 @@
             <div class="macro-value" id="macro-kr-rate">—</div>
             <div class="macro-change" id="macro-kr-rate-chg">—</div>
         </div>
-
         <div class="macro-updated" id="macro-updated"></div>
     </aside>
 
     </div><!-- /.layout -->
 
     <script>
-    // ── 뮤직 플레이어 ────────────────────────────────────────────
-    let isPlaying = false;
-    const ytPlayer = document.getElementById('yt-player');
+    // ── YouTube IFrame API ───────────────────────────────────────
+    var ytPlayer;
+    var ytReady = false;
+
+    function onYouTubeIframeAPIReady() {
+        ytPlayer = new YT.Player('yt-player', {
+            height: '0', width: '0',
+            videoId: 'RWQ-jvnzvhM',
+            playerVars: { autoplay: 0, loop: 1, playlist: 'RWQ-jvnzvhM', controls: 0 },
+            events: {
+                onReady: function() { ytReady = true; },
+                onStateChange: function(e) {
+                    if (e.data === YT.PlayerState.ENDED) ytPlayer.playVideo();
+                    const playing = e.data === YT.PlayerState.PLAYING;
+                    document.getElementById('music-btn').textContent    = playing ? '⏸' : '▶';
+                    document.getElementById('music-status').textContent = playing ? '재생 중' : '일시정지';
+                    document.getElementById('music-eq').classList.toggle('playing', playing);
+                }
+            }
+        });
+    }
 
     function toggleMusic() {
-        isPlaying = !isPlaying;
-        if (isPlaying) {
-            ytPlayer.contentWindow.postMessage(
-                '{"event":"command","func":"playVideo","args":""}', '*');
-            document.getElementById('music-btn').textContent    = '⏸';
-            document.getElementById('music-status').textContent = '재생 중';
-            document.getElementById('music-eq').classList.add('playing');
-        } else {
-            ytPlayer.contentWindow.postMessage(
-                '{"event":"command","func":"pauseVideo","args":""}', '*');
-            document.getElementById('music-btn').textContent    = '▶';
-            document.getElementById('music-status').textContent = '일시정지';
-            document.getElementById('music-eq').classList.remove('playing');
-        }
+        if (!ytReady) return;
+        const state = ytPlayer.getPlayerState();
+        if (state === YT.PlayerState.PLAYING) { ytPlayer.pauseVideo(); }
+        else { ytPlayer.playVideo(); }
     }
 
     // ── 페이지 전환 ──────────────────────────────────────────────
     const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-coin'];
 
     function showOnly(id) {
-        PAGES.forEach(p => {
-            const el = document.getElementById(p);
-            el.classList.toggle('active', p === id);
-        });
+        PAGES.forEach(p => document.getElementById(p).classList.toggle('active', p === id));
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
     function goHome()       { showOnly('page-home'); }
     function showStockSub() { showOnly('page-stock-sub'); }
     function showCoin()     { showOnly('page-coin'); loadCoins(); }
-
-    function showIndex() {
-        showOnly('page-index');
-        loadGroup(INDEX_STOCKS, 'updated-index');
-    }
-    function showStocks() {
-        showOnly('page-stocks');
-        loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
-    }
+    function showIndex()    { showOnly('page-index');  loadGroup(INDEX_STOCKS,  'updated-index'); }
+    function showStocks()   { showOnly('page-stocks'); loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks'); }
 
     // ── 차트 정보 ────────────────────────────────────────────────
     const CHART_INFO = {
-        btc:     { name: '비트코인',   subtitle: 'BTC / USDT',   type: 'tradingview', symbol: 'BINANCE:BTCUSDT', from: 'coin' },
-        eth:     { name: '이더리움',   subtitle: 'ETH / USDT',   type: 'tradingview', symbol: 'BINANCE:ETHUSDT', from: 'coin' },
-        sol:     { name: '솔라나',     subtitle: 'SOL / USDT',   type: 'tradingview', symbol: 'BINANCE:SOLUSDT',  from: 'coin' },
-        xrp:     { name: '리플',       subtitle: 'XRP / USDT',   type: 'tradingview', symbol: 'BINANCE:XRPUSDT',  from: 'coin' },
-        samsung: { name: '삼성전자',   subtitle: 'KRX · 005930', type: 'naver', code: '005930',
+        // 대표 지수
+        nasdaq: { name: '나스닥',   subtitle: 'NASDAQ Composite', type: 'tradingview', symbol: 'TVC:NDX',  from: 'index' },
+        sp500:  { name: 'S&P 500', subtitle: 'S&P 500 Index',    type: 'tradingview', symbol: 'TVC:SPX',  from: 'index' },
+        kospi:  { name: '코스피',   subtitle: 'KOSPI Index', type: 'naver-index',
+                  naver_url: 'https://finance.naver.com/sise/sise_index.naver?code=KOSPI',
+                  tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3AKOSPI', from: 'index' },
+        kosdaq: { name: '코스닥',   subtitle: 'KOSDAQ Index', type: 'naver-index',
+                  naver_url: 'https://finance.naver.com/sise/sise_index.naver?code=KOSDAQ',
+                  tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3AKOSDAQ', from: 'index' },
+        // 개별 종목
+        samsung: { name: '삼성전자', subtitle: 'KRX · 005930', type: 'naver', code: '005930',
                    naver_url: 'https://finance.naver.com/item/main.naver?code=005930',
                    tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3A005930', from: 'stocks' },
         hynix:   { name: 'SK하이닉스', subtitle: 'KRX · 000660', type: 'naver', code: '000660',
                    naver_url: 'https://finance.naver.com/item/main.naver?code=000660',
                    tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3A000660', from: 'stocks' },
-        micron:  { name: '마이크론',   subtitle: 'NASDAQ · MU',  type: 'tradingview', symbol: 'NASDAQ:MU', from: 'stocks' },
+        micron:  { name: '마이크론', subtitle: 'NASDAQ · MU', type: 'tradingview', symbol: 'NASDAQ:MU', from: 'stocks' },
+        // 코인
+        btc: { name: '비트코인', subtitle: 'BTC / USDT', type: 'tradingview', symbol: 'BINANCE:BTCUSDT', from: 'coin' },
+        eth: { name: '이더리움', subtitle: 'ETH / USDT', type: 'tradingview', symbol: 'BINANCE:ETHUSDT', from: 'coin' },
+        sol: { name: '솔라나',   subtitle: 'SOL / USDT', type: 'tradingview', symbol: 'BINANCE:SOLUSDT',  from: 'coin' },
+        xrp: { name: '리플',     subtitle: 'XRP / USDT', type: 'tradingview', symbol: 'BINANCE:XRPUSDT',  from: 'coin' },
     };
+
+    const FROM_LABELS = { index: '대표 지수', stocks: '개별 종목', coin: '코인' };
+    const FROM_FNS    = { index: showIndex,   stocks: showStocks,   coin: showCoin };
 
     function showChart(id) {
         const info = CHART_INFO[id];
         showOnly('page-chart');
+        document.getElementById('chart-title').textContent       = info.name;
+        document.getElementById('chart-subtitle').textContent    = info.subtitle;
+        document.getElementById('chart-window-title').textContent = info.name + ' 차트';
 
-        document.getElementById('chart-title').textContent    = info.name;
-        document.getElementById('chart-subtitle').textContent = info.subtitle;
+        // 브레드크럼
+        const fromLabel = FROM_LABELS[info.from];
+        const fromFnStr = info.from === 'index' ? 'showIndex()' : info.from === 'coin' ? 'showCoin()' : 'showStocks()';
+        const stockCrumb = (info.from !== 'coin')
+            ? `<span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>` : '';
+        document.getElementById('chart-breadcrumb-bar').innerHTML =
+            `<span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
+             ${stockCrumb}
+             <span class="crumb" onclick="${fromFnStr}">${fromLabel}</span>
+             <span class="sep">›</span><span>${info.name}</span>`;
 
-        // 브레드크럼 동적 생성
-        const fromLabel = info.from === 'coin' ? '코인' : '개별 종목';
-        const fromFn    = info.from === 'coin' ? 'showCoin()' : 'showStocks()';
-        const stockFn   = info.from === 'coin' ? '' :
-            `<span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>`;
-        document.getElementById('chart-breadcrumb-bar').innerHTML = `
-            <span class="crumb" onclick="goHome()">홈</span>
-            <span class="sep">›</span>
-            ${stockFn}
-            <span class="crumb" onclick="${fromFn}">${fromLabel}</span>
-            <span class="sep">›</span>
-            <span>${info.name}</span>`;
+        const isNaver = info.type === 'naver' || info.type === 'naver-index';
+        document.getElementById('chart-naver').style.display       = isNaver ? '' : 'none';
+        document.getElementById('chart-tradingview').style.display = isNaver ? 'none' : '';
 
-        if (info.type === 'naver') {
-            document.getElementById('chart-tradingview').style.display = 'none';
-            document.getElementById('chart-naver').style.display = '';
-            document.getElementById('naver-chart-frame').src = `https://finance.naver.com/item/fchart.nhn?code=${info.code}`;
-            document.getElementById('naver-link').href = info.naver_url;
-            document.getElementById('tradingview-link').href = info.tv_url;
+        if (isNaver) {
+            const src = info.type === 'naver'
+                ? `https://finance.naver.com/item/fchart.nhn?code=${info.code}`
+                : info.naver_url;
+            document.getElementById('naver-chart-frame').src = src;
+            document.getElementById('naver-link').href        = info.naver_url;
+            document.getElementById('tradingview-link').href  = info.tv_url;
         } else {
-            document.getElementById('chart-naver').style.display = 'none';
-            document.getElementById('chart-tradingview').style.display = '';
             const container = document.getElementById('tradingview-container');
             container.innerHTML = '';
-            const doWidget = () => {
-                new TradingView.widget({
-                    container_id: 'tradingview-container',
-                    width: '100%', height: 560,
-                    symbol: info.symbol,
-                    interval: 'D',
-                    timezone: 'Asia/Seoul',
-                    theme: 'light',
-                    style: '1',
-                    locale: 'ko',
-                    toolbar_bg: '#ffffff',
-                    enable_publishing: false,
-                    allow_symbol_change: true,
-                    studies: ['MASimple@tv-basicstudies','RSI@tv-basicstudies','MACD@tv-basicstudies','BB@tv-basicstudies'],
-                    show_popup_button: true,
-                    popup_width: '1000', popup_height: '650',
-                });
-            };
+            const doWidget = () => new TradingView.widget({
+                container_id: 'tradingview-container',
+                width: '100%', height: 580,
+                symbol: info.symbol, interval: 'D',
+                timezone: 'Asia/Seoul', theme: 'dark',
+                style: '1', locale: 'ko',
+                toolbar_bg: '#2c2c2e',
+                enable_publishing: false, allow_symbol_change: true,
+                studies: ['MASimple@tv-basicstudies','RSI@tv-basicstudies','MACD@tv-basicstudies','BB@tv-basicstudies'],
+                show_popup_button: true, popup_width: '1000', popup_height: '650',
+            });
             if (typeof TradingView !== 'undefined') { doWidget(); }
             else {
                 const s = document.createElement('script');
@@ -821,9 +799,10 @@
         { id: 'micron',  ticker: 'MU',         currency: 'USD' },
     ];
 
-    function fmtPrice(price, currency) {
-        if (currency === 'KRW') return price.toLocaleString('ko-KR') + '원';
-        return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    function fmtPrice(v, cur) {
+        return cur === 'KRW'
+            ? v.toLocaleString('ko-KR') + '원'
+            : v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
     function fmtChange(change, pct) {
         const s = change >= 0 ? '+' : '';
@@ -831,80 +810,55 @@
     }
 
     async function fetchStock(stock) {
-        const url = `https://corsproxy.io/?https://query2.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=1d`;
-        const res  = await fetch(url);
-        const data = await res.json();
+        const url  = `https://corsproxy.io/?https://query2.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=1d`;
+        const data = await (await fetch(url)).json();
         const meta = data.chart.result[0].meta;
         return { price: meta.regularMarketPrice, prev: meta.chartPreviousClose || meta.previousClose, currency: meta.currency || stock.currency };
     }
 
     function updateCard(id, price, prev, currency) {
-        const change = price - prev;
-        const pct    = (change / prev) * 100;
-        const dir    = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
-        const arrow  = change > 0 ? '▲' : change < 0 ? '▼' : '—';
-        const card   = document.getElementById('card-' + id);
-        if (card) {
-            card.className = card.className.replace(/\b(up|down|flat)\b/g, '').trim() + ' ' + dir;
-        }
-        document.getElementById('price-' + id).textContent = fmtPrice(price, currency);
-        const el = document.getElementById('change-' + id);
-        el.innerHTML = `<span class="${dir}-text">${arrow} ${fmtChange(change, pct)}</span>`;
+        const change = price - prev, pct = (change/prev)*100;
+        const dir = change>0?'up':change<0?'down':'flat', arrow = change>0?'▲':change<0?'▼':'—';
+        const card = document.getElementById('card-'+id);
+        if (card) card.className = card.className.replace(/\b(up|down|flat)\b/g,'').trim()+' '+dir;
+        document.getElementById('price-'+id).textContent = fmtPrice(price, currency);
+        const el = document.getElementById('change-'+id);
+        el.innerHTML = `<span class="${dir}-text">${arrow} ${fmtChange(change,pct)}</span>`;
     }
 
     async function loadGroup(stocks, updatedId) {
-        for (const stock of stocks) {
-            try {
-                const { price, prev, currency } = await fetchStock(stock);
-                updateCard(stock.id, price, prev, currency);
-            } catch (e) {
-                const el = document.getElementById('change-' + stock.id);
-                if (el) el.textContent = '불러오기 실패';
-            }
+        for (const s of stocks) {
+            try { const d = await fetchStock(s); updateCard(s.id, d.price, d.prev, d.currency); }
+            catch { const el=document.getElementById('change-'+s.id); if(el) el.textContent='불러오기 실패'; }
         }
         const el = document.getElementById(updatedId);
         if (el) el.textContent = '업데이트: ' + new Date().toLocaleString('ko-KR');
     }
 
-    // ── 코인 데이터 (CoinGecko) ──────────────────────────────────
+    // ── 코인 (CoinGecko) ─────────────────────────────────────────
     async function loadCoins() {
         try {
-            const url  = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple&vs_currencies=usd&include_24hr_change=true';
-            const data = await (await fetch(url)).json();
-            const map  = [
-                { id: 'btc', gecko: 'bitcoin'  },
-                { id: 'eth', gecko: 'ethereum' },
-                { id: 'sol', gecko: 'solana'   },
-                { id: 'xrp', gecko: 'ripple'   },
-            ];
-            map.forEach(({ id, gecko }) => {
-                const d    = data[gecko];
-                const pct  = d.usd_24h_change;
-                const dir  = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
-                const arrow= pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
-                const sign = pct >= 0 ? '+' : '';
-                const card = document.getElementById('card-' + id);
-                if (card) card.className = 'ticker-card clickable ' + dir;
-                document.getElementById('price-' + id).textContent = '$' + d.usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                const el = document.getElementById('change-' + id);
-                el.innerHTML = `<span class="${dir}-text">${arrow} ${sign}${pct.toFixed(2)}% (24h)</span>`;
+            const data = await (await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple&vs_currencies=usd&include_24hr_change=true')).json();
+            [['btc','bitcoin'],['eth','ethereum'],['sol','solana'],['xrp','ripple']].forEach(([id,gecko]) => {
+                const d=data[gecko], pct=d.usd_24h_change, dir=pct>0?'up':pct<0?'down':'flat';
+                const arrow=pct>0?'▲':pct<0?'▼':'—', sign=pct>=0?'+':'';
+                const card=document.getElementById('card-'+id);
+                if(card) card.className='ticker-card clickable '+dir;
+                document.getElementById('price-'+id).textContent='$'+d.usd.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+                const el=document.getElementById('change-'+id);
+                el.innerHTML=`<span class="${dir}-text">${arrow} ${sign}${pct.toFixed(2)}% (24h)</span>`;
             });
-            document.getElementById('updated-coin').textContent = '업데이트: ' + new Date().toLocaleString('ko-KR');
-        } catch (e) {
-            ['btc','eth','sol','xrp'].forEach(id => {
-                const el = document.getElementById('change-' + id);
-                if (el) el.textContent = '불러오기 실패';
-            });
-        }
+            document.getElementById('updated-coin').textContent='업데이트: '+new Date().toLocaleString('ko-KR');
+        } catch { ['btc','eth','sol','xrp'].forEach(id=>{const el=document.getElementById('change-'+id);if(el)el.textContent='불러오기 실패';}); }
     }
 
-    // ── 매크로 지표 (10분마다 갱신) ─────────────────────────────
+    // ── 매크로 (10분) ─────────────────────────────────────────────
     const MACRO_ITEMS = [
-        { id: 'usdkrw',  ticker: 'KRW%3DX',   label: '원/달러', fmt: (v) => v.toLocaleString('ko-KR', {maximumFractionDigits:2}) + '원', isYield: false },
-        { id: 'gold',    ticker: 'GC%3DF',     label: '금',      fmt: (v) => '$' + v.toLocaleString('en-US', {maximumFractionDigits:1}), isYield: false },
-        { id: 'oil',     ticker: 'CL%3DF',     label: '유가',    fmt: (v) => '$' + v.toLocaleString('en-US', {maximumFractionDigits:2}), isYield: false },
-        { id: 'us-rate', ticker: '%5ETNX',     label: '미국금리', fmt: (v) => v.toFixed(2) + '%', isYield: true },
-        { id: 'kr-rate', ticker: 'KR10YT%3DRR',label: '한국금리', fmt: (v) => v.toFixed(2) + '%', isYield: true },
+        { id:'usdkrw',  ticker:'KRW%3DX',      fmt:v=>v.toLocaleString('ko-KR',{maximumFractionDigits:2})+'원' },
+        { id:'gold',    ticker:'GC%3DF',        fmt:v=>'$'+v.toLocaleString('en-US',{maximumFractionDigits:1}) },
+        { id:'oil',     ticker:'CL%3DF',        fmt:v=>'$'+v.toLocaleString('en-US',{maximumFractionDigits:2}) },
+        { id:'us-rate', ticker:'%5ETNX',        fmt:v=>v.toFixed(2)+'%' },
+        { id:'kr-rate', ticker:'KR10YT%3DRR',   fmt:v=>v.toFixed(2)+'%' },
     ];
 
     async function loadMacro() {
@@ -913,34 +867,26 @@
                 const url  = `https://corsproxy.io/?https://query2.finance.yahoo.com/v8/finance/chart/${item.ticker}?interval=1d&range=1d`;
                 const data = await (await fetch(url)).json();
                 const meta = data.chart.result[0].meta;
-                const price  = meta.regularMarketPrice;
-                const prev   = meta.chartPreviousClose || meta.previousClose;
-                const change = price - prev;
-                const pct    = (change / prev) * 100;
-                const dir    = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
-                const arrow  = change > 0 ? '▲' : change < 0 ? '▼' : '—';
-                const sign   = change >= 0 ? '+' : '';
-
+                const price=meta.regularMarketPrice, prev=meta.chartPreviousClose||meta.previousClose;
+                const change=price-prev, pct=(change/prev)*100;
+                const dir=change>0?'up':change<0?'down':'flat', arrow=change>=0?'▲':'▼', sign=change>=0?'+':'';
                 document.getElementById(`macro-${item.id}`).textContent = item.fmt(price);
-                const chgEl = document.getElementById(`macro-${item.id}-chg`);
-                chgEl.innerHTML = `<span class="${dir}-text">${arrow} ${sign}${pct.toFixed(2)}%</span>`;
-            } catch (e) {
-                document.getElementById(`macro-${item.id}`).textContent = '—';
-            }
+                document.getElementById(`macro-${item.id}-chg`).innerHTML =
+                    `<span class="${dir}-text">${arrow} ${sign}${pct.toFixed(2)}%</span>`;
+            } catch { document.getElementById(`macro-${item.id}`).textContent='—'; }
         }
-        document.getElementById('macro-updated').textContent =
-            '10분마다 갱신\n' + new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'});
+        document.getElementById('macro-updated').textContent = '10분마다 갱신\n'+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
     }
 
-    loadMacro();
-    setInterval(loadMacro, 600000); // 10분
-
-    // 1분 자동 갱신
-    setInterval(() => {
-        if (document.getElementById('page-index').classList.contains('active'))  loadGroup(INDEX_STOCKS, 'updated-index');
-        if (document.getElementById('page-stocks').classList.contains('active')) loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
-        if (document.getElementById('page-coin').classList.contains('active'))   loadCoins();
+    // 1분 자동갱신
+    setInterval(()=>{
+        if(document.getElementById('page-index').classList.contains('active'))  loadGroup(INDEX_STOCKS,'updated-index');
+        if(document.getElementById('page-stocks').classList.contains('active')) loadGroup(INDIVIDUAL_STOCKS,'updated-stocks');
+        if(document.getElementById('page-coin').classList.contains('active'))   loadCoins();
     }, 60000);
+
+    loadMacro();
+    setInterval(loadMacro, 600000);
     </script>
 
 </body>
