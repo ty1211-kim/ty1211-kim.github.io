@@ -1246,18 +1246,17 @@
 
     // 프록시 캐스케이드: allorigins.win(3초 timeout) → corsproxy.io 순서로 시도
     async function proxiedFetch(rawUrl) {
-        try {
-            const ctrl = new AbortController();
-            const t = setTimeout(() => ctrl.abort(), 3000);
-            const r = await fetch(
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`,
-                { cache: 'no-store', signal: ctrl.signal }
-            );
-            clearTimeout(t);
-            if (r.ok) return r;
-        } catch {}
-        // allorigins 실패 → corsproxy.io
-        return fetch(`https://corsproxy.io/?${rawUrl}`, { cache: 'no-store' });
+        // codetabs 와 allorigins 동시 시도 → 먼저 성공한 쪽 사용
+        const race = (url, ms) => new Promise((res, rej) => {
+            const t = setTimeout(() => rej(new Error('timeout')), ms);
+            fetch(url, { cache: 'no-store' })
+                .then(r => { clearTimeout(t); r.ok ? res(r) : rej(new Error('not ok')); })
+                .catch(e => { clearTimeout(t); rej(e); });
+        });
+        return Promise.any([
+            race(`https://api.codetabs.com/v1/proxy/?quest=${rawUrl}`, 10000),
+            race(`https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`, 25000),
+        ]);
     }
 
     // 실패 시 최대 retries 횟수만큼 재시도 (300ms, 800ms 간격)
@@ -1537,24 +1536,21 @@
         return { price, prev };
     }
 
-    async function fetchNaverBaseRate() {
-        // IRR_KRBASE 페이지에서 IRR_KRBF(기준금리) 행만 명시적으로 파싱
-        const html = await (await proxiedFetch(
-            'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBASE'
-        )).text();
-        const m = html.match(/IRR_KRBF[\s\S]{0,600}?<td[^>]*>([\d]+\.[\d]+)<\/td>[\s\S]{0,400}?ico_(up|down|same\d*)[\s\S]{0,200}?([\d]+\.[\d]+)<\/td>/);
-        if (!m) throw new Error('parse error');
-        const price = parseFloat(m[1]);
-        const changeAmt = parseFloat(m[3]);
-        const changeSign = m[2].startsWith('up') ? 1 : m[2].startsWith('down') ? -1 : 0;
-        return { price, prev: price - changeAmt * changeSign };
+    async function fetchKoreaBaseRate() {
+        // rates.json (동일 origin)에서 한국은행 기준금리 로딩
+        // BOK 금리 결정 후 rates.json 파일의 kr_base_rate / kr_base_prev 값을 업데이트하세요.
+        const data = await (await fetch('/rates.json', { cache: 'no-store' })).json();
+        const price = parseFloat(data.kr_base_rate);
+        const prev  = parseFloat(data.kr_base_prev ?? data.kr_base_rate);
+        if (isNaN(price)) throw new Error('invalid rate');
+        return { price, prev };
     }
 
     async function loadMacro() {
         await Promise.all(MARKET_MACRO_ITEMS.map(async item => {
             try {
                 const { price, prev } = await withRetry(() => {
-                    if (item.type === 'naver_base') return fetchNaverBaseRate();
+                    if (item.type === 'naver_base') return fetchKoreaBaseRate();
                     if (item.fred_id) return fetchFredRate(item.fred_id);
                     return fetchMacroQuote(item);
                 });
