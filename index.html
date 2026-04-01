@@ -984,11 +984,12 @@
 
     // ── 매크로 차트 (네이버 금융 iframe) ─────────────────────────
     const MACRO_CHART_INFO = {
-        'usdkrw':  { label: '원 / 달러 (USD/KRW)',       url: 'https://finance.naver.com/marketindex/exchangeDetail.naver?marketindexCd=FX_USDKRW' },
-        'gold':    { label: '국제 금시세',                url: 'https://finance.naver.com/marketindex/worldDailyQuote.naver?marketindexCd=CMDT_GC1&fdtc=2' },
-        'oil':     { label: '국제 유가 (WTI)',            url: 'https://finance.naver.com/marketindex/worldDailyQuote.naver?marketindexCd=CMDT_CL1&fdtc=2' },
-        'us-rate': { label: '미국 기준금리 (연준)',        url: 'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_USBF' },
-        'kr-rate': { label: '한국 기준금리 (한국은행)',    url: 'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBASE' },
+        // tabSel 파라미터로 메인 marketindex 페이지의 특정 탭을 직접 지정
+        'usdkrw':  { label: '원 / 달러 (USD/KRW)',     url: 'https://finance.naver.com/marketindex/?tabSel=exchange#tab_section' },
+        'gold':    { label: '국제 금시세',              url: 'https://finance.naver.com/marketindex/?tabSel=gold#tab_section' },
+        'oil':     { label: '국제 유가 (WTI)',          url: 'https://finance.naver.com/marketindex/?tabSel=gold#tab_section' },
+        'us-rate': { label: '미국 기준금리 (연준)',     url: 'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_USBF' },
+        'kr-rate': { label: '한국 기준금리 (한국은행)', url: 'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBASE' },
     };
 
     function showMacroChart(id, updateHash = true) {
@@ -1242,9 +1243,9 @@
         const info = CHART_INFO[id];
 
         try {
-            const data = info.data_kind === 'coin'
-                ? await fetchCoinOverview(info)
-                : await fetchMarketOverview(info);
+            const data = await withRetry(() =>
+                info.data_kind === 'coin' ? fetchCoinOverview(info) : fetchMarketOverview(info)
+            );
 
             if (activeChartId !== id) return;
             applyChartOverview(info, data);
@@ -1273,6 +1274,17 @@
 
     function makeProxiedUrl(rawUrl) {
         return `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
+    }
+
+    // 실패 시 최대 retries 횟수만큼 재시도 (지수 백오프)
+    async function withRetry(fn, retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            try { return await fn(); }
+            catch (e) {
+                if (i === retries - 1) throw e;
+                await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+            }
+        }
     }
 
     function formatPercent(pct) {
@@ -1430,7 +1442,8 @@
     async function fetchStock(stock) {
         const url = makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=1d`);
         const data = await (await fetch(url, { cache: 'no-store' })).json();
-        const meta = data.chart.result[0].meta;
+        const meta = data?.chart?.result?.[0]?.meta;
+        if (!meta?.regularMarketPrice) throw new Error('no data');
         return {
             price: meta.regularMarketPrice,
             prev: meta.chartPreviousClose || meta.previousClose,
@@ -1453,15 +1466,15 @@
     }
 
     async function loadGroup(stocks, updatedId) {
-        for (const s of stocks) {
+        await Promise.all(stocks.map(async s => {
             try {
-                const d = await fetchStock(s);
+                const d = await withRetry(() => fetchStock(s));
                 updateCard(s.id, d.price, d.prev, d.currency);
             } catch {
                 const el = document.getElementById('change-' + s.id);
                 if (el) el.textContent = '불러오기 실패';
             }
-        }
+        }));
         const el = document.getElementById(updatedId);
         if (el) el.textContent = '업데이트: ' + new Date().toLocaleString('ko-KR');
     }
@@ -1538,9 +1551,9 @@
     async function loadMacro() {
         await Promise.all(MARKET_MACRO_ITEMS.map(async item => {
             try {
-                const { price, prev } = item.fred_id
-                    ? await fetchFredRate(item.fred_id)
-                    : await fetchMacroQuote(item);
+                const { price, prev } = await withRetry(() =>
+                    item.fred_id ? fetchFredRate(item.fred_id) : fetchMacroQuote(item)
+                );
                 const change = price - prev;
                 const pct = prev ? (change / prev) * 100 : 0;
                 const dir = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
