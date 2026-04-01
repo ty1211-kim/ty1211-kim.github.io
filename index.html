@@ -581,27 +581,27 @@
         <div class="menubar-macro-wrap">
             <div class="macro-inline-title">글로벌 매크로</div>
             <div class="menubar-macro">
-                <div class="macro-pill" onclick="showMacroChart('usdkrw')">
+                <div class="macro-pill" onclick="openMacroSearch('usdkrw')">
                     <div class="macro-label">원 / 달러</div>
                     <div class="macro-value" id="macro-usdkrw">—</div>
                     <div class="macro-change" id="macro-usdkrw-chg">—</div>
                 </div>
-                <div class="macro-pill" onclick="showMacroChart('gold')">
+                <div class="macro-pill" onclick="openMacroSearch('gold')">
                     <div class="macro-label">국제 금시세</div>
                     <div class="macro-value" id="macro-gold">—</div>
                     <div class="macro-change" id="macro-gold-chg">—</div>
                 </div>
-                <div class="macro-pill" onclick="showMacroChart('oil')">
+                <div class="macro-pill" onclick="openMacroSearch('oil')">
                     <div class="macro-label">국제 유가 (WTI)</div>
                     <div class="macro-value" id="macro-oil">—</div>
                     <div class="macro-change" id="macro-oil-chg">—</div>
                 </div>
-                <div class="macro-pill" onclick="showMacroChart('us-rate')">
+                <div class="macro-pill" onclick="openMacroSearch('us-rate')">
                     <div class="macro-label">미국 기준금리</div>
                     <div class="macro-value" id="macro-us-rate">—</div>
                     <div class="macro-change flat-text" id="macro-us-rate-chg">연준 공식</div>
                 </div>
-                <div class="macro-pill" onclick="showMacroChart('kr-rate')">
+                <div class="macro-pill" onclick="openMacroSearch('kr-rate')">
                     <div class="macro-label">한국 기준금리</div>
                     <div class="macro-value" id="macro-kr-rate">—</div>
                     <div class="macro-change flat-text" id="macro-kr-rate-chg">한국은행 공식</div>
@@ -848,24 +848,6 @@
             </div>
 
             <!-- ⑥ 매크로 차트 (네이버 금융) -->
-            <div class="section" id="page-macro-chart">
-                <div class="breadcrumb" id="macro-chart-breadcrumb"></div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title" id="macro-chart-window-title">매크로 차트</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="chart-wrap">
-                            <iframe id="macro-naver-frame" src="" width="100%" height="900" frameborder="0" scrolling="yes" style="display:block;"></iframe>
-                        </div>
-                        <div class="chart-provider">차트 제공: <a href="#" id="macro-naver-link" target="_blank" rel="noopener noreferrer" style="color:var(--text2)">네이버 금융</a></div>
-                    </div>
-                </div>
-            </div>
-
             <!-- ⑦ 코인 -->
             <div class="section" id="page-coin">
                 <div class="breadcrumb">
@@ -947,7 +929,7 @@
     }
 
     // ── 페이지 전환 ──────────────────────────────────────────────
-    const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-macro-chart','page-coin'];
+    const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-coin'];
 
     function showOnly(id, doScroll = true) {
         PAGES.forEach(p => {
@@ -982,28 +964,18 @@
     function showIndex()    { setRoute('index'); }
     function showStocks()   { setRoute('stocks'); }
 
-    // ── 매크로 차트 (네이버 금융 iframe) ─────────────────────────
-    const MACRO_CHART_INFO = {
-        // tabSel 파라미터로 메인 marketindex 페이지의 특정 탭을 직접 지정
-        'usdkrw':  { label: '원 / 달러 (USD/KRW)',     url: 'https://finance.naver.com/marketindex/?tabSel=exchange#tab_section' },
-        'gold':    { label: '국제 금시세',              url: 'https://finance.naver.com/marketindex/?tabSel=gold#tab_section' },
-        'oil':     { label: '국제 유가 (WTI)',          url: 'https://finance.naver.com/marketindex/?tabSel=gold#tab_section' },
-        'us-rate': { label: '미국 기준금리 (연준)',     url: 'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_USBF' },
-        'kr-rate': { label: '한국 기준금리 (한국은행)', url: 'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBASE' },
+    // ── 매크로 필 클릭 → 네이버 검색 새 탭 ──────────────────────
+    const MACRO_SEARCH_URLS = {
+        'usdkrw':  'https://search.naver.com/search.naver?query=%ED%99%98%EC%9C%A8',
+        'gold':    'https://search.naver.com/search.naver?query=%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%8B%9C%EC%84%B8',
+        'oil':     'https://search.naver.com/search.naver?query=%EC%9C%A0%EA%B0%80',
+        'us-rate': 'https://search.naver.com/search.naver?query=%EB%AF%B8%EA%B5%AD+%EA%B8%88%EB%A6%AC',
+        'kr-rate': 'https://search.naver.com/search.naver?query=%EA%B8%88%EB%A6%AC',
     };
 
-    function showMacroChart(id, updateHash = true) {
-        const info = MACRO_CHART_INFO[id];
-        if (!info) return;
-
-        showOnly('page-macro-chart');
-        document.getElementById('macro-chart-window-title').textContent = info.label;
-        document.getElementById('macro-naver-frame').src = info.url;
-        document.getElementById('macro-naver-link').href = info.url;
-        document.getElementById('macro-chart-breadcrumb').innerHTML =
-            `<span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span><span>${info.label}</span>`;
-
-        if (updateHash) setRoute(`macro:${id}`);
+    function openMacroSearch(id) {
+        const url = MACRO_SEARCH_URLS[id];
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
     }
 
     // ── 차트 정보 ────────────────────────────────────────────────
@@ -1529,9 +1501,10 @@
         { id: 'usdkrw',  ticker: 'KRW%3DX',     fmt: v => v.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원' },
         { id: 'gold',    ticker: 'GC%3DF',       fmt: v => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 1 }) },
         { id: 'oil',     ticker: 'CL%3DF',       fmt: v => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 2 }) },
-        // FRED 기준금리, 실패 시 Yahoo Finance fallback
-        { id: 'us-rate', fred_id: 'DFEDTARU',        fred_fallback: '%5EIRX',       fmt: v => v.toFixed(2) + '%' },
-        { id: 'kr-rate', fred_id: 'IRSTCB01KRM156N', fred_fallback: 'KR10YT%3DRR', fmt: v => v.toFixed(2) + '%' },
+        // FRED 미국 기준금리
+        { id: 'us-rate', fred_id: 'DFEDTARU', fred_fallback: '%5EIRX', fmt: v => v.toFixed(2) + '%' },
+        // 한국 콜금리: 네이버 금융 HTML 파싱
+        { id: 'kr-rate', type: 'naver_call', fmt: v => v.toFixed(2) + '%' },
     ];
 
     function setMacroMarket(itemId, priceText, changeText, dir = 'flat') {
@@ -1571,19 +1544,34 @@
         }
     }
 
+    async function fetchNaverCallRate() {
+        const html = await (await proxiedFetch(
+            'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBASE'
+        )).text();
+        // 콜금리 행: 현재값 + 등락 방향 이미지 + 변동폭
+        const m = html.match(/IRR_CALL[\s\S]{0,600}?<td[^>]*>([\d]+\.[\d]+)<\/td>[\s\S]{0,400}?ico_(up|down|same\d*)[\s\S]{0,200}?([\d]+\.[\d]+)<\/td>/);
+        if (!m) throw new Error('parse error');
+        const price = parseFloat(m[1]);
+        const changeAmt = parseFloat(m[3]);
+        const changeSign = m[2].startsWith('up') ? 1 : m[2].startsWith('down') ? -1 : 0;
+        return { price, prev: price - changeAmt * changeSign };
+    }
+
     async function loadMacro() {
         await Promise.all(MARKET_MACRO_ITEMS.map(async item => {
             try {
-                const { price, prev } = await withRetry(() =>
-                    item.fred_id ? fetchFredRate(item.fred_id, item.fred_fallback) : fetchMacroQuote(item)
-                );
+                const { price, prev } = await withRetry(() => {
+                    if (item.type === 'naver_call') return fetchNaverCallRate();
+                    if (item.fred_id) return fetchFredRate(item.fred_id, item.fred_fallback);
+                    return fetchMacroQuote(item);
+                });
                 const change = price - prev;
                 const pct = prev ? (change / prev) * 100 : 0;
                 const dir = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
                 const arrow = change > 0 ? '▲' : change < 0 ? '▼' : '—';
                 const sign = change >= 0 ? '+' : '';
                 const changeLabel = change === 0
-                    ? (item.fred_id ? '변동없음' : `— 0.00%`)
+                    ? (item.fred_id || item.type === 'naver_call' ? '변동없음' : `— 0.00%`)
                     : `${arrow} ${sign}${pct.toFixed(2)}%`;
                 setMacroMarket(item.id, item.fmt(price), changeLabel, dir);
             } catch {
@@ -1627,14 +1615,6 @@
             const chartId = hash.split(':')[1];
             if (CHART_INFO[chartId]) {
                 showChart(chartId, false);
-                return;
-            }
-        }
-
-        if (hash.startsWith('macro:')) {
-            const macroId = hash.split(':')[1];
-            if (MACRO_CHART_INFO[macroId]) {
-                showMacroChart(macroId, false);
                 return;
             }
         }
