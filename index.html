@@ -1272,11 +1272,11 @@
         { id: 'micron',  ticker: 'MU', currency: 'USD' },
     ];
 
-    // 프록시 캐스케이드: allorigins.win(8초 timeout) → corsproxy.io 순서로 시도
+    // 프록시 캐스케이드: allorigins.win(3초 timeout) → corsproxy.io 순서로 시도
     async function proxiedFetch(rawUrl) {
         try {
             const ctrl = new AbortController();
-            const t = setTimeout(() => ctrl.abort(), 8000);
+            const t = setTimeout(() => ctrl.abort(), 3000);
             const r = await fetch(
                 `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`,
                 { cache: 'no-store', signal: ctrl.signal }
@@ -1288,13 +1288,13 @@
         return fetch(`https://corsproxy.io/?${rawUrl}`, { cache: 'no-store' });
     }
 
-    // 실패 시 최대 retries 횟수만큼 재시도 (지수 백오프)
+    // 실패 시 최대 retries 횟수만큼 재시도 (300ms, 800ms 간격)
     async function withRetry(fn, retries = 3) {
         for (let i = 0; i < retries; i++) {
             try { return await fn(); }
             catch (e) {
                 if (i === retries - 1) throw e;
-                await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+                await new Promise(r => setTimeout(r, 300 * (i + 1)));
             }
         }
     }
@@ -1386,6 +1386,7 @@
 
         const meta = chartResult.meta || {};
         const price = meta.regularMarketPrice;
+        if (!price) throw new Error('no price');
         const prev = meta.chartPreviousClose ?? meta.previousClose;
         const change = price - prev;
         const changePct = prev ? (change / prev) * 100 : 0;
@@ -1440,6 +1441,7 @@
     }
 
     function fmtPrice(v, cur) {
+        if (v == null || isNaN(v)) return '—';
         return cur === 'KRW'
             ? v.toLocaleString('ko-KR') + '원'
             : v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
