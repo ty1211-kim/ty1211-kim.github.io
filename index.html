@@ -1272,8 +1272,20 @@
         { id: 'micron',  ticker: 'MU', currency: 'USD' },
     ];
 
-    function makeProxiedUrl(rawUrl) {
-        return `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
+    // 프록시 캐스케이드: allorigins.win(8초 timeout) → corsproxy.io 순서로 시도
+    async function proxiedFetch(rawUrl) {
+        try {
+            const ctrl = new AbortController();
+            const t = setTimeout(() => ctrl.abort(), 8000);
+            const r = await fetch(
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`,
+                { cache: 'no-store', signal: ctrl.signal }
+            );
+            clearTimeout(t);
+            if (r.ok) return r;
+        } catch {}
+        // allorigins 실패 → corsproxy.io
+        return fetch(`https://corsproxy.io/?${rawUrl}`, { cache: 'no-store' });
     }
 
     // 실패 시 최대 retries 횟수만큼 재시도 (지수 백오프)
@@ -1365,11 +1377,9 @@
     }
 
     async function fetchMarketOverview(info) {
-        const chartResp = await fetch(
-            makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${info.data_ticker}?interval=1d&range=1d`),
-            { cache: 'no-store' }
-        );
-        const chartJson = await chartResp.json();
+        const chartJson = await (await proxiedFetch(
+            `https://query2.finance.yahoo.com/v8/finance/chart/${info.data_ticker}?interval=1d&range=1d`
+        )).json();
 
         const chartResult = chartJson?.chart?.result?.[0];
         if (!chartResult) throw new Error('chart result missing');
@@ -1440,8 +1450,9 @@
     }
 
     async function fetchStock(stock) {
-        const url = makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=1d`);
-        const data = await (await fetch(url, { cache: 'no-store' })).json();
+        const data = await (await proxiedFetch(
+            `https://query2.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=1d`
+        )).json();
         const meta = data?.chart?.result?.[0]?.meta;
         if (!meta?.regularMarketPrice) throw new Error('no data');
         return {
@@ -1516,9 +1527,9 @@
         { id: 'usdkrw',  ticker: 'KRW%3DX',     fmt: v => v.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원' },
         { id: 'gold',    ticker: 'GC%3DF',       fmt: v => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 1 }) },
         { id: 'oil',     ticker: 'CL%3DF',       fmt: v => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 2 }) },
-        // FRED: DFEDTARU = 연준 기준금리 상단, IRSTCB01KRM156N = 한국은행 기준금리
-        { id: 'us-rate', fred_id: 'DFEDTARU',    fmt: v => v.toFixed(2) + '%' },
-        { id: 'kr-rate', fred_id: 'IRSTCB01KRM156N', fmt: v => v.toFixed(2) + '%' },
+        // FRED 기준금리, 실패 시 Yahoo Finance fallback
+        { id: 'us-rate', fred_id: 'DFEDTARU',        fred_fallback: '%5EIRX',       fmt: v => v.toFixed(2) + '%' },
+        { id: 'kr-rate', fred_id: 'IRSTCB01KRM156N', fred_fallback: 'KR10YT%3DRR', fmt: v => v.toFixed(2) + '%' },
     ];
 
     function setMacroMarket(itemId, priceText, changeText, dir = 'flat') {
@@ -1527,32 +1538,42 @@
     }
 
     async function fetchMacroQuote(item) {
-        const data = await (await fetch(
-            makeProxiedUrl(`https://query2.finance.yahoo.com/v8/finance/chart/${item.ticker}?interval=1d&range=1d`),
-            { cache: 'no-store' }
+        const data = await (await proxiedFetch(
+            `https://query2.finance.yahoo.com/v8/finance/chart/${item.ticker}?interval=1d&range=1d`
         )).json();
-        const meta = data.chart.result[0].meta;
+        const meta = data?.chart?.result?.[0]?.meta;
+        if (!meta?.regularMarketPrice) throw new Error('no data');
         return { price: meta.regularMarketPrice, prev: meta.chartPreviousClose || meta.previousClose };
     }
 
-    async function fetchFredRate(seriesId) {
-        const csv = await (await fetch(
-            makeProxiedUrl(`https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`),
-            { cache: 'no-store' }
-        )).text();
-        const allLines = csv.trim().split('\n').filter(l => !l.startsWith('DATE') && l.includes(','));
-        const last  = allLines[allLines.length - 1].split(',');
-        const prev2 = allLines.length > 1 ? allLines[allLines.length - 2].split(',') : null;
-        const price = parseFloat(last[1]);
-        const prev  = prev2 ? parseFloat(prev2[1]) : price;
-        return { price, prev };
+    async function fetchFredRate(seriesId, fallbackTicker) {
+        try {
+            const text = await (await proxiedFetch(
+                `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`
+            )).text();
+            const allLines = text.trim().split('\n').filter(l => !l.startsWith('DATE') && l.includes(','));
+            const last  = allLines[allLines.length - 1].split(',');
+            const prev2 = allLines.length > 1 ? allLines[allLines.length - 2].split(',') : null;
+            const price = parseFloat(last[1]);
+            if (isNaN(price)) throw new Error('parse error');
+            const prev = prev2 ? parseFloat(prev2[1]) : price;
+            return { price, prev };
+        } catch {
+            // FRED 실패 시 Yahoo Finance fallback
+            const data = await (await proxiedFetch(
+                `https://query2.finance.yahoo.com/v8/finance/chart/${fallbackTicker}?interval=1d&range=1d`
+            )).json();
+            const meta = data?.chart?.result?.[0]?.meta;
+            if (!meta?.regularMarketPrice) throw new Error('no fallback data');
+            return { price: meta.regularMarketPrice, prev: meta.chartPreviousClose || meta.previousClose };
+        }
     }
 
     async function loadMacro() {
         await Promise.all(MARKET_MACRO_ITEMS.map(async item => {
             try {
                 const { price, prev } = await withRetry(() =>
-                    item.fred_id ? fetchFredRate(item.fred_id) : fetchMacroQuote(item)
+                    item.fred_id ? fetchFredRate(item.fred_id, item.fred_fallback) : fetchMacroQuote(item)
                 );
                 const change = price - prev;
                 const pct = prev ? (change / prev) * 100 : 0;
