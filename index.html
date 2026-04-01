@@ -1501,10 +1501,10 @@
         { id: 'usdkrw',  ticker: 'KRW%3DX',     fmt: v => v.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원' },
         { id: 'gold',    ticker: 'GC%3DF',       fmt: v => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 1 }) },
         { id: 'oil',     ticker: 'CL%3DF',       fmt: v => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 2 }) },
-        // FRED 미국 기준금리
-        { id: 'us-rate', fred_id: 'DFEDTARU', fred_fallback: '%5EIRX', fmt: v => v.toFixed(2) + '%' },
-        // 한국 콜금리: 네이버 금융 HTML 파싱
-        { id: 'kr-rate', type: 'naver_call', fmt: v => v.toFixed(2) + '%' },
+        // FRED 미국 기준금리 (상단 목표금리)
+        { id: 'us-rate', fred_id: 'DFEDTARU', fmt: v => v.toFixed(2) + '%' },
+        // 한국 기준금리: 네이버 금융 IRR_KRBF 페이지 파싱
+        { id: 'kr-rate', type: 'naver_base', fmt: v => v.toFixed(2) + '%' },
     ];
 
     function setMacroMarket(itemId, priceText, changeText, dir = 'flat') {
@@ -1521,35 +1521,26 @@
         return { price: meta.regularMarketPrice, prev: meta.chartPreviousClose || meta.previousClose };
     }
 
-    async function fetchFredRate(seriesId, fallbackTicker) {
-        try {
-            const text = await (await proxiedFetch(
-                `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`
-            )).text();
-            const allLines = text.trim().split('\n').filter(l => !l.startsWith('DATE') && l.includes(','));
-            const last  = allLines[allLines.length - 1].split(',');
-            const prev2 = allLines.length > 1 ? allLines[allLines.length - 2].split(',') : null;
-            const price = parseFloat(last[1]);
-            if (isNaN(price)) throw new Error('parse error');
-            const prev = prev2 ? parseFloat(prev2[1]) : price;
-            return { price, prev };
-        } catch {
-            // FRED 실패 시 Yahoo Finance fallback
-            const data = await (await proxiedFetch(
-                `https://query2.finance.yahoo.com/v8/finance/chart/${fallbackTicker}?interval=1d&range=1d`
-            )).json();
-            const meta = data?.chart?.result?.[0]?.meta;
-            if (!meta?.regularMarketPrice) throw new Error('no fallback data');
-            return { price: meta.regularMarketPrice, prev: meta.chartPreviousClose || meta.previousClose };
-        }
+    async function fetchFredRate(seriesId) {
+        const text = await (await proxiedFetch(
+            `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`
+        )).text();
+        const allLines = text.trim().split('\n').filter(l => !l.startsWith('DATE') && l.includes(','));
+        const last  = allLines[allLines.length - 1].split(',');
+        const prev2 = allLines.length > 1 ? allLines[allLines.length - 2].split(',') : null;
+        const price = parseFloat(last[1]);
+        if (isNaN(price)) throw new Error('parse error');
+        const prev = prev2 ? parseFloat(prev2[1]) : price;
+        return { price, prev };
     }
 
-    async function fetchNaverCallRate() {
+    async function fetchNaverBaseRate() {
+        // IRR_KRBF = 한국은행 기준금리 전용 페이지
         const html = await (await proxiedFetch(
-            'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBASE'
+            'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBF'
         )).text();
-        // 콜금리 행: 현재값 + 등락 방향 이미지 + 변동폭
-        const m = html.match(/IRR_CALL[\s\S]{0,600}?<td[^>]*>([\d]+\.[\d]+)<\/td>[\s\S]{0,400}?ico_(up|down|same\d*)[\s\S]{0,200}?([\d]+\.[\d]+)<\/td>/);
+        // 현재값: 첫 번째 소수 숫자 <td>, 방향: ico_up/ico_down/ico_same, 변동폭: 다음 숫자
+        const m = html.match(/<td[^>]*>([\d]+\.[\d]+)<\/td>[\s\S]{0,400}?ico_(up|down|same\d*)[\s\S]{0,200}?([\d]+\.[\d]+)<\/td>/);
         if (!m) throw new Error('parse error');
         const price = parseFloat(m[1]);
         const changeAmt = parseFloat(m[3]);
@@ -1561,8 +1552,8 @@
         await Promise.all(MARKET_MACRO_ITEMS.map(async item => {
             try {
                 const { price, prev } = await withRetry(() => {
-                    if (item.type === 'naver_call') return fetchNaverCallRate();
-                    if (item.fred_id) return fetchFredRate(item.fred_id, item.fred_fallback);
+                    if (item.type === 'naver_base') return fetchNaverBaseRate();
+                    if (item.fred_id) return fetchFredRate(item.fred_id);
                     return fetchMacroQuote(item);
                 });
                 const change = price - prev;
@@ -1571,7 +1562,7 @@
                 const arrow = change > 0 ? '▲' : change < 0 ? '▼' : '—';
                 const sign = change >= 0 ? '+' : '';
                 const changeLabel = change === 0
-                    ? (item.fred_id || item.type === 'naver_call' ? '변동없음' : `— 0.00%`)
+                    ? (item.fred_id || item.type === 'naver_base' ? '변동없음' : `— 0.00%`)
                     : `${arrow} ${sign}${pct.toFixed(2)}%`;
                 setMacroMarket(item.id, item.fmt(price), changeLabel, dir);
             } catch {
