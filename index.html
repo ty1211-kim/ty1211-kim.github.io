@@ -1525,22 +1525,24 @@
         const text = await (await proxiedFetch(
             `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`
         )).text();
-        const allLines = text.trim().split('\n').filter(l => !l.startsWith('DATE') && l.includes(','));
-        const last  = allLines[allLines.length - 1].split(',');
-        const prev2 = allLines.length > 1 ? allLines[allLines.length - 2].split(',') : null;
+        // FRED는 최신 날짜 값이 '.'(미입력)일 수 있으므로 유효한 숫자만 필터링
+        const validLines = text.trim().split('\n')
+            .filter(l => !l.startsWith('DATE') && l.includes(','))
+            .filter(l => { const v = (l.split(',')[1] || '').trim(); return v !== '.' && !isNaN(parseFloat(v)); });
+        if (!validLines.length) throw new Error('no valid data');
+        const last  = validLines[validLines.length - 1].split(',');
+        const prev2 = validLines.length > 1 ? validLines[validLines.length - 2].split(',') : null;
         const price = parseFloat(last[1]);
-        if (isNaN(price)) throw new Error('parse error');
-        const prev = prev2 ? parseFloat(prev2[1]) : price;
+        const prev  = prev2 ? parseFloat(prev2[1]) : price;
         return { price, prev };
     }
 
     async function fetchNaverBaseRate() {
-        // IRR_KRBF = 한국은행 기준금리 전용 페이지
+        // IRR_KRBASE 페이지에서 IRR_KRBF(기준금리) 행만 명시적으로 파싱
         const html = await (await proxiedFetch(
-            'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBF'
+            'https://finance.naver.com/marketindex/interestDetail.naver?marketindexCd=IRR_KRBASE'
         )).text();
-        // 현재값: 첫 번째 소수 숫자 <td>, 방향: ico_up/ico_down/ico_same, 변동폭: 다음 숫자
-        const m = html.match(/<td[^>]*>([\d]+\.[\d]+)<\/td>[\s\S]{0,400}?ico_(up|down|same\d*)[\s\S]{0,200}?([\d]+\.[\d]+)<\/td>/);
+        const m = html.match(/IRR_KRBF[\s\S]{0,600}?<td[^>]*>([\d]+\.[\d]+)<\/td>[\s\S]{0,400}?ico_(up|down|same\d*)[\s\S]{0,200}?([\d]+\.[\d]+)<\/td>/);
         if (!m) throw new Error('parse error');
         const price = parseFloat(m[1]);
         const changeAmt = parseFloat(m[3]);
