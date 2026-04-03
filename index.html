@@ -1625,10 +1625,10 @@
 
     // ── 종목 검색 카드 ───────────────────────────────────────────
     const SEARCH_MARKETS = {
-        KR: { label: '한국',  exchanges: new Set(['KSC','KOE','KOQ']), currency: 'KRW' },
-        US: { label: '미국',  exchanges: new Set(['NYQ','NMS','NGM','PCX','ASE','NasdaqGS','NasdaqGM','NasdaqCM','BATS','ARCA','NCM']), currency: 'USD' },
-        JP: { label: '일본',  exchanges: new Set(['TYO','OSA','SAP','FUO','NGO']), currency: 'JPY' },
-        HK: { label: '홍콩',  exchanges: new Set(['HKG']), currency: 'HKD' },
+        KR: { label: '한국',  exchanges: new Set(['KSC','KOE','KOQ']), currency: 'KRW', lang: 'ko-KR', region: 'KR' },
+        US: { label: '미국',  exchanges: new Set(['NYQ','NMS','NGM','PCX','ASE','NasdaqGS','NasdaqGM','NasdaqCM','BATS','ARCA','NCM']), currency: 'USD', lang: 'en-US', region: 'US' },
+        JP: { label: '일본',  exchanges: new Set(['TYO','OSA','SAP','FUO','NGO']), currency: 'JPY', lang: 'ja-JP', region: 'JP' },
+        HK: { label: '홍콩',  exchanges: new Set(['HKG']), currency: 'HKD', lang: 'zh-Hant-HK', region: 'HK' },
     };
     let scMarket = null, scSymbol = null, scSearchTimer = null;
 
@@ -1672,7 +1672,8 @@
     });
 
     async function doTickerSearch(q) {
-        const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0`;
+        const cfg = SEARCH_MARKETS[scMarket];
+        const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0&lang=${cfg.lang}&region=${cfg.region}`;
         try {
             const res  = await proxiedFetch(url);
             const data = await res.json();
