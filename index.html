@@ -462,6 +462,17 @@
         .chart-link-btn.hidden { display: none; }
         .chart-provider { font-size: 11px; color: var(--text2); text-align: right; margin-top: 8px; }
 
+        /* ── 리포트 섹션 ── */
+        .report-section { margin-top: 22px; }
+        .report-section-title { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 10px; }
+        .report-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .report-card { display: flex; align-items: flex-start; gap: 10px; background: rgba(58,58,60,0.6); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; text-decoration: none; color: var(--text1); transition: background 0.15s, transform 0.15s; }
+        .report-card:hover { background: rgba(72,72,74,0.9); transform: translateY(-1px); }
+        .report-icon { font-size: 18px; flex-shrink: 0; line-height: 1.4; }
+        .report-name { font-size: 13px; font-weight: 600; color: var(--text1); }
+        .report-desc { font-size: 11px; color: var(--text2); margin-top: 2px; }
+        @media (max-width: 540px) { .report-grid { grid-template-columns: 1fr; } }
+
         /* ── Music Player ── */
         .music-player {
             position: fixed;
@@ -895,6 +906,12 @@
                             <a id="quote-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">🧾 원본 시세 페이지 열기</a>
                             <a id="tradingview-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">📈 TradingView에서 보기</a>
                         </div>
+
+                        <!-- 리포트 & 리서치 -->
+                        <div class="report-section" id="chart-report-section" style="display:none">
+                            <div class="report-section-title">리포트 &amp; 리서치</div>
+                            <div class="report-grid" id="chart-report-grid"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1086,7 +1103,13 @@
             naver_url: 'https://m.stock.naver.com/domestic/stock/005930/total',
             data_kind: 'market',
             data_ticker: '005930.KS',
-            from: 'stocks'
+            from: 'stocks',
+            report_links: [
+                { icon: '📋', name: '네이버 리서치', desc: '국내 증권사 리포트 모음', url: 'https://finance.naver.com/research/company_list.naver?searchType=itemCode&itemCode=005930' },
+                { icon: '📊', name: '에프앤가이드', desc: '컨센서스 · 목표주가 · 재무', url: 'https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A005930' },
+                { icon: '📢', name: 'DART 공시', desc: '분기·사업보고서 원문', url: 'https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=삼성전자&finalReport=recent' },
+                { icon: '🏠', name: '네이버 금융', desc: '종목 종합 정보', url: 'https://finance.naver.com/item/main.naver?code=005930' },
+            ],
         },
         hynix: {
             name: 'SK하이닉스',
@@ -1098,7 +1121,13 @@
             naver_url: 'https://m.stock.naver.com/domestic/stock/000660/total',
             data_kind: 'market',
             data_ticker: '000660.KS',
-            from: 'stocks'
+            from: 'stocks',
+            report_links: [
+                { icon: '📋', name: '네이버 리서치', desc: '국내 증권사 리포트 모음', url: 'https://finance.naver.com/research/company_list.naver?searchType=itemCode&itemCode=000660' },
+                { icon: '📊', name: '에프앤가이드', desc: '컨센서스 · 목표주가 · 재무', url: 'https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A000660' },
+                { icon: '📢', name: 'DART 공시', desc: '분기·사업보고서 원문', url: 'https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=SK하이닉스&finalReport=recent' },
+                { icon: '🏠', name: '네이버 금융', desc: '종목 종합 정보', url: 'https://finance.naver.com/item/main.naver?code=000660' },
+            ],
         },
         micron: {
             name: '마이크론',
@@ -1108,7 +1137,13 @@
             quote_url: 'https://finance.yahoo.com/quote/MU',
             data_kind: 'market',
             data_ticker: 'MU',
-            from: 'stocks'
+            from: 'stocks',
+            report_links: [
+                { icon: '📋', name: 'Seeking Alpha', desc: '애널리스트 리포트 · 평가', url: 'https://seekingalpha.com/symbol/MU/research' },
+                { icon: '📊', name: 'Yahoo Finance', desc: '애널리스트 전망 · 목표가', url: 'https://finance.yahoo.com/quote/MU/analysis' },
+                { icon: '📈', name: 'MarketBeat', desc: '컨센서스 · 등급 · 목표가', url: 'https://www.marketbeat.com/stocks/NASDAQ/MU/forecast/' },
+                { icon: '📢', name: 'SEC Filings', desc: '10-K · 10-Q 원문 공시', url: 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&dateb=&owner=include&count=10' },
+            ],
         },
         btc: {
             name: '비트코인',
@@ -1192,10 +1227,27 @@
         setChartLoadingState(info);
         renderChart(id, info);
         loadChartOverview(id);
+        renderReportLinks(info);
 
         if (updateHash) {
             setRoute(`chart:${id}`);
         }
+    }
+
+    function renderReportLinks(info) {
+        const section = document.getElementById('chart-report-section');
+        const grid    = document.getElementById('chart-report-grid');
+        if (!info.report_links?.length) { section.style.display = 'none'; return; }
+        grid.innerHTML = info.report_links.map(r =>
+            `<a class="report-card" href="${r.url}" target="_blank" rel="noopener noreferrer">
+                <span class="report-icon">${r.icon}</span>
+                <div>
+                    <div class="report-name">${r.name}</div>
+                    <div class="report-desc">${r.desc}</div>
+                </div>
+            </a>`
+        ).join('');
+        section.style.display = '';
     }
 
     function renderChart(id, info) {
