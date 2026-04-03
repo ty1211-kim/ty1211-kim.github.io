@@ -341,6 +341,30 @@
         .flat-text { color: var(--text2); }
         .updated-label { font-size: 11px; color: var(--bg3); text-align: right; margin-top: 10px; }
 
+        /* ── 종목 검색 카드 ── */
+        .sc-label { font-size: 11px; font-weight: 600; color: var(--text2); letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 12px; }
+        .market-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+        .market-btn { background: rgba(255,255,255,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+        .market-btn:hover { background: rgba(255,255,255,0.15); color: var(--text1); }
+        .sc-back { background: none; border: none; color: var(--text2); font-size: 11px; cursor: pointer; padding: 0; margin-bottom: 8px; display: block; }
+        .sc-back:hover { color: var(--text1); }
+        .sc-input-wrap { position: relative; }
+        .sc-input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text1); outline: none; transition: border-color 0.15s; }
+        .sc-input:focus { border-color: var(--accent); }
+        .sc-input::placeholder { color: var(--text2); }
+        .sc-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; z-index: 50; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.45); }
+        .sc-dropdown.open { display: block; }
+        .sc-item { padding: 8px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; transition: background 0.1s; }
+        .sc-item:hover { background: rgba(255,255,255,0.08); }
+        .sc-item-name { font-size: 12px; color: var(--text1); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+        .sc-item-sym { font-size: 11px; color: var(--text2); white-space: nowrap; flex-shrink: 0; }
+        .sc-searching { padding: 10px 12px; font-size: 12px; color: var(--text2); text-align: center; }
+        .sc-actions { display: flex; gap: 6px; margin-top: 10px; }
+        .sc-btn { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; font-size: 11px; color: var(--text2); cursor: pointer; text-align: center; transition: all 0.15s; }
+        .sc-btn:hover { background: rgba(255,255,255,0.15); color: var(--text1); }
+        .sc-btn.accent { background: rgba(10,132,255,0.15); border-color: rgba(10,132,255,0.35); color: var(--accent); }
+        .sc-btn.accent:hover { background: rgba(10,132,255,0.28); }
+
         /* ── Chart ── */
         .chart-meta { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
         .chart-meta-name { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; }
@@ -758,6 +782,34 @@
                                 <div class="ticker-price" id="price-micron">—</div>
                                 <div class="ticker-change" id="change-micron">불러오는 중...</div>
                                 <div class="ticker-hint">차트 보기 →</div>
+                            </div>
+                            <!-- 종목 검색 카드 -->
+                            <div class="ticker-card" id="card-search">
+                                <div id="sc-phase-market">
+                                    <div class="sc-label">시장 선택</div>
+                                    <div class="market-btns">
+                                        <button class="market-btn" onclick="selectSearchMarket('KR')">한국</button>
+                                        <button class="market-btn" onclick="selectSearchMarket('US')">미국</button>
+                                        <button class="market-btn" onclick="selectSearchMarket('JP')">일본</button>
+                                        <button class="market-btn" onclick="selectSearchMarket('HK')">홍콩</button>
+                                    </div>
+                                </div>
+                                <div id="sc-phase-search" style="display:none">
+                                    <button class="sc-back" onclick="resetSearchCard()">← 시장 변경</button>
+                                    <div class="sc-input-wrap">
+                                        <input class="sc-input" id="sc-input" type="text" placeholder="종목명 또는 티커" autocomplete="off" />
+                                        <div class="sc-dropdown" id="sc-dropdown"></div>
+                                    </div>
+                                </div>
+                                <div id="sc-phase-result" style="display:none">
+                                    <div class="ticker-name" id="sc-result-name">—</div>
+                                    <div class="ticker-price" id="sc-result-price">—</div>
+                                    <div class="ticker-change" id="sc-result-change"></div>
+                                    <div class="sc-actions">
+                                        <button class="sc-btn accent" onclick="openSearchChart()">차트 →</button>
+                                        <button class="sc-btn" onclick="resetSearchCard()">← 다시</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="updated-label" id="updated-stocks"></div>
@@ -1414,9 +1466,10 @@
 
     function fmtPrice(v, cur) {
         if (v == null || isNaN(v)) return '—';
-        return cur === 'KRW'
-            ? v.toLocaleString('ko-KR') + '원'
-            : v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (cur === 'KRW') return v.toLocaleString('ko-KR') + '원';
+        if (cur === 'JPY') return '¥' + Math.round(v).toLocaleString('en-US');
+        if (cur === 'HKD') return 'HK$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
     function fmtChange(change, pct) {
         const s = change >= 0 ? '+' : '';
@@ -1568,6 +1621,126 @@
                 setMacroMarket(item.id, '—', '실패');
             }
         }));
+    }
+
+    // ── 종목 검색 카드 ───────────────────────────────────────────
+    const SEARCH_MARKETS = {
+        KR: { label: '한국',  exchanges: new Set(['KSC','KOE','KOQ']), currency: 'KRW' },
+        US: { label: '미국',  exchanges: new Set(['NYQ','NMS','NGM','PCX','ASE','NasdaqGS','NasdaqGM','NasdaqCM','BATS','ARCA','NCM']), currency: 'USD' },
+        JP: { label: '일본',  exchanges: new Set(['TYO','OSA','SAP','FUO','NGO']), currency: 'JPY' },
+        HK: { label: '홍콩',  exchanges: new Set(['HKG']), currency: 'HKD' },
+    };
+    let scMarket = null, scSymbol = null, scSearchTimer = null;
+
+    function selectSearchMarket(mkt) {
+        scMarket = mkt;
+        document.getElementById('sc-phase-market').style.display = 'none';
+        document.getElementById('sc-phase-search').style.display  = 'block';
+        const inp = document.getElementById('sc-input');
+        inp.placeholder = SEARCH_MARKETS[mkt].label + ' 종목명 또는 티커';
+        inp.value = '';
+        inp.focus();
+    }
+
+    function resetSearchCard() {
+        scMarket = null; scSymbol = null;
+        document.getElementById('sc-phase-market').style.display = 'block';
+        document.getElementById('sc-phase-search').style.display  = 'none';
+        document.getElementById('sc-phase-result').style.display  = 'none';
+        document.getElementById('sc-dropdown').classList.remove('open');
+        document.getElementById('card-search').className = 'ticker-card';
+    }
+
+    document.getElementById('sc-input').addEventListener('input', function () {
+        clearTimeout(scSearchTimer);
+        const q = this.value.trim();
+        if (!q) { document.getElementById('sc-dropdown').classList.remove('open'); return; }
+        const dd = document.getElementById('sc-dropdown');
+        dd.innerHTML = '<div class="sc-searching">검색 중...</div>';
+        dd.classList.add('open');
+        scSearchTimer = setTimeout(() => doTickerSearch(q), 380);
+    });
+
+    document.getElementById('sc-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') document.getElementById('sc-dropdown').classList.remove('open');
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('#card-search')) {
+            document.getElementById('sc-dropdown').classList.remove('open');
+        }
+    });
+
+    async function doTickerSearch(q) {
+        const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0`;
+        try {
+            const res  = await proxiedFetch(url);
+            const data = await res.json();
+            // allorigins wraps in .contents when raw=false; raw=true returns direct JSON
+            const quotes = data?.finance?.result?.quotes
+                        ?? data?.quotes
+                        ?? [];
+            const cfg      = SEARCH_MARKETS[scMarket];
+            const filtered = quotes.filter(it =>
+                it.isYahooFinance &&
+                it.quoteType === 'EQUITY' &&
+                cfg.exchanges.has(it.exchange)
+            ).slice(0, 7);
+            renderSearchDropdown(filtered);
+        } catch {
+            document.getElementById('sc-dropdown').innerHTML = '<div class="sc-searching">검색 실패 — 티커를 직접 입력하고 선택하세요</div>';
+        }
+    }
+
+    function renderSearchDropdown(items) {
+        const dd = document.getElementById('sc-dropdown');
+        if (!items.length) {
+            dd.innerHTML = '<div class="sc-searching">결과 없음</div>';
+            dd.classList.add('open');
+            return;
+        }
+        dd.innerHTML = items.map(it => {
+            const name = (it.longname || it.shortname || it.symbol).replace(/'/g, '&#39;');
+            const sym  = it.symbol.replace(/'/g, '&#39;');
+            return `<div class="sc-item" onclick="selectSearchResult('${sym}','${name}')">
+                <span class="sc-item-name">${name}</span>
+                <span class="sc-item-sym">${it.symbol}</span>
+            </div>`;
+        }).join('');
+        dd.classList.add('open');
+    }
+
+    async function selectSearchResult(symbol, name) {
+        document.getElementById('sc-dropdown').classList.remove('open');
+        scSymbol = symbol;
+        document.getElementById('sc-phase-search').style.display  = 'none';
+        document.getElementById('sc-phase-result').style.display  = 'block';
+        document.getElementById('sc-result-name').textContent  = '불러오는 중...';
+        document.getElementById('sc-result-price').textContent = '—';
+        document.getElementById('sc-result-change').textContent = '';
+
+        try {
+            const d      = await withRetry(() => fetchStock({ ticker: symbol, currency: SEARCH_MARKETS[scMarket].currency }));
+            const cur    = d.currency || SEARCH_MARKETS[scMarket].currency;
+            const change = d.price - d.prev;
+            const pct    = d.prev ? (change / d.prev) * 100 : 0;
+            const dir    = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
+            const arrow  = change > 0 ? '▲' : change < 0 ? '▼' : '—';
+
+            document.getElementById('card-search').className = `ticker-card ${dir}`;
+            document.getElementById('sc-result-name').textContent  = `${name} · ${symbol}`;
+            document.getElementById('sc-result-price').textContent = fmtPrice(d.price, cur);
+            document.getElementById('sc-result-change').innerHTML  =
+                `<span class="${dir}-text">${arrow} ${fmtChange(change, pct)}</span>`;
+        } catch {
+            document.getElementById('sc-result-name').textContent   = `${name} · ${symbol}`;
+            document.getElementById('sc-result-price').textContent  = '—';
+            document.getElementById('sc-result-change').textContent = '가격 조회 실패';
+        }
+    }
+
+    function openSearchChart() {
+        if (scSymbol) window.open(`https://finance.yahoo.com/chart/${encodeURIComponent(scSymbol)}`, '_blank');
     }
 
     function applyRoute() {
