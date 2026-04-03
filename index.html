@@ -813,12 +813,14 @@
                                     </div>
                                 </div>
                                 <div id="sc-phase-result" style="display:none">
-                                    <div class="ticker-name" id="sc-result-name">—</div>
-                                    <div class="ticker-price" id="sc-result-price">—</div>
-                                    <div class="ticker-change" id="sc-result-change"></div>
+                                    <div onclick="showSearchedChart()" style="cursor:pointer">
+                                        <div class="ticker-name" id="sc-result-name">—</div>
+                                        <div class="ticker-price" id="sc-result-price">—</div>
+                                        <div class="ticker-change" id="sc-result-change"></div>
+                                        <div class="ticker-hint">차트 · 리포트 보기 →</div>
+                                    </div>
                                     <div class="sc-actions">
-                                        <button class="sc-btn accent" onclick="openSearchChart()">차트 →</button>
-                                        <button class="sc-btn" onclick="resetSearchCard()">← 다시</button>
+                                        <button class="sc-btn" onclick="resetSearchCard()">← 다시 검색</button>
                                     </div>
                                 </div>
                             </div>
@@ -1682,7 +1684,7 @@
         JP: { label: '일본',  exchanges: new Set(['TYO','OSA','SAP','FUO','NGO']), currency: 'JPY', lang: 'ja-JP', region: 'JP' },
         HK: { label: '홍콩',  exchanges: new Set(['HKG']), currency: 'HKD', lang: 'zh-Hant-HK', region: 'HK' },
     };
-    let scMarket = null, scSymbol = null, scSearchTimer = null;
+    let scMarket = null, scSymbol = null, scExchange = null, scSearchTimer = null;
 
     function selectSearchMarket(mkt) {
         scMarket = mkt;
@@ -1695,7 +1697,7 @@
     }
 
     function resetSearchCard() {
-        scMarket = null; scSymbol = null;
+        scMarket = null; scSymbol = null; scExchange = null;
         document.getElementById('sc-phase-market').style.display = 'block';
         document.getElementById('sc-phase-search').style.display  = 'none';
         document.getElementById('sc-phase-result').style.display  = 'none';
@@ -1755,7 +1757,8 @@
         dd.innerHTML = items.map(it => {
             const name = (it.longname || it.shortname || it.symbol).replace(/'/g, '&#39;');
             const sym  = it.symbol.replace(/'/g, '&#39;');
-            return `<div class="sc-item" onclick="selectSearchResult('${sym}','${name}')">
+            const exch = (it.exchange || '').replace(/['"]/g, '');
+            return `<div class="sc-item" onclick="selectSearchResult('${sym}','${name}','${exch}')">
                 <span class="sc-item-name">${name}</span>
                 <span class="sc-item-sym">${it.symbol}</span>
             </div>`;
@@ -1763,9 +1766,10 @@
         dd.classList.add('open');
     }
 
-    async function selectSearchResult(symbol, name) {
+    async function selectSearchResult(symbol, name, exchange) {
         document.getElementById('sc-dropdown').classList.remove('open');
         scSymbol = symbol;
+        scExchange = exchange || '';
         document.getElementById('sc-phase-search').style.display  = 'none';
         document.getElementById('sc-phase-result').style.display  = 'block';
         document.getElementById('sc-result-name').textContent  = '불러오는 중...';
@@ -1792,8 +1796,90 @@
         }
     }
 
-    function openSearchChart() {
-        if (scSymbol) window.open(`https://finance.yahoo.com/chart/${encodeURIComponent(scSymbol)}`, '_blank');
+    // 거래소 코드 → TradingView 프리픽스 매핑
+    const EXCHANGE_TV = {
+        KSC: 'KRX', KOE: 'KRX', KOQ: 'KRX',
+        NYQ: 'NYSE', NMS: 'NASDAQ', NGM: 'NASDAQ',
+        NasdaqGS: 'NASDAQ', NasdaqGM: 'NASDAQ', NasdaqCM: 'NASDAQ', NCM: 'NASDAQ',
+        PCX: 'ARCA', BATS: 'BATS', ASE: 'AMEX',
+        TYO: 'TSE', OSA: 'OSE',
+        HKG: 'HKEX',
+    };
+
+    function buildSearchTvSymbol(market, symbol, exchange) {
+        if (market === 'KR') return 'KRX:' + symbol.replace(/\.(KS|KQ)$/, '');
+        if (market === 'JP') return 'TSE:' + symbol.replace(/\.T$/, '');
+        if (market === 'HK') return 'HKEX:' + symbol.replace(/\.HK$/, '').padStart(4, '0');
+        const tvEx = EXCHANGE_TV[exchange];
+        return tvEx ? `${tvEx}:${symbol}` : symbol;
+    }
+
+    function buildSearchReportLinks(market, symbol, name) {
+        if (market === 'KR') {
+            const code = symbol.replace(/\.(KS|KQ)$/, '');
+            return [
+                { icon: '📋', name: '네이버 리서치', desc: '국내 증권사 리포트 모음', url: `https://finance.naver.com/research/company_list.naver?searchType=itemCode&itemCode=${code}` },
+                { icon: '📊', name: '에프앤가이드',  desc: '컨센서스 · 목표주가 · 재무', url: `https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A${code}` },
+                { icon: '📢', name: 'DART 공시',     desc: '분기·사업보고서 원문', url: `https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=${encodeURIComponent(name)}&finalReport=recent` },
+                { icon: '🏠', name: '네이버 금융',   desc: '종목 종합 정보', url: `https://finance.naver.com/item/main.naver?code=${code}` },
+            ];
+        }
+        if (market === 'US') {
+            return [
+                { icon: '📋', name: 'Seeking Alpha', desc: '애널리스트 리포트 · 평가', url: `https://seekingalpha.com/symbol/${symbol}/research` },
+                { icon: '📊', name: 'Yahoo Finance', desc: '애널리스트 전망 · 목표가', url: `https://finance.yahoo.com/quote/${symbol}/analysis` },
+                { icon: '📈', name: 'MarketBeat',    desc: '컨센서스 · 등급 · 목표가', url: `https://www.marketbeat.com/stocks/NASDAQ/${symbol}/forecast/` },
+                { icon: '📢', name: 'SEC Filings',   desc: '10-K · 10-Q 원문 공시', url: `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&type=10-K&dateb=&owner=include&count=10` },
+            ];
+        }
+        if (market === 'JP') {
+            const code = symbol.replace(/\.T$/, '');
+            return [
+                { icon: '📋', name: 'Yahoo Japan 株', desc: '증권사 분석 · 재무', url: `https://finance.yahoo.co.jp/quote/${symbol}` },
+                { icon: '📊', name: 'Kabutan',        desc: '기업 정보 · 재무', url: `https://kabutan.jp/stock/?code=${code}` },
+                { icon: '📢', name: 'TDnet',          desc: 'IR · 공시 원문', url: `https://www.release.tdnet.info/inbs/I_list_001_${code}.html` },
+            ];
+        }
+        if (market === 'HK') {
+            const code = symbol.replace(/\.HK$/, '');
+            return [
+                { icon: '📋', name: 'AASTOCKS',      desc: '분석 리포트', url: `https://www.aastocks.com/en/stocks/analysis/analyst.aspx?symbol=${code.padStart(6, '0')}` },
+                { icon: '📊', name: 'Yahoo Finance', desc: '시세 · 애널리스트', url: `https://finance.yahoo.com/quote/${symbol}/analysis` },
+                { icon: '📢', name: 'HKExnews',      desc: '공시 원문', url: 'https://www.hkexnews.hk/listedco/listconews/advancedsearch/search_active_main.aspx' },
+            ];
+        }
+        return [];
+    }
+
+    function showSearchedChart() {
+        if (!scSymbol) return;
+        const market   = scMarket;
+        const symbol   = scSymbol;
+        const exchange = scExchange || '';
+        const rawName  = document.getElementById('sc-result-name').textContent;
+        const name     = rawName.includes(' · ') ? rawName.split(' · ')[0] : rawName;
+        const tvSym    = buildSearchTvSymbol(market, symbol, exchange);
+        const isKR     = market === 'KR';
+        const krCode   = isKR ? symbol.replace(/\.(KS|KQ)$/, '') : null;
+
+        CHART_INFO['_search'] = {
+            name,
+            subtitle: `${SEARCH_MARKETS[market]?.label || ''} · ${symbol}`,
+            ...(isKR ? {
+                chart_type: 'naver',
+                naver_fchart: `https://finance.naver.com/item/fchart.naver?code=${krCode}`,
+                naver_url: `https://m.stock.naver.com/domestic/stock/${krCode}/total`,
+            } : {
+                symbol: tvSym,
+            }),
+            tv_url:     `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`,
+            quote_url:  `https://finance.yahoo.com/quote/${encodeURIComponent(symbol)}`,
+            data_kind:  'market',
+            data_ticker: symbol,
+            from:       'stocks',
+            report_links: buildSearchReportLinks(market, symbol, name),
+        };
+        showChart('_search');
     }
 
     function applyRoute() {
