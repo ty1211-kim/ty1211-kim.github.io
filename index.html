@@ -313,6 +313,108 @@
         .sub-card .label { font-size: 17px; font-weight: 600; color: var(--text1); margin-bottom: 4px; }
         .sub-card .desc  { font-size: 13px; color: var(--text2); }
 
+        /* ── Study tools ── */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .tool-panel {
+            background: rgba(58,58,60,0.6);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+        }
+        .tool-panel-wide { grid-column: 1 / -1; }
+        .tool-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text1);
+            margin-bottom: 4px;
+        }
+        .tool-desc {
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 14px;
+        }
+        .watchlist-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .watchlist-chip {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: rgba(44,44,46,0.95);
+            color: var(--text1);
+            border-radius: 999px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.15s;
+            font-size: 13px;
+            line-height: 1;
+        }
+        .watchlist-chip:hover { background: rgba(72,72,74,0.95); transform: translateY(-1px); }
+        .watchlist-chip small {
+            display: block;
+            color: var(--text2);
+            font-size: 10px;
+            margin-top: 4px;
+        }
+        .tool-link-list {
+            display: grid;
+            gap: 10px;
+        }
+        .tool-link {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(44,44,46,0.9);
+            color: var(--text1);
+            text-decoration: none;
+            transition: transform 0.15s, background 0.15s;
+        }
+        .tool-link:hover { background: rgba(72,72,74,0.95); transform: translateY(-1px); }
+        .tool-link-icon { font-size: 18px; line-height: 1.4; flex-shrink: 0; }
+        .tool-link-name { font-size: 13px; font-weight: 600; }
+        .tool-link-desc { font-size: 11px; color: var(--text2); margin-top: 2px; }
+        .note-area {
+            width: 100%;
+            min-height: 160px;
+            resize: vertical;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(28,28,30,0.95);
+            color: var(--text1);
+            padding: 14px;
+            font: inherit;
+            line-height: 1.55;
+            outline: none;
+        }
+        .note-area:focus { border-color: rgba(10,132,255,0.55); box-shadow: 0 0 0 3px rgba(10,132,255,0.15); }
+        .note-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .note-save-btn {
+            border: 1px solid var(--border);
+            background: rgba(10,132,255,0.18);
+            color: var(--text1);
+            border-radius: 999px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.15s;
+        }
+        .note-save-btn:hover { background: rgba(10,132,255,0.3); transform: translateY(-1px); }
+        .note-status { font-size: 12px; color: var(--text2); }
+
         /* ── Ticker Grid ── */
         .ticker-grid {
             display: grid;
@@ -552,9 +654,11 @@
             .layout { padding: 0 16px; }
         }
         @media (max-width: 700px) {
-            .ticker-grid { grid-template-columns: repeat(2, 1fr); }
+            .ticker-grid { grid-template-columns: 1fr; }
             .page { padding: 24px 0 60px; }
             .sub-grid { grid-template-columns: 1fr; }
+            .tool-grid { grid-template-columns: 1fr; }
+            .tool-panel-wide { grid-column: auto; }
             .section-header h1 { font-size: 26px; }
             .window-body { padding: 22px 18px; }
             .music-player {
@@ -708,6 +812,11 @@
                                 <div class="icon">🏢</div>
                                 <div class="label">개별 종목</div>
                                 <div class="desc">삼성전자 · 하이닉스 · 마이크론</div>
+                            </div>
+                            <div class="sub-card" onclick="showTools()">
+                                <div class="icon">🧰</div>
+                                <div class="label">공부 도구</div>
+                                <div class="desc">관심종목 · 뉴스/공시 · 매매일지</div>
                             </div>
                         </div>
                     </div>
@@ -964,6 +1073,61 @@
                 </div>
             </div>
 
+            <!-- ⑧ 공부 도구 -->
+            <div class="section" id="page-tools">
+                <div class="breadcrumb">
+                    <span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
+                    <span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>
+                    <span>공부 도구</span>
+                </div>
+                <div class="window">
+                    <div class="window-titlebar">
+                        <div class="traffic-lights">
+                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                        </div>
+                        <div class="window-title">공부 도구 — 관심종목 · 뉴스 · 메모</div>
+                    </div>
+                    <div class="window-body">
+                        <div class="tool-grid">
+                            <div class="tool-panel">
+                                <div class="tool-title">관심종목</div>
+                                <div class="tool-desc">자주 보는 종목을 바로 열어두면 공부가 훨씬 빨라져요.</div>
+                                <div class="watchlist-chips" id="watchlist-chips"></div>
+                            </div>
+
+                            <div class="tool-panel">
+                                <div class="tool-title">뉴스 · 공시 · 실적 캘린더</div>
+                                <div class="tool-desc">매일 확인할 링크만 정리해두는 용도예요.</div>
+                                <div class="tool-link-list">
+                                    <a class="tool-link" href="https://finance.naver.com/news/mainnews.naver" target="_blank" rel="noopener noreferrer">
+                                        <span class="tool-link-icon">📰</span>
+                                        <span><span class="tool-link-name">시장 뉴스</span><span class="tool-link-desc"><br>네이버 금융 메인 뉴스</span></span>
+                                    </a>
+                                    <a class="tool-link" href="https://dart.fss.or.kr/dsab002/search.ax" target="_blank" rel="noopener noreferrer">
+                                        <span class="tool-link-icon">📢</span>
+                                        <span><span class="tool-link-name">공시</span><span class="tool-link-desc"><br>DART 공시 검색</span></span>
+                                    </a>
+                                    <a class="tool-link" href="https://finance.yahoo.com/calendar/earnings" target="_blank" rel="noopener noreferrer">
+                                        <span class="tool-link-icon">📅</span>
+                                        <span><span class="tool-link-name">실적 캘린더</span><span class="tool-link-desc"><br>Yahoo Finance earnings calendar</span></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="tool-panel tool-panel-wide">
+                                <div class="tool-title">메모 / 매매일지</div>
+                                <div class="tool-desc">종목을 왜 봤는지, 언제 들어가고 나올지 짧게 적어두세요.</div>
+                                <textarea class="note-area" id="trade-note" placeholder="예: 1) 60일선 위에서만 진입  2) 실적 발표 전 비중 축소  3) 다음 저항선 확인"></textarea>
+                                <div class="note-actions">
+                                    <button class="note-save-btn" onclick="saveTradeNote()">저장</button>
+                                    <span class="note-status" id="note-status">아직 저장되지 않았어요</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -1000,7 +1164,7 @@
     }
 
     // ── 페이지 전환 ──────────────────────────────────────────────
-    const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-coin'];
+    const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-coin','page-tools'];
 
     function showOnly(id, doScroll = true) {
         PAGES.forEach(p => {
@@ -1034,6 +1198,50 @@
     function showCoin()     { setRoute('coin'); }
     function showIndex()    { setRoute('index'); }
     function showStocks()   { setRoute('stocks'); }
+    function showTools()    { setRoute('tools'); }
+
+    const TRADE_NOTE_KEY = 'ty-stock-study-note';
+    const TOOL_WATCHLIST = [
+        { id: 'samsung', name: '삼성전자', code: '005930' },
+        { id: 'hynix', name: 'SK하이닉스', code: '000660' },
+        { id: 'nasdaq', name: '나스닥', code: '^IXIC' },
+        { id: 'kospi', name: '코스피', code: '^KS11' },
+        { id: 'btc', name: '비트코인', code: 'BTC' },
+        { id: 'eth', name: '이더리움', code: 'ETH' },
+    ];
+
+    function renderWatchlistChips() {
+        const wrap = document.getElementById('watchlist-chips');
+        if (!wrap) return;
+        wrap.innerHTML = TOOL_WATCHLIST.map(item => `
+            <button class="watchlist-chip" onclick="showChart('${item.id}')">
+                ${item.name}
+                <small>${item.code}</small>
+            </button>
+        `).join('');
+    }
+
+    function loadTradeNote() {
+        const area = document.getElementById('trade-note');
+        if (!area) return;
+        const saved = localStorage.getItem(TRADE_NOTE_KEY) || '';
+        area.value = saved;
+        const status = document.getElementById('note-status');
+        if (status) status.textContent = saved ? '저장된 메모를 불러왔어요' : '아직 저장되지 않았어요';
+    }
+
+    function saveTradeNote() {
+        const area = document.getElementById('trade-note');
+        if (!area) return;
+        localStorage.setItem(TRADE_NOTE_KEY, area.value);
+        const status = document.getElementById('note-status');
+        if (status) status.textContent = '저장했어요';
+    }
+
+    function initToolsPage() {
+        renderWatchlistChips();
+        loadTradeNote();
+    }
 
     // ── 매크로 필 클릭 → 네이버 검색 새 탭 ──────────────────────
     const MACRO_SEARCH_URLS = {
@@ -2041,6 +2249,12 @@
         if (hash === 'coin') {
             showOnly('page-coin', false);
             loadCoins();
+            return;
+        }
+
+        if (hash === 'tools') {
+            showOnly('page-tools', false);
+            initToolsPage();
             return;
         }
 
