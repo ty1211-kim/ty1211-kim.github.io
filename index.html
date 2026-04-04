@@ -1726,16 +1726,26 @@
     });
 
     async function doTickerSearch(q) {
-        const cfg = SEARCH_MARKETS[scMarket];
-        const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0&lang=${cfg.lang}&region=${cfg.region}`;
+        const cfg      = SEARCH_MARKETS[scMarket];
+        const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0&lang=${cfg.lang}&region=${cfg.region}`;
+        // 검색 URL은 encodeURIComponent로 완전히 인코딩 → lang/region 파라미터가 프록시에 잘리지 않음
+        const enc = encodeURIComponent(yahooUrl);
+        const raceProxy = (url, ms) => new Promise((res, rej) => {
+            const t = setTimeout(() => rej(new Error('timeout')), ms);
+            fetch(url, { cache: 'no-store' })
+                .then(r => { clearTimeout(t); r.ok ? res(r) : rej(new Error('not ok')); })
+                .catch(e => { clearTimeout(t); rej(e); });
+        });
         try {
-            const res  = await proxiedFetch(url);
-            const data = await res.json();
-            // allorigins wraps in .contents when raw=false; raw=true returns direct JSON
-            const quotes = data?.finance?.result?.quotes
+            const res  = await Promise.any([
+                raceProxy(`https://corsproxy.io/?url=${enc}`, 12000),
+                raceProxy(`https://api.allorigins.win/raw?url=${enc}`, 20000),
+            ]);
+            const data   = await res.json();
+            const result = data?.finance?.result;
+            const quotes = (Array.isArray(result) ? result[0]?.quotes : result?.quotes)
                         ?? data?.quotes
                         ?? [];
-            const cfg      = SEARCH_MARKETS[scMarket];
             const filtered = quotes.filter(it =>
                 it.isYahooFinance &&
                 it.quoteType === 'EQUITY' &&
