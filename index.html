@@ -1725,33 +1725,68 @@
         }
     });
 
-    async function doTickerSearch(q) {
-        const cfg      = SEARCH_MARKETS[scMarket];
-        const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0&lang=${cfg.lang}&region=${cfg.region}`;
-        // 검색 URL은 encodeURIComponent로 완전히 인코딩 → lang/region 파라미터가 프록시에 잘리지 않음
-        const enc = encodeURIComponent(yahooUrl);
-        const raceProxy = (url, ms) => new Promise((res, rej) => {
+    // 프록시 경유 fetch 헬퍼 (검색 전용 — encodeURIComponent로 전체 URL 인코딩)
+    function searchRaceProxy(rawUrl, ms) {
+        const enc = encodeURIComponent(rawUrl);
+        const go  = (proxyUrl) => new Promise((res, rej) => {
             const t = setTimeout(() => rej(new Error('timeout')), ms);
-            fetch(url, { cache: 'no-store' })
+            fetch(proxyUrl, { cache: 'no-store' })
                 .then(r => { clearTimeout(t); r.ok ? res(r) : rej(new Error('not ok')); })
                 .catch(e => { clearTimeout(t); rej(e); });
         });
+        return Promise.any([
+            go(`https://corsproxy.io/?url=${enc}`),
+            go(`https://api.allorigins.win/raw?url=${enc}`),
+        ]);
+    }
+
+    async function doTickerSearch(q) {
+        const cfg = SEARCH_MARKETS[scMarket];
+        // 한국 시장 + 한글 입력 → 네이버 금융 자동완성 사용 (Yahoo는 한글 종목명 검색 미지원)
+        if (scMarket === 'KR' && /[\uAC00-\uD7A3]/.test(q)) {
+            return doNaverStockSearch(q);
+        }
+        // 그 외 시장(또는 영문/숫자 티커) → Yahoo Finance 검색
+        const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0&lang=${cfg.lang}&region=${cfg.region}`;
         try {
-            const res  = await Promise.any([
-                raceProxy(`https://corsproxy.io/?url=${enc}`, 12000),
-                raceProxy(`https://api.allorigins.win/raw?url=${enc}`, 20000),
-            ]);
+            const res    = await searchRaceProxy(yahooUrl, 15000);
             const data   = await res.json();
             const result = data?.finance?.result;
             const quotes = (Array.isArray(result) ? result[0]?.quotes : result?.quotes)
-                        ?? data?.quotes
-                        ?? [];
+                        ?? data?.quotes ?? [];
             const filtered = quotes.filter(it =>
-                it.isYahooFinance &&
-                it.quoteType === 'EQUITY' &&
-                cfg.exchanges.has(it.exchange)
+                it.isYahooFinance && it.quoteType === 'EQUITY' && cfg.exchanges.has(it.exchange)
             ).slice(0, 7);
             renderSearchDropdown(filtered);
+        } catch {
+            document.getElementById('sc-dropdown').innerHTML = '<div class="sc-searching">검색 실패 — 티커를 직접 입력하고 선택하세요</div>';
+        }
+    }
+
+    async function doNaverStockSearch(q) {
+        const naverUrl = `https://ac.finance.naver.com/ac?q=${encodeURIComponent(q)}&q_enc=utf-8&st=111&target=stock`;
+        try {
+            const res  = await searchRaceProxy(naverUrl, 12000);
+            const text = await res.text();
+            // 응답이 JSONP(ac({...})) 또는 plain JSON 두 형태 모두 처리
+            let data;
+            try { data = JSON.parse(text); }
+            catch { const m = text.match(/\((\{[\s\S]*\})\)$/); if (m) data = JSON.parse(m[1]); else throw new Error('parse'); }
+            const rawItems = data?.items?.[0] ?? [];
+            const quotes = rawItems
+                .filter(it => it[3] === 'stock')
+                .slice(0, 7)
+                .map(it => {
+                    const isKosdaq = String(it[2]).includes('코스닥');
+                    return {
+                        symbol:         it[1] + (isKosdaq ? '.KQ' : '.KS'),
+                        longname:       it[0],
+                        exchange:       isKosdaq ? 'KOE' : 'KSC',
+                        quoteType:      'EQUITY',
+                        isYahooFinance: true,
+                    };
+                });
+            renderSearchDropdown(quotes);
         } catch {
             document.getElementById('sc-dropdown').innerHTML = '<div class="sc-searching">검색 실패 — 티커를 직접 입력하고 선택하세요</div>';
         }
