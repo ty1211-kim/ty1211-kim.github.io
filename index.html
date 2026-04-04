@@ -1744,7 +1744,7 @@
         const cfg = SEARCH_MARKETS[scMarket];
         // 한국 시장 + 한글 입력 → 네이버 금융 자동완성 사용 (Yahoo는 한글 종목명 검색 미지원)
         if (scMarket === 'KR' && /[\uAC00-\uD7A3]/.test(q)) {
-            return doNaverStockSearch(q);
+            return doKrLocalSearch(q);
         }
         // 그 외 시장(또는 영문/숫자 티커) → Yahoo Finance 검색
         const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0&lang=${cfg.lang}&region=${cfg.region}`;
@@ -1763,33 +1763,54 @@
         }
     }
 
-    async function doNaverStockSearch(q) {
-        const naverUrl = `https://ac.finance.naver.com/ac?q=${encodeURIComponent(q)}&q_enc=utf-8&st=111&target=stock`;
-        try {
-            const res  = await searchRaceProxy(naverUrl, 12000);
-            const text = await res.text();
-            // 응답이 JSONP(ac({...})) 또는 plain JSON 두 형태 모두 처리
-            let data;
-            try { data = JSON.parse(text); }
-            catch { const m = text.match(/\((\{[\s\S]*\})\)$/); if (m) data = JSON.parse(m[1]); else throw new Error('parse'); }
-            const rawItems = data?.items?.[0] ?? [];
-            const quotes = rawItems
-                .filter(it => it[3] === 'stock')
-                .slice(0, 7)
-                .map(it => {
-                    const isKosdaq = String(it[2]).includes('코스닥');
-                    return {
-                        symbol:         it[1] + (isKosdaq ? '.KQ' : '.KS'),
-                        longname:       it[0],
-                        exchange:       isKosdaq ? 'KOE' : 'KSC',
-                        quoteType:      'EQUITY',
-                        isYahooFinance: true,
-                    };
-                });
-            renderSearchDropdown(quotes);
-        } catch {
-            document.getElementById('sc-dropdown').innerHTML = '<div class="sc-searching">검색 실패 — 티커를 직접 입력하고 선택하세요</div>';
-        }
+    // 로컬 한국 주요 종목 DB (한글 검색용; 외부 API 불필요)
+    // [종목코드, 종목명, 거래소] — KSC=코스피, KOE=코스닥
+    const KR_STOCK_DB = [
+        ['005930','삼성전자','KSC'],['000660','SK하이닉스','KSC'],['207940','삼성바이오로직스','KSC'],
+        ['005380','현대차','KSC'],['000270','기아','KSC'],['051910','LG화학','KSC'],
+        ['006400','삼성SDI','KSC'],['035420','NAVER','KSC'],['035720','카카오','KSC'],
+        ['068270','셀트리온','KSC'],['028260','삼성물산','KSC'],['012330','현대모비스','KSC'],
+        ['066570','LG전자','KSC'],['003550','LG','KSC'],['017670','SK텔레콤','KSC'],
+        ['030200','KT','KSC'],['032830','삼성생명','KSC'],['086790','하나금융지주','KSC'],
+        ['105560','KB금융','KSC'],['055550','신한지주','KSC'],['316140','우리금융지주','KSC'],
+        ['024110','기업은행','KSC'],['096770','SK이노베이션','KSC'],['034730','SK','KSC'],
+        ['018880','한온시스템','KSC'],['011200','HMM','KSC'],['000810','삼성화재','KSC'],
+        ['032640','LG유플러스','KSC'],['009150','삼성전기','KSC'],['010130','고려아연','KSC'],
+        ['011070','LG이노텍','KSC'],['021240','코웨이','KSC'],['047050','포스코인터내셔널','KSC'],
+        ['005490','POSCO홀딩스','KSC'],['033780','KT&G','KSC'],['036570','엔씨소프트','KSC'],
+        ['251270','넷마블','KSC'],['259960','크래프톤','KSC'],['018260','삼성에스디에스','KSC'],
+        ['009830','한화솔루션','KSC'],['008770','호텔신라','KSC'],['004020','현대제철','KSC'],
+        ['010950','S-Oil','KSC'],['029780','삼성카드','KSC'],['000100','유한양행','KSC'],
+        ['128940','한미약품','KSC'],['326030','SK바이오팜','KSC'],['207940','삼성바이오로직스','KSC'],
+        ['091990','셀트리온헬스케어','KSC'],['196170','알테오젠','KOE'],['263750','펄어비스','KOE'],
+        ['293490','카카오게임즈','KOE'],['112040','위메이드','KOE'],['357780','솔브레인','KOE'],
+        ['145020','휴젤','KOE'],['086520','에코프로','KOE'],['247540','에코프로비엠','KOE'],
+        ['373220','LG에너지솔루션','KSC'],['011790','SKC','KSC'],['010120','LS ELECTRIC','KSC'],
+        ['042660','한화오션','KSC'],['009540','HD한국조선해양','KSC'],['329180','현대중공업','KSC'],
+        ['000720','현대건설','KSC'],['375500','DL이앤씨','KSC'],['006360','GS건설','KSC'],
+        ['004170','신세계','KSC'],['069960','현대백화점','KSC'],['139480','이마트','KSC'],
+        ['018670','SK가스','KSC'],['002380','KCC','KSC'],['010060','OCI홀딩스','KSC'],
+        ['000080','하이트진로','KSC'],['271560','오리온','KSC'],['097950','CJ제일제당','KSC'],
+        ['007070','GS리테일','KSC'],['282330','BGF리테일','KSC'],['003490','대한항공','KSC'],
+        ['020560','아시아나항공','KSC'],['180640','한진칼','KSC'],['005940','NH투자증권','KSC'],
+        ['016360','삼성증권','KSC'],['071050','한국금융지주','KSC'],['039490','키움증권','KSC'],
+        ['006800','미래에셋증권','KSC'],['003620','KB증권','KSC'],['032350','롯데렌탈','KSC'],
+        ['004990','롯데지주','KSC'],['011170','롯데케미칼','KSC'],['023530','롯데쇼핑','KSC'],
+    ];
+
+    function doKrLocalSearch(q) {
+        const norm = q.replace(/\s/g, '');
+        const results = KR_STOCK_DB
+            .filter(([code, name]) => name.replace(/\s/g,'').includes(norm) || code.startsWith(norm))
+            .slice(0, 7)
+            .map(([code, name, exch]) => ({
+                symbol:         code + (exch === 'KOE' ? '.KQ' : '.KS'),
+                longname:       name,
+                exchange:       exch,
+                quoteType:      'EQUITY',
+                isYahooFinance: true,
+            }));
+        renderSearchDropdown(results);
     }
 
     function renderSearchDropdown(items) {
