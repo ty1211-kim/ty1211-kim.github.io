@@ -467,6 +467,52 @@
             margin-top: 16px;
             display: grid;
             gap: 16px;
+            position: relative;
+        }
+        .knowledge-link-overlay {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: visible;
+            z-index: 2;
+        }
+        .knowledge-link-path {
+            fill: none;
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 3px rgba(10,132,255,0.25));
+        }
+        .knowledge-link-path.memory {
+            filter: drop-shadow(0 0 3px rgba(48,209,88,0.22));
+        }
+        .knowledge-link-label {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(18,18,20,0.92);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--text1);
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+            z-index: 3;
+        }
+        .knowledge-link-label.memory {
+            background: rgba(24,40,28,0.96);
+            border-color: rgba(48,209,88,0.28);
+            color: #d7ffe3;
+        }
+        .knowledge-link-label .mini {
+            display: block;
+            margin-top: 3px;
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--text2);
         }
         .knowledge-row {
             display: grid;
@@ -1920,6 +1966,12 @@
                     { label: '보조 메모리', sub: 'HBM ↔ HBF', arrow: '↔' },
                     { label: '데이터 공급', sub: 'HBF → SSD / 데이터 저장소', arrow: '→' }
                 ]
+            ],
+            connections: [
+                { from: 'host-cpu', to: 'ai-gpu', label: '작업 분배', mini: 'Host CPU → AI GPU/NPU', memory: false, labelDx: 8, labelDy: -22 },
+                { from: 'ai-gpu', to: 'hbm', label: '초고대역 연결', mini: 'AI GPU/NPU ↔ HBM', memory: true, labelDx: 0, labelDy: -18 },
+                { from: 'hbm', to: 'hbf', label: '보조 메모리', mini: 'HBM ↔ HBF', memory: true, labelDx: -28, labelDy: -46 },
+                { from: 'hbf', to: 'ai-ssd', label: '데이터 공급', mini: 'HBF → SSD', memory: true, labelDx: 30, labelDy: 24 }
             ]
         }
     };
@@ -1969,16 +2021,17 @@
         canvas.innerHTML = tierMarkup + scenario.rows.map((row, idx) => {
             const links = scenario.links?.[idx] || [];
             const cells = [];
+            const useInlineBridges = !scenario.connections;
 
             row.forEach((block, blockIdx) => {
                 cells.push(`
-                    <button class="knowledge-block${block.memory ? ' memory' : ''}${block.id === activeMemoryComponentId ? ' active' : ''}" onclick="selectMemoryComponent('${block.id}')">
+                    <button class="knowledge-block${block.memory ? ' memory' : ''}${block.id === activeMemoryComponentId ? ' active' : ''}" data-block-id="${block.id}" id="knowledge-block-${block.id}" onclick="selectMemoryComponent('${block.id}')">
                         <div class="knowledge-block-kind">${block.kind === 'memory' ? '메모리' : '연산'}</div>
                         <div class="knowledge-block-name">${block.name}</div>
                         <div class="knowledge-block-desc">${block.short}</div>
                     </button>
                 `);
-                if (blockIdx < row.length - 1) {
+                if (useInlineBridges && blockIdx < row.length - 1) {
                     const link = links[blockIdx] || {};
                     const isMemoryBridge = Boolean(row[blockIdx + 1]?.memory || block.memory);
                     cells.push(`
@@ -1993,7 +2046,54 @@
             });
 
             return `<div class="knowledge-row" style="--cells:${cells.length}">${cells.join('')}</div>`;
-        }).join('');
+        }).join('') + (scenario.connections ? '<svg class="knowledge-link-overlay" aria-hidden="true"></svg>' : '');
+
+        if (scenario.connections) {
+            requestAnimationFrame(() => drawKnowledgeConnections(canvas, scenario.connections));
+        }
+    }
+
+    function drawKnowledgeConnections(canvas, connections) {
+        const svg = canvas.querySelector('.knowledge-link-overlay');
+        if (!svg) return;
+
+        const canvasRect = canvas.getBoundingClientRect();
+        svg.setAttribute('viewBox', `0 0 ${canvasRect.width} ${canvasRect.height}`);
+        svg.setAttribute('width', canvasRect.width);
+        svg.setAttribute('height', canvasRect.height);
+        svg.innerHTML = '';
+
+        const blocks = new Map();
+        canvas.querySelectorAll('[data-block-id]').forEach(el => {
+            blocks.set(el.dataset.blockId, el.getBoundingClientRect());
+        });
+
+        connections.forEach((conn) => {
+            const from = blocks.get(conn.from);
+            const to = blocks.get(conn.to);
+            if (!from || !to) return;
+
+            const x1 = from.left - canvasRect.left + from.width / 2;
+            const y1 = from.bottom - canvasRect.top;
+            const x2 = to.left - canvasRect.left + to.width / 2;
+            const y2 = to.top - canvasRect.top;
+            const midX = (x1 + x2) / 2 + (conn.labelDx || 0);
+            const midY = (y1 + y2) / 2 + (conn.labelDy || 0);
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const bend = Math.max(28, Math.abs(y2 - y1) * 0.28);
+            path.setAttribute('d', `M ${x1} ${y1} C ${x1} ${y1 + bend}, ${x2} ${y2 - bend}, ${x2} ${y2}`);
+            path.setAttribute('class', `knowledge-link-path${conn.memory ? ' memory' : ''}`);
+            path.setAttribute('stroke', conn.memory ? '#30d158' : '#0a84ff');
+            svg.appendChild(path);
+
+            const label = document.createElement('div');
+            label.className = `knowledge-link-label${conn.memory ? ' memory' : ''}`;
+            label.style.left = `${midX}px`;
+            label.style.top = `${midY - 18}px`;
+            label.innerHTML = `${conn.label || '연결'}<span class="mini">${conn.mini || ''}</span>`;
+            canvas.appendChild(label);
+        });
     }
 
     function renderMemoryDetail() {
