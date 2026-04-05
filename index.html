@@ -538,27 +538,43 @@
             min-height: 110px;
             padding: 8px 6px;
             border-radius: 16px;
-            border: 1px solid rgba(10,132,255,0.08);
-            background: linear-gradient(180deg, rgba(10,132,255,0.04), rgba(10,132,255,0.01));
+            border: 1px solid rgba(10,132,255,0.12);
+            background: linear-gradient(180deg, rgba(10,132,255,0.06), rgba(10,132,255,0.015));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+        .knowledge-bridge.memory {
+            border-color: rgba(48,209,88,0.16);
+            background: linear-gradient(180deg, rgba(48,209,88,0.07), rgba(48,209,88,0.015));
         }
         .knowledge-bridge-line {
             width: 100%;
-            height: 3px;
+            height: 4px;
             border-radius: 999px;
-            background: linear-gradient(90deg, rgba(10,132,255,0.08), rgba(10,132,255,0.82), rgba(10,132,255,0.08));
+            background: linear-gradient(90deg, rgba(10,132,255,0.04), rgba(10,132,255,1), rgba(10,132,255,0.04));
             position: relative;
-            box-shadow: 0 0 0 1px rgba(10,132,255,0.05);
+            box-shadow: 0 0 0 1px rgba(10,132,255,0.06), 0 0 12px rgba(10,132,255,0.18);
+        }
+        .knowledge-bridge.memory .knowledge-bridge-line {
+            background: linear-gradient(90deg, rgba(48,209,88,0.04), rgba(48,209,88,1), rgba(48,209,88,0.04));
+            box-shadow: 0 0 0 1px rgba(48,209,88,0.06), 0 0 12px rgba(48,209,88,0.16);
         }
         .knowledge-bridge-line::before,
         .knowledge-bridge-line::after {
             content: '';
             position: absolute;
             top: 50%;
-            width: 9px;
-            height: 9px;
-            border-top: 2px solid rgba(10,132,255,0.95);
-            border-right: 2px solid rgba(10,132,255,0.95);
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid rgba(10,132,255,1);
+            border-right: 2px solid rgba(10,132,255,1);
             transform: translateY(-50%) rotate(45deg);
+            filter: drop-shadow(0 0 2px rgba(10,132,255,0.35));
+        }
+        .knowledge-bridge.memory .knowledge-bridge-line::before,
+        .knowledge-bridge.memory .knowledge-bridge-line::after {
+            border-top-color: rgba(48,209,88,1);
+            border-right-color: rgba(48,209,88,1);
+            filter: drop-shadow(0 0 2px rgba(48,209,88,0.28));
         }
         .knowledge-bridge-line::before { left: -1px; }
         .knowledge-bridge-line::after { right: -1px; }
@@ -566,16 +582,23 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            background: rgba(10,132,255,0.14);
-            border: 1px solid rgba(10,132,255,0.24);
-            color: #d7ebff;
+            background: rgba(10,132,255,0.18);
+            border: 1px solid rgba(10,132,255,0.30);
+            color: #eef7ff;
             font-size: 13px;
-            font-weight: 800;
+            font-weight: 900;
             line-height: 1;
             margin-top: -2px;
+            box-shadow: 0 0 0 3px rgba(10,132,255,0.06);
+        }
+        .knowledge-bridge.memory .knowledge-bridge-arrow {
+            background: rgba(48,209,88,0.18);
+            border-color: rgba(48,209,88,0.30);
+            color: #eefdf1;
+            box-shadow: 0 0 0 3px rgba(48,209,88,0.06);
         }
         .knowledge-bridge-badge {
             display: inline-flex;
@@ -583,8 +606,8 @@
             gap: 6px;
             padding: 6px 10px;
             border-radius: 999px;
-            background: rgba(10,132,255,0.10);
-            border: 1px solid rgba(10,132,255,0.18);
+            background: rgba(10,132,255,0.12);
+            border: 1px solid rgba(10,132,255,0.22);
             color: #d7ebff;
             font-size: 10px;
             font-weight: 700;
@@ -592,14 +615,48 @@
             white-space: nowrap;
         }
         .knowledge-bridge-badge.memory {
-            background: rgba(48,209,88,0.10);
-            border-color: rgba(48,209,88,0.18);
+            background: rgba(48,209,88,0.12);
+            border-color: rgba(48,209,88,0.22);
             color: #d7ffe3;
         }
         .knowledge-bridge-sub {
             font-size: 10px;
             color: var(--text2);
             text-align: center;
+            line-height: 1.35;
+        }
+        .knowledge-tier {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+        }
+        .knowledge-tier.memory {
+            border-color: rgba(48,209,88,0.16);
+            background: linear-gradient(90deg, rgba(48,209,88,0.06), rgba(48,209,88,0.02));
+        }
+        .knowledge-tier-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.55px;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .knowledge-tier.memory .knowledge-tier-label { color: #7dffab; }
+        .knowledge-tier-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text1);
+        }
+        .knowledge-tier-desc {
+            font-size: 11px;
+            color: var(--text2);
+            text-align: right;
             line-height: 1.35;
         }
         .knowledge-detail-list {
@@ -1819,6 +1876,10 @@
             desc: 'Host CPU · AI GPU/NPU · HBM · HBF · SSD/데이터 저장소 흐름으로 세팅해뒀어요.',
             summary: 'AI 학습/추론 시스템에서 메모리 계층이 눈에 띄도록 HBM, HBF 블록을 메모리 영역으로 하이라이트했어요. 대표님이 실제 구성에 맞춰 문구만 바꾸면 돼요.',
             defaultComponentId: 'hbm',
+            tiers: [
+                { label: '상위 제어층', title: 'Host CPU와 AI 가속기 관계', desc: '작업 분배와 실행 흐름이 먼저 잡히는 구간이에요.', memory: false },
+                { label: '메모리·저장층', title: 'HBM, HBF, SSD가 이어지는 계층', desc: '메모리와 저장소가 촘촘히 연결되는 구간이에요.', memory: true }
+            ],
             rows: [
                 [
                     { id: 'host-cpu', kind: 'logic', name: 'Host CPU', short: '시스템 오케스트레이션', detail: '여기에 Host CPU가 AI 시스템에서 맡는 제어 역할을 적어주세요.', points: ['예시: 작업 스케줄링', '예시: PCIe/CXL 연결', '예시: 데이터 준비'], memory: false },
@@ -1876,7 +1937,21 @@
 
         canvas.innerHTML = scenario.rows.map((row, idx) => {
             const links = scenario.links?.[idx] || [];
+            const tier = scenario.tiers?.[idx];
             const cells = [];
+
+            if (tier) {
+                cells.push(`
+                    <div class="knowledge-tier${tier.memory ? ' memory' : ''}" style="grid-column: 1 / -1;">
+                        <div>
+                            <div class="knowledge-tier-label">${tier.label}</div>
+                            <div class="knowledge-tier-title">${tier.title}</div>
+                        </div>
+                        <div class="knowledge-tier-desc">${tier.desc}</div>
+                    </div>
+                `);
+            }
+
             row.forEach((block, blockIdx) => {
                 cells.push(`
                     <button class="knowledge-block${block.memory ? ' memory' : ''}${block.id === activeMemoryComponentId ? ' active' : ''}" onclick="selectMemoryComponent('${block.id}')">
@@ -1887,11 +1962,12 @@
                 `);
                 if (blockIdx < row.length - 1) {
                     const link = links[blockIdx] || {};
+                    const isMemoryBridge = Boolean(row[blockIdx + 1]?.memory || block.memory);
                     cells.push(`
-                        <div class="knowledge-bridge">
+                        <div class="knowledge-bridge${isMemoryBridge ? ' memory' : ''}">
                             <div class="knowledge-bridge-line"></div>
                             <div class="knowledge-bridge-arrow">${link.arrow || '→'}</div>
-                            <div class="knowledge-bridge-badge${row[blockIdx + 1]?.memory || block.memory ? ' memory' : ''}">${link.label || '연결'}</div>
+                            <div class="knowledge-bridge-badge${isMemoryBridge ? ' memory' : ''}">${link.label || '연결'}</div>
                             <div class="knowledge-bridge-sub">${link.sub || ''}</div>
                         </div>
                     `);
