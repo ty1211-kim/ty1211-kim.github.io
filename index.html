@@ -620,25 +620,41 @@
             color: #d7ffe3;
         }
         .knowledge-bridge-sub {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
             font-size: 10px;
             color: var(--text2);
             text-align: center;
             line-height: 1.35;
+        }
+        .knowledge-bridge.memory .knowledge-bridge-sub {
+            background: rgba(48,209,88,0.06);
+            border-color: rgba(48,209,88,0.12);
+        }
+        .knowledge-tier-stack {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 14px;
         }
         .knowledge-tier {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding: 10px 12px;
+            padding: 11px 13px;
             border-radius: 14px;
-            margin-bottom: 10px;
             border: 1px solid rgba(255,255,255,0.08);
             background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
         }
         .knowledge-tier.memory {
-            border-color: rgba(48,209,88,0.16);
-            background: linear-gradient(90deg, rgba(48,209,88,0.06), rgba(48,209,88,0.02));
+            border-color: rgba(48,209,88,0.18);
+            background: linear-gradient(90deg, rgba(48,209,88,0.07), rgba(48,209,88,0.02));
         }
         .knowledge-tier-label {
             font-size: 10px;
@@ -646,6 +662,7 @@
             letter-spacing: 0.55px;
             text-transform: uppercase;
             color: var(--accent);
+            margin-bottom: 4px;
         }
         .knowledge-tier.memory .knowledge-tier-label { color: #7dffab; }
         .knowledge-tier-title {
@@ -658,6 +675,7 @@
             color: var(--text2);
             text-align: right;
             line-height: 1.35;
+            max-width: 52%;
         }
         .knowledge-detail-list {
             margin-top: 16px;
@@ -1878,7 +1896,8 @@
             defaultComponentId: 'hbm',
             tiers: [
                 { label: '상위 제어층', title: 'Host CPU와 AI 가속기 관계', desc: '작업 분배와 실행 흐름이 먼저 잡히는 구간이에요.', memory: false },
-                { label: '메모리·저장층', title: 'HBM, HBF, SSD가 이어지는 계층', desc: '메모리와 저장소가 촘촘히 연결되는 구간이에요.', memory: true }
+                { label: '가속·근접 메모리층', title: 'AI GPU/NPU와 HBM의 초고대역 연결', desc: '연산 바로 옆에서 메모리가 붙는 구간이에요.', memory: true },
+                { label: '저장·학습 데이터층', title: 'HBF, SSD, 체크포인트가 이어지는 구간', desc: '데이터를 오래 보관하고 다시 끌어오는 구간이에요.', memory: true }
             ],
             rows: [
                 [
@@ -1935,22 +1954,21 @@
         if (title) title.textContent = scenario.name;
         if (summary) summary.textContent = scenario.summary;
 
-        canvas.innerHTML = scenario.rows.map((row, idx) => {
-            const links = scenario.links?.[idx] || [];
-            const tier = scenario.tiers?.[idx];
-            const cells = [];
-
-            if (tier) {
-                cells.push(`
-                    <div class="knowledge-tier${tier.memory ? ' memory' : ''}" style="grid-column: 1 / -1;">
-                        <div>
-                            <div class="knowledge-tier-label">${tier.label}</div>
-                            <div class="knowledge-tier-title">${tier.title}</div>
-                        </div>
-                        <div class="knowledge-tier-desc">${tier.desc}</div>
+        const tierMarkup = scenario.tiers?.length
+            ? `<div class="knowledge-tier-stack">${scenario.tiers.map(tier => `
+                <div class="knowledge-tier${tier.memory ? ' memory' : ''}">
+                    <div>
+                        <div class="knowledge-tier-label">${tier.label}</div>
+                        <div class="knowledge-tier-title">${tier.title}</div>
                     </div>
-                `);
-            }
+                    <div class="knowledge-tier-desc">${tier.desc}</div>
+                </div>
+            `).join('')}</div>`
+            : '';
+
+        canvas.innerHTML = tierMarkup + scenario.rows.map((row, idx) => {
+            const links = scenario.links?.[idx] || [];
+            const cells = [];
 
             row.forEach((block, blockIdx) => {
                 cells.push(`
