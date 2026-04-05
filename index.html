@@ -58,6 +58,7 @@
             font-size: 17px;
             font-weight: 700;
             color: var(--text1);
+            text-decoration: none;
             cursor: pointer;
             letter-spacing: -0.3px;
             user-select: none;
@@ -175,6 +176,7 @@
             flex-wrap: wrap;
         }
         .crumb { cursor: pointer; color: var(--accent); }
+        .crumb, .folder-item, .sub-card, .menubar-logo { text-decoration: none; }
         .crumb:hover { opacity: 0.75; }
         .sep { color: var(--bg3); font-size: 11px; }
 
@@ -245,6 +247,7 @@
             cursor: pointer;
             width: 90px;
             transition: transform 0.15s;
+            color: inherit;
         }
         .folder-item:hover { transform: scale(1.06); }
         .folder-item:active { transform: scale(0.97); }
@@ -300,12 +303,13 @@
             gap: 16px;
         }
         .sub-card {
-            background: rgba(58,58,60,0.7);
+            background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 24px 20px;
+            border-radius: 12px;
+            padding: 18px 16px;
             cursor: pointer;
-            transition: transform 0.18s, background 0.18s;
+            transition: transform 0.15s, border-color 0.15s, background 0.15s;
+            color: inherit;
         }
         .sub-card:hover { background: rgba(72,72,74,0.9); transform: translateY(-2px); }
         .sub-card:active { transform: scale(0.98); }
@@ -808,11 +812,11 @@
     <!-- Menubar -->
     <nav class="menubar">
         <div class="menubar-left">
-            <div class="menubar-logo" onclick="goHome()">TY의 주식공부</div>
+            <a class="menubar-logo" href="#home" onclick="goHome(); return false;">TY의 주식공부</a>
             <div class="menubar-nav">
-                <a onclick="goHome()">홈</a>
-                <a onclick="showStockSub()">주식</a>
-                <a onclick="showCoin()">코인</a>
+                <a href="#home" onclick="goHome(); return false;">홈</a>
+                <a href="#stock" onclick="showStockSub(); return false;">주식</a>
+                <a href="#coin" onclick="showCoin(); return false;">코인</a>
             </div>
         </div>
 
@@ -868,20 +872,20 @@
                             <p>카테고리를 선택하세요</p>
                         </div>
                         <div class="folder-grid">
-                            <div class="folder-item" onclick="showStockSub()">
+                            <a class="folder-item" href="#stock" onclick="showStockSub(); return false;">
                                 <div class="folder-icon-wrap">
                                     <div class="folder-shape"></div>
                                     <div class="folder-emoji">📈</div>
                                 </div>
                                 <div class="folder-label">주식</div>
-                            </div>
-                            <div class="folder-item folder-coin" onclick="showCoin()">
+                            </a>
+                            <a class="folder-item folder-coin" href="#coin" onclick="showCoin(); return false;">
                                 <div class="folder-icon-wrap">
                                     <div class="folder-shape"></div>
                                     <div class="folder-emoji">🪙</div>
                                 </div>
                                 <div class="folder-label">코인</div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -890,7 +894,7 @@
             <!-- ② 주식 서브메뉴 -->
             <div class="section" id="page-stock-sub">
                 <div class="breadcrumb">
-                    <span class="crumb" onclick="goHome()">홈</span>
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a>
                     <span class="sep">›</span><span>주식</span>
                 </div>
                 <div class="window">
@@ -902,21 +906,21 @@
                     </div>
                     <div class="window-body">
                         <div class="sub-grid">
-                            <div class="sub-card" onclick="showIndex()">
+                            <a class="sub-card" href="#index" onclick="showIndex(); return false;">
                                 <div class="icon">🌐</div>
                                 <div class="label">대표 지수</div>
                                 <div class="desc">나스닥 · S&amp;P500 · 코스피 · 코스닥</div>
-                            </div>
-                            <div class="sub-card" onclick="showStocks()">
+                            </a>
+                            <a class="sub-card" href="#stocks" onclick="showStocks(); return false;">
                                 <div class="icon">🏢</div>
                                 <div class="label">개별 종목</div>
                                 <div class="desc">삼성전자 · 하이닉스 · 마이크론</div>
-                            </div>
-                            <div class="sub-card" onclick="showTools()">
+                            </a>
+                            <a class="sub-card" href="#tools" onclick="showTools(); return false;">
                                 <div class="icon">🧰</div>
                                 <div class="label">공부 도구</div>
                                 <div class="desc">관심종목 · 뉴스/공시 · 매매일지</div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -925,8 +929,8 @@
             <!-- ③ 대표 지수 -->
             <div class="section" id="page-index">
                 <div class="breadcrumb">
-                    <span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
-                    <span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
+                    <a class="crumb" href="#stock" onclick="showStockSub(); return false;">주식</a><span class="sep">›</span>
                     <span>대표 지수</span>
                 </div>
                 <div class="window">
@@ -971,8 +975,8 @@
             <!-- ④ 개별 종목 -->
             <div class="section" id="page-stocks">
                 <div class="breadcrumb">
-                    <span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
-                    <span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
+                    <a class="crumb" href="#stock" onclick="showStockSub(); return false;">주식</a><span class="sep">›</span>
                     <span>개별 종목</span>
                 </div>
                 <div class="window">
@@ -1130,7 +1134,7 @@
             <!-- ⑦ 코인 -->
             <div class="section" id="page-coin">
                 <div class="breadcrumb">
-                    <span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
                     <span>코인</span>
                 </div>
                 <div class="window">
@@ -1175,8 +1179,8 @@
             <!-- ⑧ 공부 도구 -->
             <div class="section" id="page-tools">
                 <div class="breadcrumb">
-                    <span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
-                    <span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
+                    <a class="crumb" href="#stock" onclick="showStockSub(); return false;">주식</a><span class="sep">›</span>
                     <span>공부 도구</span>
                 </div>
                 <div class="window">
