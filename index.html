@@ -1898,19 +1898,19 @@
             freeform: {
                 height: 450,
                 positions: {
-                    'pc-cpu': { x: 0.22, y: 0.18, w: 0.22 },
+                    'pc-cpu': { x: 0.22, y: 0.14, w: 0.22 },
                     'dram':   { x: 0.22, y: 0.50, w: 0.22 },
-                    'nand':   { x: 0.24, y: 0.82, w: 0.22 },
-                    'pc-gpu': { x: 0.70, y: 0.30, w: 0.22 },
-                    'vram':   { x: 0.70, y: 0.66, w: 0.22 },
+                    'nand':   { x: 0.22, y: 0.82, w: 0.22 },
+                    'pc-gpu': { x: 0.72, y: 0.14, w: 0.22 },
+                    'vram':   { x: 0.72, y: 0.50, w: 0.22 },
                 }
             },
             connections: [
                 { from: 'pc-cpu', to: 'dram',   label: '작업공간',  mini: 'CPU → DRAM',      memory: false, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
-                { from: 'dram',   to: 'nand',   label: '저장복귀',  mini: 'DRAM ↔ NAND',     memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 78 } },
-                { from: 'pc-gpu', to: 'vram',   label: '그래픽버퍼', mini: 'GPU ↔ VRAM',     memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 82 } },
-                { from: 'pc-cpu', to: 'pc-gpu', label: 'PCIe',     mini: 'CPU → GPU 위임',   memory: false, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 96 } },
-                { from: 'dram',   to: 'vram',   label: 'DMA',      mini: '시스템↔그래픽 전송', memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 88 } },
+                { from: 'dram',   to: 'nand',   label: '저장복귀',  mini: 'DRAM ↔ NAND',     memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
+                { from: 'pc-gpu', to: 'vram',   label: '그래픽버퍼', mini: 'GPU ↔ VRAM',     memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
+                { from: 'pc-cpu', to: 'pc-gpu', label: 'PCIe',     mini: 'CPU → GPU 위임',   memory: false, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
+                { from: 'dram',   to: 'vram',   label: 'DMA',      mini: '시스템↔그래픽 전송', memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
             ]
         },
         ai: {
@@ -1933,22 +1933,22 @@
             freeform: {
                 height: 760,
                 positions: {
-                    'host-cpu': { x: 0.20, y: 0.12, w: 0.16 },
-                    'fabric':   { x: 0.82, y: 0.12, w: 0.16 },
-                    'ai-gpu':   { x: 0.28, y: 0.40, w: 0.16 },
-                    'hbm':      { x: 0.66, y: 0.40, w: 0.16 },
-                    'hbf':      { x: 0.32, y: 0.74, w: 0.16 },
-                    'ai-ssd':   { x: 0.76, y: 0.82, w: 0.16 },
+                    'host-cpu': { x: 0.22, y: 0.12, w: 0.16 },
+                    'fabric':   { x: 0.78, y: 0.12, w: 0.16 },
+                    'ai-gpu':   { x: 0.22, y: 0.42, w: 0.16 },
+                    'hbm':      { x: 0.78, y: 0.42, w: 0.16 },
+                    'hbf':      { x: 0.50, y: 0.74, w: 0.16 },
+                    'ai-ssd':   { x: 0.78, y: 0.82, w: 0.16 },
                 }
             },
             connections: [
-                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, route: { mode: 'top-bypass', startSide: 'right', endSide: 'left', laneGap: 34 } },
-                { from: 'host-cpu', to: 'fabric',   label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, route: { mode: 'top-bypass', startSide: 'top', endSide: 'left', laneGap: 30 } },
-                { from: 'fabric',   to: 'ai-gpu',   label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, route: { mode: 'top-bypass', startSide: 'bottom', endSide: 'right', laneGap: 28 } },
-                { from: 'ai-gpu',   to: 'hbm',      label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'bottom', endSide: 'top', laneGap: 18 } },
-                { from: 'hbm',      to: 'hbf',      label: '계층화',   mini: 'HBM → HBF',         memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'right', laneGap: 92 } },
-                { from: 'ai-gpu',   to: 'hbf',      label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'top', laneGap: 64 } },
-                { from: 'hbf',      to: 'ai-ssd',   label: '장기저장',  mini: 'HBF → SSD',         memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 126 } },
+                { from: 'host-cpu', to: 'fabric',  label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
+                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
+                { from: 'fabric',   to: 'ai-gpu',  label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, route: { mode: 'top-bypass', startSide: 'top', endSide: 'top', laneGap: 30 } },
+                { from: 'ai-gpu',   to: 'hbm',     label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
+                { from: 'hbm',      to: 'hbf',     label: '계층화',   mini: 'HBM → HBF',         memory: true,  route: { mode: 'orth', startSide: 'bottom', endSide: 'right' } },
+                { from: 'ai-gpu',   to: 'hbf',     label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  route: { mode: 'orth', startSide: 'bottom', endSide: 'left' } },
+                { from: 'hbf',      to: 'ai-ssd',  label: '장기저장',  mini: 'HBF → SSD',         memory: true,  route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
             ]
         }
     };
