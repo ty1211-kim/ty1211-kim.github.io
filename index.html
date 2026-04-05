@@ -1937,18 +1937,18 @@
                     'fabric':   { x: 0.78, y: 0.12, w: 0.16 },
                     'ai-gpu':   { x: 0.22, y: 0.42, w: 0.16 },
                     'hbm':      { x: 0.78, y: 0.42, w: 0.16 },
-                    'hbf':      { x: 0.50, y: 0.74, w: 0.16 },
-                    'ai-ssd':   { x: 0.78, y: 0.82, w: 0.16 },
+                    'hbf':      { x: 0.22, y: 0.75, w: 0.16 },
+                    'ai-ssd':   { x: 0.78, y: 0.75, w: 0.16 },
                 }
             },
             connections: [
-                { from: 'host-cpu', to: 'fabric',  label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
-                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
-                { from: 'fabric',   to: 'ai-gpu',  label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, route: { mode: 'top-bypass', startSide: 'top', endSide: 'top', laneGap: 30 } },
+                { from: 'host-cpu', to: 'fabric',  label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, route: { mode: 'orth',     startSide: 'right',  endSide: 'left' } },
+                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, route: { mode: 'orth',     startSide: 'bottom', endSide: 'top' } },
+                { from: 'fabric',   to: 'ai-gpu',  label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, route: { mode: 'h-bypass', startSide: 'bottom', endSide: 'top',   fixedLaneY: 0.27 } },
                 { from: 'ai-gpu',   to: 'hbm',     label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
-                { from: 'hbm',      to: 'hbf',     label: '계층화',   mini: 'HBM → HBF',         memory: true,  route: { mode: 'orth', startSide: 'bottom', endSide: 'right' } },
-                { from: 'ai-gpu',   to: 'hbf',     label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  route: { mode: 'orth', startSide: 'bottom', endSide: 'left' } },
-                { from: 'hbf',      to: 'ai-ssd',  label: '장기저장',  mini: 'HBF → SSD',         memory: true,  route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
+                { from: 'hbm',      to: 'hbf',     label: '계층화',   mini: 'HBM → HBF',         memory: true,  route: { mode: 'h-bypass', startSide: 'bottom', endSide: 'right', fixedLaneY: 0.58 } },
+                { from: 'ai-gpu',   to: 'hbf',     label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  route: { mode: 'orth',     startSide: 'bottom', endSide: 'top' } },
+                { from: 'hbf',      to: 'ai-ssd',  label: '장기저장',  mini: 'HBF → SSD',         memory: true,  route: { mode: 'orth',     startSide: 'right',  endSide: 'left' } },
             ]
         }
     };
@@ -2194,6 +2194,11 @@
             } else if (mode === 'bottom-bypass') {
                 const maxBottom = Math.max(...allBounds.map(b => b.bottom));
                 const laneY = Math.min(cr.height - 18, maxBottom + laneGap);
+                pushLine(points, start.x, laneY);
+                pushLine(points, end.x, laneY);
+                pushLine(points, end.x, end.y);
+            } else if (mode === 'h-bypass') {
+                const laneY = route.fixedLaneY != null ? route.fixedLaneY * cr.height : (from.cy + to.cy) / 2;
                 pushLine(points, start.x, laneY);
                 pushLine(points, end.x, laneY);
                 pushLine(points, end.x, end.y);
