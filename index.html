@@ -321,6 +321,248 @@
         .sub-card .label { font-size: 17px; font-weight: 600; color: var(--text1); margin-bottom: 4px; }
         .sub-card .desc  { font-size: 13px; color: var(--text2); }
 
+        /* ── Knowledge study ── */
+        .knowledge-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .knowledge-panel {
+            background: linear-gradient(180deg, rgba(58,58,60,0.58), rgba(44,44,46,0.92));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+        }
+        .knowledge-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .knowledge-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            color: var(--text1);
+        }
+        .knowledge-copy {
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.7;
+        }
+        .knowledge-chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .knowledge-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 11px;
+            border-radius: 999px;
+            background: rgba(10,132,255,0.10);
+            border: 1px solid rgba(10,132,255,0.18);
+            color: #d7ebff;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .knowledge-chip.memory {
+            background: rgba(48,209,88,0.12);
+            border-color: rgba(48,209,88,0.22);
+            color: #d7ffe3;
+        }
+        .knowledge-scenario-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .knowledge-scenario-btn {
+            appearance: none;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(44,44,46,0.92);
+            color: var(--text2);
+            border-radius: 14px;
+            padding: 12px 14px;
+            min-width: 180px;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.15s, border-color 0.15s;
+            text-align: left;
+        }
+        .knowledge-scenario-btn:hover { transform: translateY(-1px); background: rgba(72,72,74,0.94); }
+        .knowledge-scenario-btn.active {
+            background: linear-gradient(180deg, rgba(10,132,255,0.28), rgba(10,132,255,0.14));
+            border-color: rgba(10,132,255,0.45);
+            color: var(--text1);
+        }
+        .knowledge-scenario-name {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .knowledge-scenario-desc {
+            display: block;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+        .knowledge-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.8fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .knowledge-diagram-card,
+        .knowledge-detail-card {
+            background: rgba(34,34,36,0.88);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+        }
+        .knowledge-card-kicker {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text2);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .knowledge-card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text1);
+        }
+        .knowledge-card-desc {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.65;
+        }
+        .knowledge-highlight-note {
+            margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #d7ffe3;
+            background: rgba(48,209,88,0.10);
+            border: 1px solid rgba(48,209,88,0.18);
+            border-radius: 999px;
+            padding: 8px 12px;
+        }
+        .knowledge-highlight-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #30d158;
+            box-shadow: 0 0 0 4px rgba(48,209,88,0.16);
+        }
+        .knowledge-diagram {
+            margin-top: 16px;
+            display: grid;
+            gap: 14px;
+        }
+        .knowledge-row {
+            display: grid;
+            grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+            gap: 12px;
+            align-items: stretch;
+        }
+        .knowledge-block {
+            appearance: none;
+            width: 100%;
+            min-height: 110px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(58,58,60,0.82), rgba(44,44,46,0.96));
+            color: var(--text1);
+            padding: 14px;
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s, background 0.15s;
+        }
+        .knowledge-block:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.18);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.20);
+        }
+        .knowledge-block.active {
+            border-color: rgba(10,132,255,0.50);
+            box-shadow: 0 0 0 2px rgba(10,132,255,0.14), 0 12px 24px rgba(10,132,255,0.10);
+        }
+        .knowledge-block.memory {
+            background: linear-gradient(180deg, rgba(48,209,88,0.22), rgba(28,70,44,0.92));
+            border-color: rgba(48,209,88,0.34);
+        }
+        .knowledge-block-kind {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.45px;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 6px;
+        }
+        .knowledge-block.memory .knowledge-block-kind { color: #d7ffe3; }
+        .knowledge-block-name {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .knowledge-block-desc {
+            font-size: 12px;
+            line-height: 1.55;
+            color: rgba(245,245,247,0.84);
+        }
+        .knowledge-arrow-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            color: var(--text2);
+            font-size: 12px;
+            margin: -2px 0 2px;
+            flex-wrap: wrap;
+        }
+        .knowledge-arrow {
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+        }
+        .knowledge-detail-list {
+            margin-top: 16px;
+            display: grid;
+            gap: 10px;
+        }
+        .knowledge-detail-item {
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.03);
+            padding: 12px 14px;
+        }
+        .knowledge-detail-item strong {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: var(--text1);
+        }
+        .knowledge-detail-item span {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+        .knowledge-empty {
+            color: var(--text2);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
         /* ── Study tools ── */
         .tool-grid {
             display: grid;
@@ -453,11 +695,15 @@
         }
         @media (max-width: 980px) {
             .note-stock-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .knowledge-hero,
+            .knowledge-layout { grid-template-columns: 1fr; }
         }
         @media (max-width: 560px) {
             .note-stock-tabs { grid-template-columns: 1fr; }
             .note-meta { align-items: stretch; }
             .note-date-pill { width: fit-content; }
+            .knowledge-scenario-btn { width: 100%; }
+            .knowledge-row { grid-template-columns: 1fr !important; }
         }
         .note-meta {
             display: flex;
@@ -979,22 +1225,114 @@
                     </div>
                     <div class="window-body">
                         <div class="sub-grid">
-                            <div class="sub-card">
+                            <a class="sub-card" href="#memory-study" onclick="showMemoryStudy(); return false;">
                                 <div class="icon">🧮</div>
                                 <div class="label">메모리반도체</div>
-                                <div class="desc">DRAM · NAND · HBM 같은 저장 중심 반도체</div>
-                            </div>
-                            <div class="sub-card">
+                                <div class="desc">일반 PC와 AI 시스템 블록다이어그램으로 메모리 위치와 역할을 공부해요</div>
+                            </a>
+                            <a class="sub-card" href="#nonmemory-study" onclick="showNonMemoryStudy(); return false;">
                                 <div class="icon">⚙️</div>
                                 <div class="label">비메모리반도체</div>
-                                <div class="desc">CPU · GPU · 파운드리 · 차량용 칩 같은 연산 중심 반도체</div>
+                                <div class="desc">CPU · GPU · NPU · 파운드리 같은 연산 중심 영역을 다음 단계로 확장할 수 있게 자리만 열어둘게요</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⑤ 메모리반도체 학습 -->
+            <div class="section" id="page-memory-study">
+                <div class="breadcrumb">
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
+                    <a class="crumb" href="#knowledge" onclick="showKnowledge(); return false;">지식이모저모</a><span class="sep">›</span>
+                    <a class="crumb" href="#semiconductor" onclick="showSemiconductor(); return false;">반도체</a><span class="sep">›</span>
+                    <span>메모리반도체</span>
+                </div>
+                <div class="window">
+                    <div class="window-titlebar">
+                        <div class="traffic-lights">
+                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                        </div>
+                        <div class="window-title">메모리반도체 학습</div>
+                    </div>
+                    <div class="window-body">
+                        <div class="knowledge-hero">
+                            <div class="knowledge-panel">
+                                <div class="knowledge-label">학습 구성</div>
+                                <div class="knowledge-title">메모리 중심 시스템 이해</div>
+                                <div class="knowledge-copy">
+                                    대표님이 나중에 상세 설명만 채워 넣으실 수 있게, 일반 PC와 AI 시스템 두 가지 블록다이어그램 틀을 먼저 세팅해뒀어요.
+                                    메모리 영역은 초록 계열 상자로 하이라이트되고, 각 블록을 누르면 오른쪽 설명 칸이 바뀌게 만들었어요.
+                                </div>
+                                <div class="knowledge-chip-list">
+                                    <span class="knowledge-chip">1번 다이어그램 · 일반 PC</span>
+                                    <span class="knowledge-chip">2번 다이어그램 · AI 시스템</span>
+                                    <span class="knowledge-chip memory">메모리 블록 하이라이트</span>
+                                </div>
+                            </div>
+                            <div class="knowledge-panel">
+                                <div class="knowledge-label">입력 가이드</div>
+                                <div class="knowledge-copy">
+                                    지금 들어간 문구는 전부 자리표시용이에요. 대표님이 주시는 설명에 맞춰
+                                    각 블록별 상세설명, 핵심 포인트, 비교 메모를 그대로 바꿔 끼울 수 있게 구조를 나눠뒀어요.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="knowledge-scenario-tabs" id="memory-diagram-tabs"></div>
+
+                        <div class="knowledge-layout">
+                            <div class="knowledge-diagram-card">
+                                <div class="knowledge-card-kicker">블록다이어그램</div>
+                                <div class="knowledge-card-title" id="memory-diagram-title">—</div>
+                                <div class="knowledge-card-desc" id="memory-diagram-summary">—</div>
+                                <div class="knowledge-highlight-note">
+                                    <span class="knowledge-highlight-dot"></span>
+                                    초록 상자는 메모리 관련 영역이에요
+                                </div>
+                                <div class="knowledge-diagram" id="memory-diagram-canvas"></div>
+                            </div>
+
+                            <div class="knowledge-detail-card">
+                                <div class="knowledge-card-kicker">상세설명</div>
+                                <div class="knowledge-card-title" id="memory-detail-title">—</div>
+                                <div class="knowledge-card-desc" id="memory-detail-text">—</div>
+                                <div class="knowledge-detail-list" id="memory-detail-points"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ⑤ 대표 지수 -->
+            <!-- ⑥ 비메모리반도체 학습 자리 -->
+            <div class="section" id="page-nonmemory-study">
+                <div class="breadcrumb">
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
+                    <a class="crumb" href="#knowledge" onclick="showKnowledge(); return false;">지식이모저모</a><span class="sep">›</span>
+                    <a class="crumb" href="#semiconductor" onclick="showSemiconductor(); return false;">반도체</a><span class="sep">›</span>
+                    <span>비메모리반도체</span>
+                </div>
+                <div class="window">
+                    <div class="window-titlebar">
+                        <div class="traffic-lights">
+                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                        </div>
+                        <div class="window-title">비메모리반도체</div>
+                    </div>
+                    <div class="window-body">
+                        <div class="knowledge-panel">
+                            <div class="knowledge-label">다음 확장 영역</div>
+                            <div class="knowledge-title">비메모리반도체 학습 페이지 자리</div>
+                            <div class="knowledge-copy">
+                                이쪽은 아직 내용 없이 자리만 열어뒀어요. 나중에 대표님이 원하시면 CPU, GPU, NPU, 파운드리, 차량용 칩 같은 흐름으로
+                                메모리 페이지와 같은 방식의 다이어그램 + 상세설명 구조를 바로 이어 붙일 수 있어요.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⑦ 대표 지수 -->
             <div class="section" id="page-index">
                 <div class="breadcrumb">
                     <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
@@ -1341,7 +1679,7 @@
     }
 
     // ── 페이지 전환 ──────────────────────────────────────────────
-    const PAGES = ['page-home','page-stock-sub','page-knowledge','page-semiconductor','page-index','page-stocks','page-chart','page-coin','page-tools'];
+    const PAGES = ['page-home','page-stock-sub','page-knowledge','page-semiconductor','page-memory-study','page-nonmemory-study','page-index','page-stocks','page-chart','page-coin','page-tools'];
 
     function showOnly(id, doScroll = true) {
         PAGES.forEach(p => {
@@ -1375,9 +1713,137 @@
     function showCoin()          { setRoute('coin'); }
     function showKnowledge()     { setRoute('knowledge'); }
     function showSemiconductor() { setRoute('semiconductor'); }
+    function showMemoryStudy()   { setRoute('memory-study'); }
+    function showNonMemoryStudy(){ setRoute('nonmemory-study'); }
     function showIndex()         { setRoute('index'); }
     function showStocks()        { setRoute('stocks'); }
     function showTools()         { setRoute('tools'); }
+
+    const MEMORY_STUDY_SCENARIOS = {
+        pc: {
+            name: '일반 PC 시스템',
+            desc: 'CPU · DRAM · NAND Flash · GPU · VRAM으로 이어지는 기본 PC 구조예요.',
+            summary: '대표님이 설명을 채우실 때 가장 기본이 되는 메모리 흐름이에요. CPU 옆 DRAM, 저장장치 쪽 NAND Flash, GPU 옆 VRAM을 구분해서 보여주도록 짜뒀어요.',
+            defaultComponentId: 'dram',
+            arrows: ['연산 경로', '메모리 접근', '그래픽 처리'],
+            rows: [
+                [
+                    { id: 'pc-cpu', kind: 'logic', name: 'CPU', short: '시스템 제어와 연산', detail: '여기에 CPU가 어떤 연산을 맡는지, 메모리와 어떻게 연결되는지 적어주세요.', points: ['예시: CPU 역할', '예시: 메모리 컨트롤러 설명', '예시: 병목 포인트'], memory: false },
+                    { id: 'dram', kind: 'memory', name: 'DRAM', short: '메인 메모리', detail: '여기에 DRAM 용도, 휘발성 특성, CPU 작업 메모리 역할을 적어주세요.', points: ['예시: 왜 메인 메모리인지', '예시: 속도와 용량 관점', '예시: DDR 세대 비교'], memory: true },
+                    { id: 'nand', kind: 'memory', name: 'NAND Flash', short: '장기 저장용 스토리지', detail: '여기에 NAND Flash가 저장장치에서 어떤 역할을 하는지 적어주세요.', points: ['예시: SSD와의 관계', '예시: 비휘발성 특징', '예시: 읽기/쓰기 특성'], memory: true }
+                ],
+                [
+                    { id: 'pc-gpu', kind: 'logic', name: 'GPU', short: '병렬 그래픽/연산 처리', detail: '여기에 GPU가 맡는 그래픽 처리와 연산 역할을 적어주세요.', points: ['예시: CPU와의 차이', '예시: 병렬처리 특징', '예시: 게임/AI 활용'], memory: false },
+                    { id: 'vram', kind: 'memory', name: 'VRAM', short: 'GPU 전용 메모리', detail: '여기에 VRAM의 역할과 GPU와의 관계를 적어주세요.', points: ['예시: 프레임 버퍼', '예시: 대역폭 중요성', '예시: 그래픽카드 성능과의 연결'], memory: true }
+                ]
+            ]
+        },
+        ai: {
+            name: 'AI 시스템',
+            desc: 'Host CPU · AI GPU/NPU · HBM · HBF · SSD/데이터 저장소 흐름으로 세팅해뒀어요.',
+            summary: 'AI 학습/추론 시스템에서 메모리 계층이 눈에 띄도록 HBM, HBF 블록을 메모리 영역으로 하이라이트했어요. 대표님이 실제 구성에 맞춰 문구만 바꾸면 돼요.',
+            defaultComponentId: 'hbm',
+            arrows: ['호스트 제어', '초고대역 메모리', '학습 데이터 공급'],
+            rows: [
+                [
+                    { id: 'host-cpu', kind: 'logic', name: 'Host CPU', short: '시스템 오케스트레이션', detail: '여기에 Host CPU가 AI 시스템에서 맡는 제어 역할을 적어주세요.', points: ['예시: 작업 스케줄링', '예시: PCIe/CXL 연결', '예시: 데이터 준비'], memory: false },
+                    { id: 'ai-gpu', kind: 'logic', name: 'AI GPU / NPU', short: '대규모 연산 처리', detail: '여기에 AI 가속기의 역할과 연산 특성을 적어주세요.', points: ['예시: 학습/추론', '예시: 병렬 연산', '예시: 메모리 대역폭 의존'], memory: false },
+                    { id: 'hbm', kind: 'memory', name: 'HBM', short: '초고대역 메모리', detail: '여기에 HBM이 왜 AI 시스템에서 중요한지 적어주세요.', points: ['예시: 패키지 근접 배치', '예시: 높은 대역폭', '예시: GPU 성능과 연결'], memory: true }
+                ],
+                [
+                    { id: 'hbf', kind: 'memory', name: 'HBF', short: '추가 설명 입력용 메모리 블록', detail: '여기는 대표님이 말씀하신 HBF 관련 설명을 그대로 넣을 자리예요.', points: ['예시: 용어 정의', '예시: HBM과 차이', '예시: 시스템 내 위치'], memory: true },
+                    { id: 'ai-ssd', kind: 'memory', name: 'SSD / 데이터 저장소', short: '학습 데이터 보관', detail: '여기에 SSD나 데이터 저장 계층 설명을 적어주세요.', points: ['예시: 데이터셋 적재', '예시: 체크포인트 저장', '예시: I/O 병목'], memory: true },
+                    { id: 'fabric', kind: 'logic', name: 'Interconnect / Fabric', short: '노드 간 연결', detail: '여기에 GPU 간 또는 노드 간 연결 구조를 적어주세요.', points: ['예시: NVLink/InfiniBand', '예시: 분산학습', '예시: 통신 병목'], memory: false }
+                ]
+            ]
+        }
+    };
+    let activeMemoryScenarioId = 'pc';
+    let activeMemoryComponentId = MEMORY_STUDY_SCENARIOS[activeMemoryScenarioId].defaultComponentId;
+
+    function renderMemoryScenarioTabs() {
+        const wrap = document.getElementById('memory-diagram-tabs');
+        if (!wrap) return;
+        wrap.innerHTML = Object.entries(MEMORY_STUDY_SCENARIOS).map(([id, item]) => `
+            <button class="knowledge-scenario-btn${id === activeMemoryScenarioId ? ' active' : ''}" onclick="selectMemoryScenario('${id}')">
+                <span class="knowledge-scenario-name">${item.name}</span>
+                <span class="knowledge-scenario-desc">${item.desc}</span>
+            </button>
+        `).join('');
+    }
+
+    function getMemoryComponent(scenarioId, componentId) {
+        const scenario = MEMORY_STUDY_SCENARIOS[scenarioId];
+        if (!scenario) return null;
+        const all = scenario.rows.flat();
+        return all.find(item => item.id === componentId) || all[0] || null;
+    }
+
+    function renderMemoryDiagram() {
+        const scenario = MEMORY_STUDY_SCENARIOS[activeMemoryScenarioId];
+        const canvas = document.getElementById('memory-diagram-canvas');
+        if (!scenario || !canvas) return;
+
+        const title = document.getElementById('memory-diagram-title');
+        const summary = document.getElementById('memory-diagram-summary');
+        if (title) title.textContent = scenario.name;
+        if (summary) summary.textContent = scenario.summary;
+
+        canvas.innerHTML = scenario.rows.map((row, idx) => `
+            <div class="knowledge-row" style="--cols:${row.length}">
+                ${row.map(block => `
+                    <button class="knowledge-block${block.memory ? ' memory' : ''}${block.id === activeMemoryComponentId ? ' active' : ''}" onclick="selectMemoryComponent('${block.id}')">
+                        <div class="knowledge-block-kind">${block.kind === 'memory' ? '메모리' : '연산'}</div>
+                        <div class="knowledge-block-name">${block.name}</div>
+                        <div class="knowledge-block-desc">${block.short}</div>
+                    </button>
+                `).join('')}
+            </div>
+            ${idx < scenario.arrows.length ? `<div class="knowledge-arrow-row"><span class="knowledge-arrow">${scenario.arrows[idx]}</span></div>` : ''}
+        `).join('');
+    }
+
+    function renderMemoryDetail() {
+        const component = getMemoryComponent(activeMemoryScenarioId, activeMemoryComponentId);
+        const title = document.getElementById('memory-detail-title');
+        const text = document.getElementById('memory-detail-text');
+        const points = document.getElementById('memory-detail-points');
+        if (!component) {
+            if (title) title.textContent = '설명 준비중';
+            if (text) text.textContent = '블록을 누르면 여기에 상세설명이 보여요.';
+            if (points) points.innerHTML = '<div class="knowledge-empty">설정된 항목이 아직 없어요.</div>';
+            return;
+        }
+        if (title) title.textContent = component.name;
+        if (text) text.textContent = component.detail;
+        if (points) {
+            points.innerHTML = (component.points || []).map((item, idx) => `
+                <div class="knowledge-detail-item">
+                    <strong>포인트 ${idx + 1}</strong>
+                    <span>${item}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    function renderMemoryStudyPage() {
+        renderMemoryScenarioTabs();
+        renderMemoryDiagram();
+        renderMemoryDetail();
+    }
+
+    function selectMemoryScenario(id) {
+        if (!MEMORY_STUDY_SCENARIOS[id]) return;
+        activeMemoryScenarioId = id;
+        activeMemoryComponentId = MEMORY_STUDY_SCENARIOS[id].defaultComponentId;
+        renderMemoryStudyPage();
+    }
+
+    function selectMemoryComponent(id) {
+        activeMemoryComponentId = id;
+        renderMemoryDiagram();
+        renderMemoryDetail();
+    }
 
     const TRADE_NOTE_KEY = 'ty-stock-study-note';
     const NOTE_STOCKS = [
@@ -2577,6 +3043,17 @@
 
         if (hash === 'semiconductor') {
             showOnly('page-semiconductor', false);
+            return;
+        }
+
+        if (hash === 'memory-study') {
+            showOnly('page-memory-study', false);
+            renderMemoryStudyPage();
+            return;
+        }
+
+        if (hash === 'nonmemory-study') {
+            showOnly('page-nonmemory-study', false);
             return;
         }
 
