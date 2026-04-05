@@ -414,8 +414,8 @@
         }
         .knowledge-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.8fr);
-            gap: 18px;
+            grid-template-columns: minmax(0, 1.52fr) minmax(260px, 0.68fr);
+            gap: 22px;
             align-items: start;
         }
         .knowledge-diagram-card,
@@ -423,7 +423,7 @@
             background: rgba(34,34,36,0.88);
             border: 1px solid var(--border);
             border-radius: 18px;
-            padding: 18px;
+            padding: 20px;
         }
         .knowledge-card-kicker {
             font-size: 11px;
@@ -471,7 +471,7 @@
         }
         .knowledge-diagram.is-freeform {
             display: block;
-            min-height: 420px;
+            min-height: 520px;
             overflow: visible;
         }
         .knowledge-block-ff {
@@ -1105,6 +1105,9 @@
         }
         .music-player:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
         .music-player:active { transform: scale(0.97); }
+        body.memory-study-mode .music-player {
+            display: none;
+        }
         .music-btn {
             width: 32px; height: 32px;
             border-radius: 50%;
@@ -1904,10 +1907,10 @@
             },
             connections: [
                 { from: 'pc-cpu', to: 'dram',   label: '작업공간',  mini: 'CPU → DRAM',      memory: false, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
-                { from: 'dram',   to: 'nand',   label: '저장복귀',  mini: 'DRAM ↔ NAND',     memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 44 } },
-                { from: 'pc-gpu', to: 'vram',   label: '그래픽버퍼', mini: 'GPU ↔ VRAM',     memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 48 } },
-                { from: 'pc-cpu', to: 'pc-gpu', label: 'PCIe',     mini: 'CPU → GPU 위임',   memory: false, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 56 } },
-                { from: 'dram',   to: 'vram',   label: 'DMA',      mini: '시스템↔그래픽 전송', memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 46 } },
+                { from: 'dram',   to: 'nand',   label: '저장복귀',  mini: 'DRAM ↔ NAND',     memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 78 } },
+                { from: 'pc-gpu', to: 'vram',   label: '그래픽버퍼', mini: 'GPU ↔ VRAM',     memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 82 } },
+                { from: 'pc-cpu', to: 'pc-gpu', label: 'PCIe',     mini: 'CPU → GPU 위임',   memory: false, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 96 } },
+                { from: 'dram',   to: 'vram',   label: 'DMA',      mini: '시스템↔그래픽 전송', memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 88 } },
             ]
         },
         ai: {
@@ -1939,13 +1942,13 @@
                 }
             },
             connections: [
-                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, route: { mode: 'top-bypass', startSide: 'right', endSide: 'left', laneGap: 30 } },
-                { from: 'host-cpu', to: 'fabric',   label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, route: { mode: 'top-bypass', startSide: 'top', endSide: 'left', laneGap: 24 } },
-                { from: 'fabric',   to: 'ai-gpu',   label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, route: { mode: 'top-bypass', startSide: 'bottom', endSide: 'right', laneGap: 20 } },
+                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, route: { mode: 'top-bypass', startSide: 'right', endSide: 'left', laneGap: 34 } },
+                { from: 'host-cpu', to: 'fabric',   label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, route: { mode: 'top-bypass', startSide: 'top', endSide: 'left', laneGap: 30 } },
+                { from: 'fabric',   to: 'ai-gpu',   label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, route: { mode: 'top-bypass', startSide: 'bottom', endSide: 'right', laneGap: 28 } },
                 { from: 'ai-gpu',   to: 'hbm',      label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'bottom', endSide: 'top', laneGap: 18 } },
-                { from: 'hbm',      to: 'hbf',      label: '계층화',   mini: 'HBM → HBF',         memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'right', laneGap: 30 } },
-                { from: 'ai-gpu',   to: 'hbf',      label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'top', laneGap: 44 } },
-                { from: 'hbf',      to: 'ai-ssd',   label: '장기저장',  mini: 'HBF → SSD',         memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 38 } },
+                { from: 'hbm',      to: 'hbf',      label: '계층화',   mini: 'HBM → HBF',         memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'right', laneGap: 92 } },
+                { from: 'ai-gpu',   to: 'hbf',      label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'top', laneGap: 64 } },
+                { from: 'hbf',      to: 'ai-ssd',   label: '장기저장',  mini: 'HBF → SSD',         memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 126 } },
             ]
         }
     };
@@ -2119,7 +2122,7 @@
                 const r = el.getBoundingClientRect();
                 maxBottom = Math.max(maxBottom, r.bottom - canvasRect.top);
             });
-            canvas.style.height = `${Math.ceil(maxBottom + 64)}px`;
+            canvas.style.height = `${Math.ceil(maxBottom + 180)}px`;
             requestAnimationFrame(() => drawFreeformConnections(canvas, scenario.connections || []));
         });
     }
@@ -3443,6 +3446,7 @@
 
     function applyRoute() {
         const hash = (location.hash || '#home').replace('#', '');
+        document.body.classList.toggle('memory-study-mode', hash === 'memory-study');
 
         if (hash === 'home') {
             showOnly('page-home', false);
