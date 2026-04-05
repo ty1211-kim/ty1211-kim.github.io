@@ -466,12 +466,12 @@
         .knowledge-diagram {
             margin-top: 16px;
             display: grid;
-            gap: 14px;
+            gap: 16px;
         }
         .knowledge-row {
             display: grid;
-            grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(var(--cells, 1), minmax(0, 1fr));
+            gap: 10px;
             align-items: stretch;
         }
         .knowledge-block {
@@ -486,6 +486,16 @@
             cursor: pointer;
             text-align: left;
             transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s, background 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+        .knowledge-block::after {
+            content: '';
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+            opacity: 0.35;
         }
         .knowledge-block:hover {
             transform: translateY(-2px);
@@ -519,21 +529,78 @@
             line-height: 1.55;
             color: rgba(245,245,247,0.84);
         }
-        .knowledge-arrow-row {
+        .knowledge-bridge {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
-            color: var(--text2);
-            font-size: 12px;
-            margin: -2px 0 2px;
-            flex-wrap: wrap;
+            justify-content: center;
+            gap: 7px;
+            min-height: 110px;
+            padding: 8px 6px;
+            border-radius: 16px;
+            border: 1px solid rgba(10,132,255,0.08);
+            background: linear-gradient(180deg, rgba(10,132,255,0.04), rgba(10,132,255,0.01));
         }
-        .knowledge-arrow {
-            padding: 4px 8px;
+        .knowledge-bridge-line {
+            width: 100%;
+            height: 3px;
             border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.03);
+            background: linear-gradient(90deg, rgba(10,132,255,0.08), rgba(10,132,255,0.82), rgba(10,132,255,0.08));
+            position: relative;
+            box-shadow: 0 0 0 1px rgba(10,132,255,0.05);
+        }
+        .knowledge-bridge-line::before,
+        .knowledge-bridge-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 9px;
+            height: 9px;
+            border-top: 2px solid rgba(10,132,255,0.95);
+            border-right: 2px solid rgba(10,132,255,0.95);
+            transform: translateY(-50%) rotate(45deg);
+        }
+        .knowledge-bridge-line::before { left: -1px; }
+        .knowledge-bridge-line::after { right: -1px; }
+        .knowledge-bridge-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(10,132,255,0.14);
+            border: 1px solid rgba(10,132,255,0.24);
+            color: #d7ebff;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: -2px;
+        }
+        .knowledge-bridge-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(10,132,255,0.10);
+            border: 1px solid rgba(10,132,255,0.18);
+            color: #d7ebff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+        .knowledge-bridge-badge.memory {
+            background: rgba(48,209,88,0.10);
+            border-color: rgba(48,209,88,0.18);
+            color: #d7ffe3;
+        }
+        .knowledge-bridge-sub {
+            font-size: 10px;
+            color: var(--text2);
+            text-align: center;
+            line-height: 1.35;
         }
         .knowledge-detail-list {
             margin-top: 16px;
@@ -1736,14 +1803,22 @@
                     { id: 'pc-gpu', kind: 'logic', name: 'GPU', short: '병렬 그래픽/연산 처리', detail: '여기에 GPU가 맡는 그래픽 처리와 연산 역할을 적어주세요.', points: ['예시: CPU와의 차이', '예시: 병렬처리 특징', '예시: 게임/AI 활용'], memory: false },
                     { id: 'vram', kind: 'memory', name: 'VRAM', short: 'GPU 전용 메모리', detail: '여기에 VRAM의 역할과 GPU와의 관계를 적어주세요.', points: ['예시: 프레임 버퍼', '예시: 대역폭 중요성', '예시: 그래픽카드 성능과의 연결'], memory: true }
                 ]
-            ]
+            ],
+            links: [
+                [
+                    { label: '작업 공간', sub: 'CPU → DRAM', arrow: '→' },
+                    { label: '저장과 복귀', sub: 'DRAM ↔ NAND Flash', arrow: '↔' }
+                ],
+                [
+                    { label: '그래픽 버퍼', sub: 'GPU ↔ VRAM', arrow: '↔' }
+                ]
+            ],
         },
         ai: {
             name: 'AI 시스템',
             desc: 'Host CPU · AI GPU/NPU · HBM · HBF · SSD/데이터 저장소 흐름으로 세팅해뒀어요.',
             summary: 'AI 학습/추론 시스템에서 메모리 계층이 눈에 띄도록 HBM, HBF 블록을 메모리 영역으로 하이라이트했어요. 대표님이 실제 구성에 맞춰 문구만 바꾸면 돼요.',
             defaultComponentId: 'hbm',
-            arrows: ['호스트 제어', '초고대역 메모리', '학습 데이터 공급'],
             rows: [
                 [
                     { id: 'host-cpu', kind: 'logic', name: 'Host CPU', short: '시스템 오케스트레이션', detail: '여기에 Host CPU가 AI 시스템에서 맡는 제어 역할을 적어주세요.', points: ['예시: 작업 스케줄링', '예시: PCIe/CXL 연결', '예시: 데이터 준비'], memory: false },
@@ -1754,6 +1829,16 @@
                     { id: 'hbf', kind: 'memory', name: 'HBF', short: '추가 설명 입력용 메모리 블록', detail: '여기는 대표님이 말씀하신 HBF 관련 설명을 그대로 넣을 자리예요.', points: ['예시: 용어 정의', '예시: HBM과 차이', '예시: 시스템 내 위치'], memory: true },
                     { id: 'ai-ssd', kind: 'memory', name: 'SSD / 데이터 저장소', short: '학습 데이터 보관', detail: '여기에 SSD나 데이터 저장 계층 설명을 적어주세요.', points: ['예시: 데이터셋 적재', '예시: 체크포인트 저장', '예시: I/O 병목'], memory: true },
                     { id: 'fabric', kind: 'logic', name: 'Interconnect / Fabric', short: '노드 간 연결', detail: '여기에 GPU 간 또는 노드 간 연결 구조를 적어주세요.', points: ['예시: NVLink/InfiniBand', '예시: 분산학습', '예시: 통신 병목'], memory: false }
+                ]
+            ],
+            links: [
+                [
+                    { label: '작업 분배', sub: 'Host CPU → AI GPU/NPU', arrow: '→' },
+                    { label: '초고대역 연결', sub: 'AI GPU/NPU ↔ HBM', arrow: '↔' }
+                ],
+                [
+                    { label: '보조 메모리', sub: 'HBM ↔ HBF', arrow: '↔' },
+                    { label: '데이터 공급', sub: 'HBF → SSD / 데이터 저장소', arrow: '→' }
                 ]
             ]
         }
@@ -1789,18 +1874,32 @@
         if (title) title.textContent = scenario.name;
         if (summary) summary.textContent = scenario.summary;
 
-        canvas.innerHTML = scenario.rows.map((row, idx) => `
-            <div class="knowledge-row" style="--cols:${row.length}">
-                ${row.map(block => `
+        canvas.innerHTML = scenario.rows.map((row, idx) => {
+            const links = scenario.links?.[idx] || [];
+            const cells = [];
+            row.forEach((block, blockIdx) => {
+                cells.push(`
                     <button class="knowledge-block${block.memory ? ' memory' : ''}${block.id === activeMemoryComponentId ? ' active' : ''}" onclick="selectMemoryComponent('${block.id}')">
                         <div class="knowledge-block-kind">${block.kind === 'memory' ? '메모리' : '연산'}</div>
                         <div class="knowledge-block-name">${block.name}</div>
                         <div class="knowledge-block-desc">${block.short}</div>
                     </button>
-                `).join('')}
-            </div>
-            ${idx < scenario.arrows.length ? `<div class="knowledge-arrow-row"><span class="knowledge-arrow">${scenario.arrows[idx]}</span></div>` : ''}
-        `).join('');
+                `);
+                if (blockIdx < row.length - 1) {
+                    const link = links[blockIdx] || {};
+                    cells.push(`
+                        <div class="knowledge-bridge">
+                            <div class="knowledge-bridge-line"></div>
+                            <div class="knowledge-bridge-arrow">${link.arrow || '→'}</div>
+                            <div class="knowledge-bridge-badge${row[blockIdx + 1]?.memory || block.memory ? ' memory' : ''}">${link.label || '연결'}</div>
+                            <div class="knowledge-bridge-sub">${link.sub || ''}</div>
+                        </div>
+                    `);
+                }
+            });
+
+            return `<div class="knowledge-row" style="--cells:${cells.length}">${cells.join('')}</div>`;
+        }).join('');
     }
 
     function renderMemoryDetail() {
