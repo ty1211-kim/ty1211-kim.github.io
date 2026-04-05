@@ -471,11 +471,15 @@
         }
         .knowledge-diagram.is-freeform {
             display: block;
+            min-height: 420px;
+            overflow: visible;
         }
         .knowledge-block-ff {
             position: absolute;
             transform: translate(-50%, -50%);
-            min-height: 88px;
+            min-height: 96px;
+            box-sizing: border-box;
+            max-width: 220px;
         }
         .knowledge-link-overlay {
             position: absolute;
@@ -1888,13 +1892,13 @@
                 ]
             ],
             freeform: {
-                height: 340,
+                height: 430,
                 positions: {
-                    'pc-cpu': { x: 0.22, y: 0.14, w: 0.30 },
-                    'dram':   { x: 0.22, y: 0.50, w: 0.30 },
-                    'nand':   { x: 0.22, y: 0.86, w: 0.30 },
-                    'pc-gpu': { x: 0.76, y: 0.14, w: 0.30 },
-                    'vram':   { x: 0.76, y: 0.50, w: 0.30 },
+                    'pc-cpu': { x: 0.20, y: 0.18, w: 0.23 },
+                    'dram':   { x: 0.20, y: 0.50, w: 0.23 },
+                    'nand':   { x: 0.22, y: 0.80, w: 0.23 },
+                    'pc-gpu': { x: 0.72, y: 0.28, w: 0.23 },
+                    'vram':   { x: 0.72, y: 0.64, w: 0.23 },
                 }
             },
             connections: [
@@ -1923,14 +1927,14 @@
                 ]
             ],
             freeform: {
-                height: 380,
+                height: 700,
                 positions: {
-                    'host-cpu': { x: 0.22, y: 0.12, w: 0.30 },
-                    'fabric':   { x: 0.76, y: 0.12, w: 0.30 },
-                    'ai-gpu':   { x: 0.22, y: 0.47, w: 0.30 },
-                    'hbm':      { x: 0.76, y: 0.47, w: 0.30 },
-                    'hbf':      { x: 0.22, y: 0.82, w: 0.30 },
-                    'ai-ssd':   { x: 0.76, y: 0.82, w: 0.30 },
+                    'host-cpu': { x: 0.16, y: 0.12, w: 0.18 },
+                    'fabric':   { x: 0.84, y: 0.12, w: 0.18 },
+                    'ai-gpu':   { x: 0.22, y: 0.38, w: 0.18 },
+                    'hbm':      { x: 0.62, y: 0.38, w: 0.18 },
+                    'hbf':      { x: 0.22, y: 0.74, w: 0.18 },
+                    'ai-ssd':   { x: 0.74, y: 0.80, w: 0.18 },
                 }
             },
             connections: [
@@ -1975,12 +1979,14 @@
         if (title) title.textContent = scenario.name;
         if (summary) summary.textContent = scenario.summary;
 
-        if (scenario.freeform) {
+        const useFreeform = Boolean(scenario.freeform) && canvas.clientWidth >= 860;
+        if (useFreeform) {
             canvas.classList.add('is-freeform');
             renderFreeformDiagram(scenario, canvas);
             return;
         }
         canvas.classList.remove('is-freeform');
+        canvas.style.height = '';
 
         const tierMarkup = scenario.tiers?.length
             ? `<div class="knowledge-tier-stack">${scenario.tiers.map(tier => `
@@ -2105,7 +2111,16 @@
             `;
             canvas.appendChild(btn);
         });
-        requestAnimationFrame(() => drawFreeformConnections(canvas, scenario.connections || []));
+        requestAnimationFrame(() => {
+            const canvasRect = canvas.getBoundingClientRect();
+            let maxBottom = ff.height;
+            canvas.querySelectorAll('[data-block-id]').forEach(el => {
+                const r = el.getBoundingClientRect();
+                maxBottom = Math.max(maxBottom, r.bottom - canvasRect.top);
+            });
+            canvas.style.height = `${Math.ceil(maxBottom + 64)}px`;
+            requestAnimationFrame(() => drawFreeformConnections(canvas, scenario.connections || []));
+        });
     }
 
     function drawFreeformConnections(canvas, connections) {
