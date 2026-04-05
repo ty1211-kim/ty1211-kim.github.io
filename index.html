@@ -1888,6 +1888,10 @@
                     { label: '그래픽 버퍼', sub: 'GPU ↔ VRAM', arrow: '↔' }
                 ]
             ],
+            connections: [
+                { from: 'pc-cpu', to: 'pc-gpu', label: 'PCIe', mini: 'CPU → GPU 작업 위임', memory: false, labelDx: -36, labelDy: 0 },
+                { from: 'dram', to: 'vram', label: 'DMA', mini: '시스템↔그래픽 데이터', memory: true, labelDx: 36, labelDy: 0 }
+            ]
         },
         ai: {
             name: 'AI 시스템',
@@ -1915,6 +1919,11 @@
                     { label: '데이터 공급', sub: 'Fabric → HBF', arrow: '→' },
                     { label: '장기 저장', sub: 'HBF → SSD', arrow: '→' }
                 ]
+            ],
+            connections: [
+                { from: 'hbm', to: 'hbf', label: '계층화', mini: '학습↔추론 메모리 계층', memory: true, labelDx: 36, labelDy: 0 },
+                { from: 'ai-gpu', to: 'fabric', label: 'NVLink', mini: 'GPU간 초고속 통신', memory: false, labelDx: -36, labelDy: 0 },
+                { from: 'host-cpu', to: 'ai-ssd', label: 'NVMe', mini: 'CPU → 스토리지 I/O', memory: false, labelDx: 0, labelDy: 20 }
             ]
         }
     };
@@ -1964,7 +1973,7 @@
         canvas.innerHTML = tierMarkup + scenario.rows.map((row, idx) => {
             const links = scenario.links?.[idx] || [];
             const cells = [];
-            const useInlineBridges = !scenario.connections;
+            const useInlineBridges = true;
 
             row.forEach((block, blockIdx) => {
                 cells.push(`
