@@ -1892,13 +1892,13 @@
                 ]
             ],
             freeform: {
-                height: 430,
+                height: 450,
                 positions: {
-                    'pc-cpu': { x: 0.20, y: 0.18, w: 0.23 },
-                    'dram':   { x: 0.20, y: 0.50, w: 0.23 },
-                    'nand':   { x: 0.22, y: 0.80, w: 0.23 },
-                    'pc-gpu': { x: 0.72, y: 0.28, w: 0.23 },
-                    'vram':   { x: 0.72, y: 0.64, w: 0.23 },
+                    'pc-cpu': { x: 0.22, y: 0.18, w: 0.22 },
+                    'dram':   { x: 0.22, y: 0.50, w: 0.22 },
+                    'nand':   { x: 0.24, y: 0.82, w: 0.22 },
+                    'pc-gpu': { x: 0.70, y: 0.30, w: 0.22 },
+                    'vram':   { x: 0.70, y: 0.66, w: 0.22 },
                 }
             },
             connections: [
@@ -1927,24 +1927,24 @@
                 ]
             ],
             freeform: {
-                height: 700,
+                height: 760,
                 positions: {
-                    'host-cpu': { x: 0.16, y: 0.12, w: 0.18 },
-                    'fabric':   { x: 0.84, y: 0.12, w: 0.18 },
-                    'ai-gpu':   { x: 0.22, y: 0.38, w: 0.18 },
-                    'hbm':      { x: 0.62, y: 0.38, w: 0.18 },
-                    'hbf':      { x: 0.22, y: 0.74, w: 0.18 },
-                    'ai-ssd':   { x: 0.74, y: 0.80, w: 0.18 },
+                    'host-cpu': { x: 0.20, y: 0.12, w: 0.16 },
+                    'fabric':   { x: 0.82, y: 0.12, w: 0.16 },
+                    'ai-gpu':   { x: 0.28, y: 0.40, w: 0.16 },
+                    'hbm':      { x: 0.66, y: 0.40, w: 0.16 },
+                    'hbf':      { x: 0.32, y: 0.74, w: 0.16 },
+                    'ai-ssd':   { x: 0.76, y: 0.82, w: 0.16 },
                 }
             },
             connections: [
-                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, labelDx:  44, labelDy:   0 },
-                { from: 'host-cpu', to: 'fabric',   label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, labelDx:   0, labelDy: -26 },
-                { from: 'fabric',   to: 'ai-gpu',   label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, labelDx: -14, labelDy:  10 },
-                { from: 'ai-gpu',   to: 'hbm',      label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, labelDx: 0, labelDy: -26 },
-                { from: 'hbm',      to: 'hbf',      label: '계층화',   mini: 'HBM → HBF',         memory: true,  labelDx:  10, labelDy:  10 },
-                { from: 'ai-gpu',   to: 'hbf',      label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  labelDx:  44, labelDy:   0 },
-                { from: 'hbf',      to: 'ai-ssd',   label: '장기저장',  mini: 'HBF → SSD',         memory: true,  labelDx:   0, labelDy:  26 },
+                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, labelDx: -18, labelDy:  -8 },
+                { from: 'host-cpu', to: 'fabric',   label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, labelDx:  -8, labelDy: -30 },
+                { from: 'fabric',   to: 'ai-gpu',   label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, labelDx: -26, labelDy:  14 },
+                { from: 'ai-gpu',   to: 'hbm',      label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, labelDx: -6, labelDy: -30 },
+                { from: 'hbm',      to: 'hbf',      label: '계층화',   mini: 'HBM → HBF',         memory: true,  labelDx:  -6, labelDy:  18 },
+                { from: 'ai-gpu',   to: 'hbf',      label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  labelDx:  60, labelDy:   2 },
+                { from: 'hbf',      to: 'ai-ssd',   label: '장기저장',  mini: 'HBF → SSD',         memory: true,  labelDx:  18, labelDy:  34 },
             ]
         }
     };
