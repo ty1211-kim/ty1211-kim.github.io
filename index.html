@@ -251,6 +251,10 @@
         }
         .folder-item:hover { transform: scale(1.06); }
         .folder-item:active { transform: scale(0.97); }
+        .folder-item.folder-knowledge .folder-shape {
+            background: linear-gradient(160deg, #8b5cf6 0%, #6d28d9 100%);
+            box-shadow: 0 4px 16px rgba(109,40,217,0.35);
+        }
         .folder-icon-wrap {
             position: relative;
             width: 80px;
@@ -817,6 +821,7 @@
                 <a href="#home" onclick="goHome(); return false;">홈</a>
                 <a href="#stock" onclick="showStockSub(); return false;">주식</a>
                 <a href="#coin" onclick="showCoin(); return false;">코인</a>
+                <a href="#knowledge" onclick="showKnowledge(); return false;">지식이모저모</a>
             </div>
         </div>
 
@@ -886,6 +891,13 @@
                                 </div>
                                 <div class="folder-label">코인</div>
                             </a>
+                            <a class="folder-item folder-knowledge" href="#knowledge" onclick="showKnowledge(); return false;">
+                                <div class="folder-icon-wrap">
+                                    <div class="folder-shape"></div>
+                                    <div class="folder-emoji">🧠</div>
+                                </div>
+                                <div class="folder-label">지식이모저모</div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -926,7 +938,63 @@
                 </div>
             </div>
 
-            <!-- ③ 대표 지수 -->
+            <!-- ③ 지식이모저모 -->
+            <div class="section" id="page-knowledge">
+                <div class="breadcrumb">
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a>
+                    <span class="sep">›</span><span>지식이모저모</span>
+                </div>
+                <div class="window">
+                    <div class="window-titlebar">
+                        <div class="traffic-lights">
+                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                        </div>
+                        <div class="window-title">지식이모저모</div>
+                    </div>
+                    <div class="window-body">
+                        <div class="sub-grid">
+                            <a class="sub-card" href="#semiconductor" onclick="showSemiconductor(); return false;">
+                                <div class="icon">💾</div>
+                                <div class="label">반도체</div>
+                                <div class="desc">메모리반도체 · 비메모리반도체</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ④ 반도체 -->
+            <div class="section" id="page-semiconductor">
+                <div class="breadcrumb">
+                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
+                    <a class="crumb" href="#knowledge" onclick="showKnowledge(); return false;">지식이모저모</a><span class="sep">›</span>
+                    <span>반도체</span>
+                </div>
+                <div class="window">
+                    <div class="window-titlebar">
+                        <div class="traffic-lights">
+                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
+                        </div>
+                        <div class="window-title">반도체</div>
+                    </div>
+                    <div class="window-body">
+                        <div class="sub-grid">
+                            <div class="sub-card">
+                                <div class="icon">🧮</div>
+                                <div class="label">메모리반도체</div>
+                                <div class="desc">DRAM · NAND · HBM 같은 저장 중심 반도체</div>
+                            </div>
+                            <div class="sub-card">
+                                <div class="icon">⚙️</div>
+                                <div class="label">비메모리반도체</div>
+                                <div class="desc">CPU · GPU · 파운드리 · 차량용 칩 같은 연산 중심 반도체</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⑤ 대표 지수 -->
             <div class="section" id="page-index">
                 <div class="breadcrumb">
                     <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
@@ -1273,7 +1341,7 @@
     }
 
     // ── 페이지 전환 ──────────────────────────────────────────────
-    const PAGES = ['page-home','page-stock-sub','page-index','page-stocks','page-chart','page-coin','page-tools'];
+    const PAGES = ['page-home','page-stock-sub','page-knowledge','page-semiconductor','page-index','page-stocks','page-chart','page-coin','page-tools'];
 
     function showOnly(id, doScroll = true) {
         PAGES.forEach(p => {
@@ -1302,12 +1370,14 @@
         }
     }
 
-    function goHome()       { setRoute('home'); }
-    function showStockSub() { setRoute('stock'); }
-    function showCoin()     { setRoute('coin'); }
-    function showIndex()    { setRoute('index'); }
-    function showStocks()   { setRoute('stocks'); }
-    function showTools()    { setRoute('tools'); }
+    function goHome()            { setRoute('home'); }
+    function showStockSub()      { setRoute('stock'); }
+    function showCoin()          { setRoute('coin'); }
+    function showKnowledge()     { setRoute('knowledge'); }
+    function showSemiconductor() { setRoute('semiconductor'); }
+    function showIndex()         { setRoute('index'); }
+    function showStocks()        { setRoute('stocks'); }
+    function showTools()         { setRoute('tools'); }
 
     const TRADE_NOTE_KEY = 'ty-stock-study-note';
     const NOTE_STOCKS = [
@@ -2497,6 +2567,16 @@
         if (hash === 'coin') {
             showOnly('page-coin', false);
             loadCoins();
+            return;
+        }
+
+        if (hash === 'knowledge') {
+            showOnly('page-knowledge', false);
+            return;
+        }
+
+        if (hash === 'semiconductor') {
+            showOnly('page-semiconductor', false);
             return;
         }
 
