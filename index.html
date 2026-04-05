@@ -513,6 +513,7 @@
             white-space: nowrap;
             box-shadow: 0 6px 14px rgba(0,0,0,0.25);
             z-index: 3;
+            pointer-events: none;
         }
         .knowledge-link-label.memory {
             background: rgba(24,40,28,0.96);
@@ -1902,11 +1903,11 @@
                 }
             },
             connections: [
-                { from: 'pc-cpu', to: 'dram',   label: '작업공간',  mini: 'CPU → DRAM',      memory: false, labelDx:  44, labelDy:   0 },
-                { from: 'dram',   to: 'nand',   label: '저장복귀',  mini: 'DRAM ↔ NAND',     memory: true,  bidirectional: true, labelDx: 44, labelDy: 0 },
-                { from: 'pc-gpu', to: 'vram',   label: '그래픽버퍼', mini: 'GPU ↔ VRAM',     memory: true,  bidirectional: true, labelDx: -44, labelDy: 0 },
-                { from: 'pc-cpu', to: 'pc-gpu', label: 'PCIe',     mini: 'CPU → GPU 위임',   memory: false, labelDx:  0,  labelDy: -26 },
-                { from: 'dram',   to: 'vram',   label: 'DMA',      mini: '시스템↔그래픽 전송', memory: true,  bidirectional: true, labelDx: 0, labelDy: -26 },
+                { from: 'pc-cpu', to: 'dram',   label: '작업공간',  mini: 'CPU → DRAM',      memory: false, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
+                { from: 'dram',   to: 'nand',   label: '저장복귀',  mini: 'DRAM ↔ NAND',     memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 44 } },
+                { from: 'pc-gpu', to: 'vram',   label: '그래픽버퍼', mini: 'GPU ↔ VRAM',     memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 48 } },
+                { from: 'pc-cpu', to: 'pc-gpu', label: 'PCIe',     mini: 'CPU → GPU 위임',   memory: false, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 56 } },
+                { from: 'dram',   to: 'vram',   label: 'DMA',      mini: '시스템↔그래픽 전송', memory: true,  bidirectional: true, route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 46 } },
             ]
         },
         ai: {
@@ -1938,13 +1939,13 @@
                 }
             },
             connections: [
-                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, labelDx: -18, labelDy:  -8 },
-                { from: 'host-cpu', to: 'fabric',   label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, labelDx:  -8, labelDy: -30 },
-                { from: 'fabric',   to: 'ai-gpu',   label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, labelDx: -26, labelDy:  14 },
-                { from: 'ai-gpu',   to: 'hbm',      label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, labelDx: -6, labelDy: -30 },
-                { from: 'hbm',      to: 'hbf',      label: '계층화',   mini: 'HBM → HBF',         memory: true,  labelDx:  -6, labelDy:  18 },
-                { from: 'ai-gpu',   to: 'hbf',      label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  labelDx:  60, labelDy:   2 },
-                { from: 'hbf',      to: 'ai-ssd',   label: '장기저장',  mini: 'HBF → SSD',         memory: true,  labelDx:  18, labelDy:  34 },
+                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, route: { mode: 'top-bypass', startSide: 'right', endSide: 'left', laneGap: 30 } },
+                { from: 'host-cpu', to: 'fabric',   label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, route: { mode: 'top-bypass', startSide: 'top', endSide: 'left', laneGap: 24 } },
+                { from: 'fabric',   to: 'ai-gpu',   label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, route: { mode: 'top-bypass', startSide: 'bottom', endSide: 'right', laneGap: 20 } },
+                { from: 'ai-gpu',   to: 'hbm',      label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'bottom', endSide: 'top', laneGap: 18 } },
+                { from: 'hbm',      to: 'hbf',      label: '계층화',   mini: 'HBM → HBF',         memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'right', laneGap: 30 } },
+                { from: 'ai-gpu',   to: 'hbf',      label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'top', laneGap: 44 } },
+                { from: 'hbf',      to: 'ai-ssd',   label: '장기저장',  mini: 'HBF → SSD',         memory: true,  route: { mode: 'bottom-bypass', startSide: 'bottom', endSide: 'left', laneGap: 38 } },
             ]
         }
     };
@@ -2138,48 +2139,101 @@
         </defs>`;
 
         const blocks = new Map();
+        const allBounds = [];
         canvas.querySelectorAll('[data-block-id]').forEach(el => {
             const r = el.getBoundingClientRect();
-            blocks.set(el.dataset.blockId, { cx: r.left - cr.left + r.width/2, cy: r.top - cr.top + r.height/2, w: r.width, h: r.height });
+            const box = { left: r.left - cr.left, top: r.top - cr.top, right: r.right - cr.left, bottom: r.bottom - cr.top, cx: r.left - cr.left + r.width/2, cy: r.top - cr.top + r.height/2, w: r.width, h: r.height };
+            blocks.set(el.dataset.blockId, box);
+            allBounds.push(box);
         });
 
-        function edgePt(b, ux, uy, gap) {
-            const tx = ux !== 0 ? Math.abs(b.w/2 / ux) : Infinity;
-            const ty = uy !== 0 ? Math.abs(b.h/2 / uy) : Infinity;
-            const t = Math.min(tx, ty) + (gap || 0);
-            return { x: b.cx + ux * t, y: b.cy + uy * t };
+        function pointOnEdge(b, side, gap = 0) {
+            const d = side || 'right';
+            if (d === 'top') return { x: b.cx, y: b.top - gap };
+            if (d === 'bottom') return { x: b.cx, y: b.bottom + gap };
+            if (d === 'left') return { x: b.left - gap, y: b.cy };
+            return { x: b.right + gap, y: b.cy };
+        }
+
+        function polylineMidPoint(points) {
+            let total = 0;
+            for (let i = 1; i < points.length; i++) total += Math.hypot(points[i].x - points[i-1].x, points[i].y - points[i-1].y);
+            let half = total / 2;
+            for (let i = 1; i < points.length; i++) {
+                const seg = Math.hypot(points[i].x - points[i-1].x, points[i].y - points[i-1].y);
+                if (half <= seg) {
+                    const t = seg ? half / seg : 0;
+                    return { x: points[i-1].x + (points[i].x - points[i-1].x) * t, y: points[i-1].y + (points[i].y - points[i-1].y) * t };
+                }
+                half -= seg;
+            }
+            return points[Math.floor(points.length / 2)] || { x: 0, y: 0 };
+        }
+
+        function pushLine(points, x, y) {
+            const last = points[points.length - 1];
+            if (!last || last.x !== x || last.y !== y) points.push({ x, y });
+        }
+
+        function buildRoute(conn, from, to) {
+            const route = conn.route || {};
+            const start = pointOnEdge(from, route.startSide || 'right', 6);
+            const end = pointOnEdge(to, route.endSide || 'left', 4);
+            const laneGap = route.laneGap || 28;
+            const points = [start];
+
+            const mode = route.mode || 'orth';
+            if (mode === 'top-bypass') {
+                const laneY = Math.max(18, Math.min(from.top, to.top) - laneGap);
+                pushLine(points, start.x, laneY);
+                pushLine(points, end.x, laneY);
+                pushLine(points, end.x, end.y);
+            } else if (mode === 'bottom-bypass') {
+                const maxBottom = Math.max(...allBounds.map(b => b.bottom));
+                const laneY = Math.min(cr.height - 18, maxBottom + laneGap);
+                pushLine(points, start.x, laneY);
+                pushLine(points, end.x, laneY);
+                pushLine(points, end.x, end.y);
+            } else {
+                const horizontalFirst = Math.abs(start.x - end.x) > Math.abs(start.y - end.y);
+                if (horizontalFirst) {
+                    pushLine(points, end.x, start.y);
+                    pushLine(points, end.x, end.y);
+                } else {
+                    pushLine(points, start.x, end.y);
+                    pushLine(points, end.x, end.y);
+                }
+            }
+
+            pushLine(points, end.x, end.y);
+            return points;
         }
 
         connections.forEach(conn => {
             const from = blocks.get(conn.from);
             const to   = blocks.get(conn.to);
             if (!from || !to) return;
-            const dx = to.cx - from.cx, dy = to.cy - from.cy;
-            const dist = Math.hypot(dx, dy) || 1;
-            const ux = dx/dist, uy = dy/dist;
-            const s = edgePt(from, ux, uy, 6);
-            const e = edgePt(to, -ux, -uy, 3);
-
+            const pts = buildRoute(conn, from, to);
             const color = conn.memory ? '#30d158' : '#0a84ff';
             const mEnd   = conn.memory ? 'ffa-mem'     : 'ffa-logic';
             const mStart = conn.memory ? 'ffa-mem-rev' : 'ffa-logic-rev';
 
-            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            line.setAttribute('x1', s.x); line.setAttribute('y1', s.y);
-            line.setAttribute('x2', e.x); line.setAttribute('y2', e.y);
-            line.setAttribute('stroke', color);
-            line.setAttribute('stroke-width', '2.5');
-            line.setAttribute('stroke-linecap', 'round');
-            line.setAttribute('marker-end', `url(#${mEnd})`);
-            if (conn.bidirectional) line.setAttribute('marker-start', `url(#${mStart})`);
-            svg.appendChild(line);
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' '));
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke', color);
+            path.setAttribute('stroke-width', '2.5');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('stroke-linejoin', 'round');
+            path.setAttribute('marker-end', `url(#${mEnd})`);
+            if (conn.bidirectional) path.setAttribute('marker-start', `url(#${mStart})`);
+            svg.appendChild(path);
 
-            const midX = (s.x + e.x) / 2 + (conn.labelDx || 0);
-            const midY = (s.y + e.y) / 2 + (conn.labelDy || 0);
+            const mid = polylineMidPoint(pts);
             const lbl = document.createElement('div');
             lbl.className = `knowledge-link-label${conn.memory ? ' memory' : ''}`;
-            lbl.style.left = midX + 'px';
-            lbl.style.top  = (midY - 18) + 'px';
+            lbl.style.left = (mid.x + (conn.labelDx || 0)) + 'px';
+            lbl.style.top  = (mid.y + (conn.labelDy || 0) - 18) + 'px';
             lbl.innerHTML  = `${conn.label}<span class="mini">${conn.mini || ''}</span>`;
             canvas.appendChild(lbl);
         });
