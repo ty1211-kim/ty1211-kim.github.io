@@ -396,9 +396,9 @@
         }
         .note-area:focus { border-color: rgba(10,132,255,0.55); box-shadow: 0 0 0 3px rgba(10,132,255,0.15); }
         .note-stock-tabs {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 8px;
-            flex-wrap: wrap;
             margin-bottom: 14px;
             padding: 10px;
             border: 1px solid rgba(255,255,255,0.06);
@@ -421,7 +421,7 @@
             flex-direction: column;
             align-items: flex-start;
             gap: 3px;
-            min-width: 104px;
+            width: 100%;
             text-align: left;
         }
         .note-stock-chip:hover { background: rgba(72,72,74,0.95); color: var(--text1); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.16); }
@@ -441,6 +441,14 @@
             color: var(--text2);
             font-weight: 500;
             line-height: 1.1;
+        }
+        @media (max-width: 980px) {
+            .note-stock-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 560px) {
+            .note-stock-tabs { grid-template-columns: 1fr; }
+            .note-meta { align-items: stretch; }
+            .note-date-pill { width: fit-content; }
         }
         .note-meta {
             display: flex;
@@ -1205,7 +1213,7 @@
                                 <div class="note-stock-tabs" id="note-stock-tabs"></div>
                                 <div class="note-meta">
                                     <div class="note-current-stock" id="note-current-stock">공통 메모 <small>전체 전략</small></div>
-                                    <div class="note-date-pill" id="note-date-pill">마지막 수정 <strong id="note-date-text">없음</strong></div>
+                                    <div class="note-date-pill" id="note-date-pill">수정 <strong id="note-date-text">없음</strong></div>
                                     <div class="note-hint">선택한 칸만 저장돼요</div>
                                 </div>
                                 <textarea class="note-area" id="trade-note" placeholder="예: 1) 60일선 위에서만 진입  2) 실적 발표 전 비중 축소  3) 다음 저항선 확인"></textarea>
@@ -1343,7 +1351,7 @@
         if (!value) return '없음';
         const dt = new Date(value);
         if (Number.isNaN(dt.getTime())) return '없음';
-        return `${dt.getFullYear()}.${pad2(dt.getMonth() + 1)}.${pad2(dt.getDate())} ${pad2(dt.getHours())}:${pad2(dt.getMinutes())}`;
+        return `${pad2(dt.getMonth() + 1)}.${pad2(dt.getDate())} ${pad2(dt.getHours())}:${pad2(dt.getMinutes())}`;
     }
 
     function normalizeTradeNoteRecord(raw) {
@@ -1403,7 +1411,7 @@
         const status = document.getElementById('note-status');
         if (status) {
             status.textContent = currentRecord.updatedAt
-                ? `마지막 저장: ${formatLastUpdated(currentRecord.updatedAt)}`
+                ? `수정 ${formatLastUpdated(currentRecord.updatedAt)}`
                 : '아직 저장되지 않았어요';
         }
 
@@ -1411,7 +1419,7 @@
         chips.forEach(btn => {
             const stockId = btn.dataset.stockId;
             const record = readTradeNoteRecord(stockId);
-            const time = record.updatedAt ? formatLastUpdated(record.updatedAt).slice(5) : '미작성';
+            const time = record.updatedAt ? formatLastUpdated(record.updatedAt) : '미작성';
             btn.innerHTML = `<span class="note-chip-title">${NOTE_STOCKS.find(item => item.id === stockId)?.name || stockId}</span><span class="note-chip-time">${time}</span>`;
         });
     }
@@ -1445,7 +1453,7 @@
         const record = writeTradeNoteRecord(activeNoteStockId, area.value);
         const status = document.getElementById('note-status');
         const current = NOTE_STOCKS.find(item => item.id === activeNoteStockId) || NOTE_STOCKS[0];
-        if (status) status.textContent = `${current.name} 메모 저장했어요 · 마지막 수정 ${formatLastUpdated(record.updatedAt)}`;
+        if (status) status.textContent = `${current.name} 수정 ${formatLastUpdated(record.updatedAt)}`;
         updateNoteDatePill(record);
         updateNoteTabState();
     }
