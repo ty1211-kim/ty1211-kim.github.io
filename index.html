@@ -424,6 +424,7 @@
             border: 1px solid var(--border);
             border-radius: 18px;
             padding: 20px;
+            overflow: hidden;
         }
         .knowledge-card-kicker {
             font-size: 11px;
@@ -471,8 +472,7 @@
         }
         .knowledge-diagram.is-freeform {
             display: block;
-            min-height: 520px;
-            overflow: visible;
+            overflow: hidden;
         }
         .knowledge-block-ff {
             position: absolute;
@@ -2137,12 +2137,18 @@
         });
         requestAnimationFrame(() => {
             const canvasRect = canvas.getBoundingClientRect();
-            let maxBottom = ff.height;
-            canvas.querySelectorAll('[data-block-id]').forEach(el => {
-                const r = el.getBoundingClientRect();
-                maxBottom = Math.max(maxBottom, r.bottom - canvasRect.top);
-            });
-            canvas.style.height = `${Math.ceil(maxBottom + 180)}px`;
+            const availW = canvasRect.width || canvas.clientWidth || 600;
+            // Scale height proportionally to canvas width (layout designed at 860px)
+            const scale = Math.min(1, availW / 860);
+            // Ensure top blocks aren't clipped: need H >= blockHalf / minTopY
+            const blockHalf = 58;
+            const positions = Object.values(ff.positions);
+            const minTopY  = Math.min(...positions.map(p => p.y));
+            const maxBotY  = Math.max(...positions.map(p => p.y));
+            const minHForTop = Math.ceil(blockHalf / minTopY) + 20;
+            const minHForBot = Math.ceil(blockHalf / (1 - maxBotY)) + 60;
+            const scaledH = Math.max(minHForTop, minHForBot, Math.ceil(ff.height * scale + 60));
+            canvas.style.height = scaledH + 'px';
             requestAnimationFrame(() => drawFreeformConnections(canvas, scenario.connections || []));
         });
     }
