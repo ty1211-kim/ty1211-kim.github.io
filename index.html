@@ -1983,7 +1983,7 @@
         if (title) title.textContent = scenario.name;
         if (summary) summary.textContent = scenario.summary;
 
-        const useFreeform = Boolean(scenario.freeform) && canvas.clientWidth >= 860;
+        const useFreeform = Boolean(scenario.freeform) && canvas.clientWidth >= 520;
         if (useFreeform) {
             canvas.classList.add('is-freeform');
             renderFreeformDiagram(scenario, canvas);
@@ -2063,21 +2063,41 @@
             blocks.set(el.dataset.blockId, el.getBoundingClientRect());
         });
 
+        function edgePoint(rect, side) {
+            const l = rect.left - canvasRect.left, r = rect.right - canvasRect.left;
+            const t = rect.top - canvasRect.top,   b = rect.bottom - canvasRect.top;
+            const cx = (l + r) / 2, cy = (t + b) / 2;
+            if (side === 'top')    return { x: cx, y: t };
+            if (side === 'bottom') return { x: cx, y: b };
+            if (side === 'left')   return { x: l,  y: cy };
+            return { x: r, y: cy }; // right
+        }
+
         connections.forEach((conn) => {
             const from = blocks.get(conn.from);
             const to = blocks.get(conn.to);
             if (!from || !to) return;
 
-            const x1 = from.left - canvasRect.left + from.width / 2;
-            const y1 = from.bottom - canvasRect.top;
-            const x2 = to.left - canvasRect.left + to.width / 2;
-            const y2 = to.top - canvasRect.top;
-            const midX = (x1 + x2) / 2 + (conn.labelDx || 0);
-            const midY = (y1 + y2) / 2 + (conn.labelDy || 0);
+            const route = conn.route || {};
+            const ss = route.startSide || 'bottom';
+            const es = route.endSide   || 'top';
+
+            const p1 = edgePoint(from, ss);
+            const p2 = edgePoint(to,   es);
+
+            // Control point direction follows the edge side
+            const bend = Math.max(24, (Math.abs(p2.x - p1.x) + Math.abs(p2.y - p1.y)) * 0.3);
+            const dir = { top: [0,-1], bottom: [0,1], left: [-1,0], right: [1,0] };
+            const [dx1, dy1] = dir[ss];
+            const [dx2, dy2] = dir[es];
+            const cx1 = p1.x + dx1 * bend, cy1 = p1.y + dy1 * bend;
+            const cx2 = p2.x + dx2 * bend, cy2 = p2.y + dy2 * bend;
+
+            const midX = (p1.x + p2.x) / 2 + (conn.labelDx || 0);
+            const midY = (p1.y + p2.y) / 2 + (conn.labelDy || 0);
 
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            const bend = Math.max(28, Math.abs(y2 - y1) * 0.28);
-            path.setAttribute('d', `M ${x1} ${y1} C ${x1} ${y1 + bend}, ${x2} ${y2 - bend}, ${x2} ${y2}`);
+            path.setAttribute('d', `M ${p1.x} ${p1.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${p2.x} ${p2.y}`);
             path.setAttribute('class', `knowledge-link-path${conn.memory ? ' memory' : ''}`);
             path.setAttribute('stroke', conn.memory ? '#30d158' : '#0a84ff');
             svg.appendChild(path);
@@ -2198,7 +2218,16 @@
                 pushLine(points, end.x, laneY);
                 pushLine(points, end.x, end.y);
             } else if (mode === 'h-bypass') {
-                const laneY = route.fixedLaneY != null ? route.fixedLaneY * cr.height : (from.cy + to.cy) / 2;
+                let laneY = route.fixedLaneY != null ? route.fixedLaneY * cr.height : (from.cy + to.cy) / 2;
+                // Push lane down if it overlaps any block in the horizontal corridor
+                const lx0 = Math.min(start.x, end.x), lx1 = Math.max(start.x, end.x);
+                for (let pass = 0; pass < 10; pass++) {
+                    const hit = allBounds.find(b => b !== from && b !== to &&
+                        b.left < lx1 - 4 && b.right > lx0 + 4 &&
+                        b.top < laneY + 6 && b.bottom > laneY - 6);
+                    if (!hit) break;
+                    laneY = hit.bottom + laneGap;
+                }
                 pushLine(points, start.x, laneY);
                 pushLine(points, end.x, laneY);
                 pushLine(points, end.x, end.y);
