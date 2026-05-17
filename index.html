@@ -130,11 +130,11 @@
     .diagram-visual { padding: 18px; border-right: 1px solid var(--line); }
     .diagram-frame { position: relative; border: 1px solid rgba(29,29,31,0.08); border-radius: 22px; overflow: hidden; background: #fff; }
     .diagram-frame img { display: block; width: 100%; height: auto; background: #fff; user-select: none; }
-    .hotspot { position: absolute; border: 2px solid transparent; border-radius: 18px; background: rgba(0,122,255,0.00); cursor: pointer; padding: 0; font: inherit; color: transparent; transition: background .16s ease, border-color .16s ease, box-shadow .16s ease; }
-    .hotspot::after { content: ""; position: absolute; right: 10px; top: 10px; width: 12px; height: 12px; border-radius: 999px; background: rgba(0,122,255,0.0); transition: background .16s ease, box-shadow .16s ease; }
-    .hotspot:hover, .hotspot:focus-visible { outline: none; background: rgba(0,122,255,0.055); border-color: rgba(0,122,255,0.35); box-shadow: inset 0 0 0 999px rgba(255,255,255,0.03); }
-    .hotspot:hover::after, .hotspot:focus-visible::after, .hotspot.active::after { background: var(--blue); box-shadow: 0 0 0 4px rgba(0,122,255,0.14); }
-    .hotspot.active { background: rgba(0,122,255,0.06); border-color: rgba(0,122,255,0.52); box-shadow: inset 0 0 0 999px rgba(255,255,255,0.02); }
+    .hotspot { position: absolute; border: 0; border-radius: 18px; background: transparent; cursor: pointer; padding: 0; font: inherit; color: transparent; -webkit-tap-highlight-color: transparent; }
+    .hotspot::after { display: none; }
+    .hotspot:hover { background: rgba(0,122,255,0.025); }
+    .hotspot:focus-visible { outline: 3px solid rgba(0,122,255,0.36); outline-offset: -3px; }
+    .hotspot.active { background: transparent; box-shadow: none; }
     .diagram-hint { color: var(--muted); font-size: 13px; margin: 12px 4px 0; }
     .component-detail { padding: 24px; display: flex; flex-direction: column; gap: 14px; background: linear-gradient(180deg,#fff,#fbfbfd); }
     .component-kicker { color: var(--blue); font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
@@ -146,6 +146,21 @@
     .chip { border: 1px solid rgba(29,29,31,0.10); background: #fff; border-radius: 999px; padding: 6px 10px; color: var(--muted-strong); font-size: 12px; font-weight: 800; }
     .video-list { display: grid; gap: 8px; }
     .video-list a { display: block; text-decoration: none; border: 1px solid rgba(0,122,255,0.16); border-radius: 14px; background: rgba(0,122,255,0.06); color: #0057b8; padding: 9px 10px; font-size: 13px; font-weight: 800; }
+
+    .music-player { position: fixed; right: 24px; bottom: 24px; z-index: 80; display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(29,29,31,0.12); border-radius: 999px; background: rgba(255,255,255,0.82); box-shadow: 0 18px 46px rgba(0,0,0,0.12); backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%); padding: 10px 14px 10px 10px; color: var(--text); cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
+    .music-player:hover { transform: translateY(-2px); box-shadow: 0 22px 54px rgba(0,0,0,0.15); background: rgba(255,255,255,0.94); }
+    .music-icon { width: 34px; height: 34px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(180deg,#0a84ff,#0071e3); color: #fff; font-size: 13px; font-weight: 900; flex: 0 0 auto; }
+    .music-copy { display: grid; line-height: 1.15; text-align: left; }
+    .music-copy strong { font-size: 12px; letter-spacing: -0.02em; }
+    .music-copy small { margin-top: 2px; font-size: 11px; color: var(--muted); }
+    .music-bars { display: none; align-items: end; gap: 2px; height: 16px; margin-left: 2px; }
+    .music-bars.playing { display: inline-flex; }
+    .music-bars i { display: block; width: 3px; border-radius: 999px; background: var(--blue); animation: musicBar .8s ease-in-out infinite; }
+    .music-bars i:nth-child(1) { height: 7px; animation-delay: 0s; }
+    .music-bars i:nth-child(2) { height: 13px; animation-delay: .12s; }
+    .music-bars i:nth-child(3) { height: 9px; animation-delay: .24s; }
+    .music-bars i:nth-child(4) { height: 15px; animation-delay: .08s; }
+    @keyframes musicBar { 0%,100% { transform: scaleY(.45); } 50% { transform: scaleY(1); } }
 
     .note-layout { display: grid; grid-template-columns: 240px minmax(0,1fr); gap: 16px; }
     .note-tabs { display: grid; gap: 8px; align-content: start; }
@@ -166,10 +181,16 @@
 
     @media (max-width: 1120px) { .stock-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .diagram-layout { grid-template-columns: 1fr; } .diagram-visual { border-right: 0; border-bottom: 1px solid var(--line); } }
     @media (max-width: 980px) { .hero-grid, .note-layout { grid-template-columns: 1fr; } .quote-grid, .resource-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .hero-card { min-height: auto; } }
-    @media (max-width: 620px) { .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .hotspot::after { right: 5px; top: 5px; width: 9px; height: 9px; } }
+    @media (max-width: 620px) { .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .music-player { right: 12px; bottom: 12px; max-width: calc(100% - 24px); } }
   </style>
 </head>
 <body>
+  <div id="yt-player" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:0;height:0;overflow:hidden"></div>
+  <button class="music-player" id="music-player" type="button" aria-label="음악 재생 또는 일시정지">
+    <span class="music-icon" id="music-icon">▶</span>
+    <span class="music-copy"><strong>Lofi Chill Mix</strong><small id="music-status">자동 재생 준비</small></span>
+    <span class="music-bars" id="music-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  </button>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <a class="brand" href="#top" aria-label="TY의 주식공부 홈"><span class="brand-mark"></span><span>TY의 주식공부</span></a>
@@ -289,11 +310,11 @@
         frameId: 'pc-diagram',
         detailId: 'pc-detail',
         hotspots: [
-          { id: 'cpu', label: 'CPU', x: 7.5, y: 25.0, w: 23.0, h: 13.0 },
-          { id: 'dram', label: 'DRAM', x: 39.0, y: 25.0, w: 23.0, h: 13.0 },
-          { id: 'gpu', label: 'GPU', x: 71.0, y: 25.0, w: 23.0, h: 13.0 },
-          { id: 'nand', label: 'NAND / SSD', x: 39.0, y: 69.0, w: 23.0, h: 13.0 },
-          { id: 'vram', label: 'VRAM', x: 71.0, y: 69.0, w: 23.0, h: 13.0 }
+          { id: 'cpu', label: 'CPU', x: 7.1, y: 23.8, w: 23.5, h: 12.8 },
+          { id: 'dram', label: 'DRAM', x: 38.3, y: 23.8, w: 23.5, h: 12.8 },
+          { id: 'gpu', label: 'GPU', x: 69.6, y: 23.8, w: 23.5, h: 12.8 },
+          { id: 'nand', label: 'NAND / SSD', x: 38.3, y: 65.2, w: 23.5, h: 12.8 },
+          { id: 'vram', label: 'VRAM', x: 69.6, y: 65.2, w: 23.5, h: 12.8 }
         ]
       },
       ai: {
@@ -301,12 +322,12 @@
         frameId: 'ai-diagram',
         detailId: 'ai-detail',
         hotspots: [
-          { id: 'host-cpu', label: 'Host CPU', x: 6.2, y: 18.8, w: 21.0, h: 11.2 },
-          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 33.8, y: 18.8, w: 21.0, h: 11.2 },
-          { id: 'hbm', label: 'HBM', x: 65.5, y: 18.8, w: 21.0, h: 11.2 },
-          { id: 'ssd-lake', label: 'SSD / Data Lake', x: 6.2, y: 64.2, w: 21.0, h: 11.2 },
-          { id: 'hbf-cxl', label: 'HBF / CXL Memory', x: 33.8, y: 64.2, w: 21.0, h: 11.2 },
-          { id: 'interconnect', label: 'Interconnect', x: 65.5, y: 64.2, w: 21.0, h: 11.2 }
+          { id: 'host-cpu', label: 'Host CPU', x: 5.8, y: 18.7, w: 20.2, h: 10.8 },
+          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 31.8, y: 18.7, w: 20.4, h: 10.8 },
+          { id: 'hbm', label: 'HBM', x: 61.5, y: 18.7, w: 20.2, h: 10.8 },
+          { id: 'ssd-lake', label: 'SSD / Data Lake', x: 5.8, y: 65.0, w: 20.2, h: 10.8 },
+          { id: 'hbf-cxl', label: 'HBF / CXL Memory', x: 31.8, y: 65.0, w: 20.4, h: 10.8 },
+          { id: 'interconnect', label: 'Interconnect', x: 61.5, y: 65.0, w: 20.2, h: 10.8 }
         ]
       }
     };
@@ -631,8 +652,75 @@
     function selectNote(id) { activeNote = id; const label = noteTargets.find(item => item[0] === id)?.[1] || '메모'; const saved = readNote(id); document.getElementById('note-title').textContent = label; document.getElementById('note-area').value = saved.text || noteTemplate(label); document.getElementById('note-status').textContent = saved.updatedAt ? `마지막 저장 ${saved.updatedAt}` : '저장 기록 없음'; renderTabs(); }
     function saveNote() { const value = document.getElementById('note-area').value.trim() || noteTemplate('메모'); const updatedAt = new Date().toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); localStorage.setItem(noteKey(activeNote), JSON.stringify({ text: value, updatedAt })); document.getElementById('note-status').textContent = `마지막 저장 ${updatedAt}`; }
 
+    const MUSIC_VIDEO_ID = 'RWQ-jvnzvhM';
+    let ytPlayer = null;
+    let ytReady = false;
+    let musicWanted = true;
+
+    function setMusicUi(playing, status) {
+      const icon = document.getElementById('music-icon');
+      const statusEl = document.getElementById('music-status');
+      const bars = document.getElementById('music-bars');
+      if (icon) icon.textContent = playing ? '⏸' : '▶';
+      if (statusEl) statusEl.textContent = status || (playing ? '재생 중' : '일시정지');
+      if (bars) bars.classList.toggle('playing', Boolean(playing));
+    }
+
+    function tryPlayMusic(label = '자동 재생 시도') {
+      if (!ytReady || !ytPlayer) return;
+      musicWanted = true;
+      try {
+        ytPlayer.setVolume(36);
+        ytPlayer.playVideo();
+        setMusicUi(true, label);
+        setTimeout(() => {
+          if (!ytPlayer || ytPlayer.getPlayerState?.() !== YT.PlayerState.PLAYING) setMusicUi(false, '클릭하여 재생');
+        }, 1500);
+      } catch {
+        setMusicUi(false, '클릭하여 재생');
+      }
+    }
+
+    function toggleMusic() {
+      if (!ytReady || !ytPlayer) return;
+      const state = ytPlayer.getPlayerState?.();
+      if (state === YT.PlayerState.PLAYING) {
+        musicWanted = false;
+        ytPlayer.pauseVideo();
+        setMusicUi(false, '일시정지');
+      } else {
+        tryPlayMusic('재생 중');
+      }
+    }
+
+    function initMusic() {
+      const playerButton = document.getElementById('music-player');
+      if (playerButton) playerButton.addEventListener('click', toggleMusic);
+      window.onYouTubeIframeAPIReady = () => {
+        ytPlayer = new YT.Player('yt-player', {
+          height: '0',
+          width: '0',
+          videoId: MUSIC_VIDEO_ID,
+          playerVars: { autoplay: 1, loop: 1, playlist: MUSIC_VIDEO_ID, controls: 0, rel: 0, playsinline: 1 },
+          events: {
+            onReady: () => { ytReady = true; tryPlayMusic(); },
+            onStateChange: (event) => {
+              if (event.data === YT.PlayerState.ENDED && musicWanted) ytPlayer.playVideo();
+              if (event.data === YT.PlayerState.PLAYING) setMusicUi(true, '재생 중');
+              if (event.data === YT.PlayerState.PAUSED) setMusicUi(false, '일시정지');
+            }
+          }
+        });
+      };
+      const script = document.createElement('script');
+      script.src = 'https://www.youtube.com/iframe_api';
+      script.async = true;
+      document.head.appendChild(script);
+      document.addEventListener('pointerdown', () => { if (musicWanted) tryPlayMusic('재생 중'); }, { once: true });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-      renderQuoteCards(); renderStockCards(); initDiagrams(); selectNote(activeNote);
+      renderQuoteCards(); renderStockCards(); initDiagrams(); selectNote(activeNote); initMusic();
       document.getElementById('save-note').addEventListener('click', saveNote);
       document.getElementById('refresh-quotes').addEventListener('click', () => refreshData({ force: true }));
       refreshData();
