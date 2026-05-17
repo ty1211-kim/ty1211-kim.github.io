@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TY의 주식공부</title>
-  <meta name="description" content="반도체 중심 투자 공부를 위한 개인 대시보드. 매크로, 지수, 반도체 종목, 리포트, 공시, 매매일지를 한곳에 정리합니다.">
+  <meta name="description" content="반도체 중심 투자 공부를 위한 개인 대시보드. 매크로, 반도체 종목, 블록다이어그램, 리포트, 공시, 판단 기록을 한곳에 정리합니다.">
   <style>
     :root {
       --bg: #f5f5f7;
@@ -12,6 +12,7 @@
       --paper-soft: #fbfbfd;
       --surface: rgba(255,255,255,0.78);
       --line: rgba(29,29,31,0.11);
+      --line-strong: rgba(29,29,31,0.18);
       --text: #1d1d1f;
       --muted: #6e6e73;
       --muted-strong: #3d3d42;
@@ -19,6 +20,7 @@
       --green: #34c759;
       --red: #ff3b30;
       --amber: #ff9f0a;
+      --purple: #5856d6;
       --radius: 28px;
       --shadow: 0 24px 70px rgba(0,0,0,0.08);
       --shadow-soft: 0 12px 34px rgba(0,0,0,0.06);
@@ -29,8 +31,8 @@
     body {
       margin: 0;
       background:
-        radial-gradient(circle at 15% -8%, rgba(0,122,255,0.15), transparent 36%),
-        radial-gradient(circle at 90% 3%, rgba(52,199,89,0.12), transparent 32%),
+        radial-gradient(circle at 12% -10%, rgba(0,122,255,0.15), transparent 36%),
+        radial-gradient(circle at 92% 0%, rgba(52,199,89,0.12), transparent 32%),
         linear-gradient(180deg, #ffffff 0%, #f5f5f7 46%, #fbfbfd 100%);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Noto Sans KR", "Noto Sans CJK KR", "Segoe UI", sans-serif;
@@ -38,24 +40,22 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
-
     a { color: inherit; }
+    h1,h2,h3,h4,p { margin-top: 0; }
     .wrap { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
 
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 20;
+      z-index: 40;
       border-bottom: 1px solid rgba(29,29,31,0.08);
       background: rgba(255,255,255,0.75);
       backdrop-filter: blur(24px) saturate(170%);
       -webkit-backdrop-filter: blur(24px) saturate(170%);
     }
-
     .topbar-inner { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 14px 0; }
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 900; letter-spacing: -0.035em; }
     .brand-mark { width: 14px; height: 14px; border-radius: 999px; background: linear-gradient(135deg, var(--blue), var(--green)); box-shadow: 0 8px 22px rgba(0,122,255,0.22); }
-
     .nav { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
     .nav a, .ghost-btn, .primary-btn {
       border: 1px solid transparent;
@@ -64,7 +64,7 @@
       color: var(--muted-strong);
       text-decoration: none;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 850;
       background: transparent;
       cursor: pointer;
       transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
@@ -79,11 +79,9 @@
     .hero-card { position: relative; isolation: isolate; overflow: hidden; min-height: 430px; padding: 42px; display: flex; flex-direction: column; justify-content: space-between; }
     .hero-card::before { content: ""; position: absolute; inset: 1px; border-radius: calc(var(--radius) - 1px); background: radial-gradient(circle at 84% 74%, rgba(52,199,89,0.18), transparent 34%), radial-gradient(circle at 70% 12%, rgba(0,122,255,0.12), transparent 32%); z-index: -1; }
     .eyebrow { display: inline-flex; width: fit-content; align-items: center; gap: 8px; color: #0057b8; background: rgba(0,122,255,0.08); border: 1px solid rgba(0,122,255,0.16); border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 900; }
-    h1,h2,h3,p { margin-top: 0; }
     h1 { margin: 20px 0 16px; font-size: clamp(42px,6vw,72px); line-height: 1.02; letter-spacing: -0.075em; }
     .hero-copy { max-width: 720px; color: var(--muted-strong); font-size: 20px; letter-spacing: -0.025em; }
     .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
-
     .flow-card { padding: 26px; background: rgba(255,255,255,0.73); }
     .flow-title { color: var(--muted); font-size: 13px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
     .flow-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
@@ -95,7 +93,7 @@
     section { padding: 34px 0; }
     .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
     .section-head h2 { margin: 0; font-size: clamp(28px,4vw,44px); letter-spacing: -0.06em; line-height: 1.1; }
-    .section-head p { margin: 8px 0 0; color: var(--muted); max-width: 650px; }
+    .section-head p { margin: 8px 0 0; color: var(--muted); max-width: 720px; }
     .panel { padding: 24px; }
 
     .quote-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
@@ -110,23 +108,44 @@
     .data-status::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--blue); box-shadow: 0 0 0 4px rgba(0,122,255,0.10); }
     .up { color: #1f9d4d; } .down { color: #d92d20; } .flat { color: var(--muted); }
 
-    .stock-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
-    .stock-card, .diagram-card, .resource-card { border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,0.82); box-shadow: var(--shadow-soft); }
-    .stock-card { padding: 22px; }
-    .stock-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
-    .stock-top h3 { margin: 0; font-size: 23px; letter-spacing: -0.045em; }
-    .ticker { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .stock-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
+    .stock-card { border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,0.86); box-shadow: var(--shadow-soft); padding: 20px; min-height: 300px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+    .stock-card:hover { transform: translateY(-2px); border-color: rgba(0,122,255,0.22); box-shadow: 0 18px 42px rgba(0,0,0,0.075); }
+    .stock-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
+    .stock-top h3 { margin: 0; font-size: 23px; letter-spacing: -0.045em; line-height: 1.08; }
+    .ticker { color: var(--muted); font-size: 13px; margin-top: 4px; }
     .tag { flex: 0 0 auto; border-radius: 999px; background: rgba(52,199,89,0.10); color: #087c38; border: 1px solid rgba(52,199,89,0.18); padding: 6px 10px; font-size: 12px; font-weight: 850; }
-    .stock-thesis { min-height: 78px; color: var(--muted-strong); margin-bottom: 16px; }
+    .stock-thesis { color: var(--muted-strong); margin: 0 0 15px; min-height: 68px; font-size: 14px; }
+    .stock-metrics { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-bottom: 14px; }
+    .metric { border: 1px solid rgba(29,29,31,0.08); background: #fff; border-radius: 16px; padding: 11px; min-width: 0; }
+    .metric-label { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; }
+    .metric-value { margin-top: 3px; font-size: 18px; font-weight: 900; letter-spacing: -0.045em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stock-change { font-size: 12px; min-height: 18px; }
     .link-row { display: flex; flex-wrap: wrap; gap: 8px; }
     .link-row a { text-decoration: none; border: 1px solid rgba(0,122,255,0.18); background: rgba(0,122,255,0.07); color: #0057b8; border-radius: 999px; padding: 7px 11px; font-size: 13px; font-weight: 800; }
 
-    .diagram-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-    .diagram-card { overflow: hidden; background: #fff; }
-    .diagram-card img { display: block; width: 100%; height: auto; background: #fff; }
-    .diagram-copy { display: grid; grid-template-columns: 260px minmax(0,1fr); gap: 16px; padding: 20px 24px 24px; border-top: 1px solid var(--line); }
-    .diagram-copy h3 { margin: 0; font-size: 22px; letter-spacing: -0.045em; }
-    .diagram-copy p { margin: 0; color: var(--muted-strong); }
+    .diagram-stack { display: grid; gap: 22px; }
+    .diagram-card { border: 1px solid var(--line); border-radius: 26px; background: rgba(255,255,255,0.86); box-shadow: var(--shadow-soft); overflow: hidden; }
+    .diagram-layout { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: 0; align-items: stretch; }
+    .diagram-visual { padding: 18px; border-right: 1px solid var(--line); }
+    .diagram-frame { position: relative; border: 1px solid rgba(29,29,31,0.08); border-radius: 22px; overflow: hidden; background: #fff; }
+    .diagram-frame img { display: block; width: 100%; height: auto; background: #fff; user-select: none; }
+    .hotspot { position: absolute; border: 2px solid transparent; border-radius: 18px; background: rgba(0,122,255,0.00); cursor: pointer; padding: 0; font: inherit; color: transparent; transition: background .16s ease, border-color .16s ease, box-shadow .16s ease; }
+    .hotspot::after { content: ""; position: absolute; right: 10px; top: 10px; width: 12px; height: 12px; border-radius: 999px; background: rgba(0,122,255,0.0); transition: background .16s ease, box-shadow .16s ease; }
+    .hotspot:hover, .hotspot:focus-visible { outline: none; background: rgba(0,122,255,0.055); border-color: rgba(0,122,255,0.35); box-shadow: inset 0 0 0 999px rgba(255,255,255,0.03); }
+    .hotspot:hover::after, .hotspot:focus-visible::after, .hotspot.active::after { background: var(--blue); box-shadow: 0 0 0 4px rgba(0,122,255,0.14); }
+    .hotspot.active { background: rgba(0,122,255,0.06); border-color: rgba(0,122,255,0.52); box-shadow: inset 0 0 0 999px rgba(255,255,255,0.02); }
+    .diagram-hint { color: var(--muted); font-size: 13px; margin: 12px 4px 0; }
+    .component-detail { padding: 24px; display: flex; flex-direction: column; gap: 14px; background: linear-gradient(180deg,#fff,#fbfbfd); }
+    .component-kicker { color: var(--blue); font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+    .component-detail h3 { margin: 0; font-size: 28px; line-height: 1.12; letter-spacing: -0.055em; }
+    .component-detail p { margin: 0; color: var(--muted-strong); }
+    .detail-block { border-top: 1px solid rgba(29,29,31,0.08); padding-top: 13px; }
+    .detail-block strong { display: block; margin-bottom: 8px; font-size: 13px; color: var(--text); letter-spacing: -0.02em; }
+    .chip-list { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip { border: 1px solid rgba(29,29,31,0.10); background: #fff; border-radius: 999px; padding: 6px 10px; color: var(--muted-strong); font-size: 12px; font-weight: 800; }
+    .video-list { display: grid; gap: 8px; }
+    .video-list a { display: block; text-decoration: none; border: 1px solid rgba(0,122,255,0.16); border-radius: 14px; background: rgba(0,122,255,0.06); color: #0057b8; padding: 9px 10px; font-size: 13px; font-weight: 800; }
 
     .note-layout { display: grid; grid-template-columns: 240px minmax(0,1fr); gap: 16px; }
     .note-tabs { display: grid; gap: 8px; align-content: start; }
@@ -139,27 +158,15 @@
     textarea:focus { border-color: rgba(0,122,255,0.48); box-shadow: 0 0 0 4px rgba(0,122,255,0.10); }
 
     .resource-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
-    .resource-card { display: block; text-decoration: none; padding: 20px; transition: transform .18s ease, border-color .18s ease; }
+    .resource-card { display: block; text-decoration: none; padding: 20px; border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,0.86); box-shadow: var(--shadow-soft); transition: transform .18s ease, border-color .18s ease; }
     .resource-card:hover { transform: translateY(-2px); border-color: rgba(0,122,255,0.24); }
     .resource-card strong { display: block; margin-bottom: 6px; font-size: 17px; letter-spacing: -0.035em; }
     .resource-card span { color: var(--muted); font-size: 13px; }
     footer { padding: 44px 0 60px; color: var(--muted); border-top: 1px solid rgba(29,29,31,0.09); margin-top: 40px; }
 
-    @media (max-width: 980px) {
-      .hero-grid, .note-layout, .diagram-copy { grid-template-columns: 1fr; }
-      .quote-grid, .resource-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-      .stock-grid { grid-template-columns: 1fr; }
-      .hero-card { min-height: auto; }
-    }
-    @media (max-width: 620px) {
-      .wrap { width: min(100% - 24px,1180px); }
-      .topbar-inner { align-items: flex-start; flex-direction: column; }
-      .nav { justify-content: flex-start; }
-      .hero { padding-top: 42px; }
-      .hero-card, .panel, .flow-card { padding: 20px; }
-      .quote-grid, .resource-grid { grid-template-columns: 1fr; }
-      .section-head { align-items: start; flex-direction: column; }
-    }
+    @media (max-width: 1120px) { .stock-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .diagram-layout { grid-template-columns: 1fr; } .diagram-visual { border-right: 0; border-bottom: 1px solid var(--line); } }
+    @media (max-width: 980px) { .hero-grid, .note-layout { grid-template-columns: 1fr; } .quote-grid, .resource-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .hero-card { min-height: auto; } }
+    @media (max-width: 620px) { .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .hotspot::after { right: 5px; top: 5px; width: 9px; height: 9px; } }
   </style>
 </head>
 <body>
@@ -179,17 +186,17 @@
           <div>
             <div class="eyebrow">반도체 중심 투자 판단 시스템</div>
             <h1>시장, 산업, 종목, 기록을 하나로 묶는다.</h1>
-            <p class="hero-copy">매크로를 먼저 보고, 반도체 구조를 이해하고, 삼성전자·SK하이닉스·마이크론 판단을 기록하는 개인 대시보드입니다.</p>
-            <div class="hero-actions"><a class="primary-btn" href="#market">오늘 시장 보기</a><a class="ghost-btn" href="#journal">판단 기록하기</a></div>
+            <p class="hero-copy">매크로를 먼저 보고, 반도체 구조를 클릭해서 이해하고, 핵심 반도체 종목의 가격·시총·근거를 기록하는 개인 대시보드입니다.</p>
+            <div class="hero-actions"><a class="primary-btn" href="#market">오늘 시장 보기</a><a class="ghost-btn" href="#semiconductor">구조 공부하기</a><a class="ghost-btn" href="#journal">판단 기록하기</a></div>
           </div>
         </div>
         <aside class="flow-card mini-panel" aria-label="일일 판단 흐름">
           <div class="flow-title">Daily Operating Flow</div>
           <ol class="flow-list">
-            <li><span class="flow-no">1</span><div><strong>매크로</strong><span>환율·금·유가·지수·비트코인으로 시장 온도를 확인</span></div></li>
-            <li><span class="flow-no">2</span><div><strong>산업</strong><span>메모리 병목과 AI 수요를 기준으로 해석</span></div></li>
-            <li><span class="flow-no">3</span><div><strong>종목</strong><span>삼성전자·SK하이닉스·마이크론만 먼저 비교</span></div></li>
-            <li><span class="flow-no">4</span><div><strong>자료</strong><span>리포트·공시·실적 캘린더로 확인</span></div></li>
+            <li><span class="flow-no">1</span><div><strong>시장 온도</strong><span>환율·금·유가·지수·비트코인 확인</span></div></li>
+            <li><span class="flow-no">2</span><div><strong>종목 비교</strong><span>주가와 시총으로 반도체 체인 비교</span></div></li>
+            <li><span class="flow-no">3</span><div><strong>구조 이해</strong><span>블록을 눌러 부품·회사·영상 확인</span></div></li>
+            <li><span class="flow-no">4</span><div><strong>자료 검증</strong><span>공시·리포트·실적 캘린더 확인</span></div></li>
             <li><span class="flow-no">5</span><div><strong>기록</strong><span>오늘의 판단과 다음 행동을 남김</span></div></li>
           </ol>
         </aside>
@@ -198,28 +205,40 @@
 
     <section id="market">
       <div class="wrap">
-        <div class="section-head"><div><h2>오늘의 시장 온도</h2><p>환율·금·유가·지수·비트코인·대표 반도체주만 빠르게 확인합니다.</p></div><button class="ghost-btn" id="refresh-quotes" type="button">새로고침</button></div>
+        <div class="section-head"><div><h2>오늘의 시장 온도</h2><p>삼성전자·하이닉스는 제외하고, 환율·금·유가·지수·비트코인·마이크론·한국 기준금리만 빠르게 확인합니다.</p></div><button class="ghost-btn" id="refresh-quotes" type="button">새로고침</button></div>
         <div class="panel"><div class="quote-grid" id="quote-grid"></div><div class="data-status" id="market-status">캐시를 먼저 표시하고 최신 가격을 갱신합니다.</div></div>
       </div>
     </section>
 
     <section id="stocks">
       <div class="wrap">
-        <div class="section-head"><div><h2>핵심 종목</h2><p>반도체 사이클을 보기 위한 최소 종목군입니다.</p></div></div>
-        <div class="stock-grid">
-          <article class="stock-card"><div class="stock-top"><div><h3>삼성전자</h3><div class="ticker">005930 · KRX</div></div><span class="tag">메모리+세트</span></div><p class="stock-thesis">DRAM·NAND 사이클, 파운드리 개선, 모바일·서버 수요를 함께 확인합니다.</p><div class="link-row"><a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer">네이버</a><a href="https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A005930" target="_blank" rel="noopener noreferrer">FnGuide</a><a href="https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&finalReport=recent" target="_blank" rel="noopener noreferrer">DART</a></div></article>
-          <article class="stock-card"><div class="stock-top"><div><h3>SK하이닉스</h3><div class="ticker">000660 · KRX</div></div><span class="tag">HBM 중심</span></div><p class="stock-thesis">HBM, 서버 DRAM, AI 가속기 수요가 실적과 밸류에이션을 어떻게 바꾸는지 추적합니다.</p><div class="link-row"><a href="https://finance.naver.com/item/main.naver?code=000660" target="_blank" rel="noopener noreferrer">네이버</a><a href="https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A000660" target="_blank" rel="noopener noreferrer">FnGuide</a><a href="https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&finalReport=recent" target="_blank" rel="noopener noreferrer">DART</a></div></article>
-          <article class="stock-card"><div class="stock-top"><div><h3>마이크론</h3><div class="ticker">MU · NASDAQ</div></div><span class="tag">글로벌 비교</span></div><p class="stock-thesis">미국 메모리 대표주로 가격 사이클, HBM 경쟁력, 글로벌 투자심리를 비교합니다.</p><div class="link-row"><a href="https://finance.yahoo.com/quote/MU" target="_blank" rel="noopener noreferrer">Yahoo</a><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&owner=include&count=10" target="_blank" rel="noopener noreferrer">SEC</a><a href="https://www.tradingview.com/chart/?symbol=NASDAQ%3AMU" target="_blank" rel="noopener noreferrer">Chart</a></div></article>
-        </div>
+        <div class="section-head"><div><h2>핵심 종목</h2><p>메모리·CPU·GPU·NAND 밸류체인을 한 번에 비교합니다. 주가와 시가총액은 같은 quote 묶음에서 받아옵니다.</p></div></div>
+        <div class="stock-grid" id="stock-grid"></div>
       </div>
     </section>
 
     <section id="semiconductor">
       <div class="wrap">
-        <div class="section-head"><div><h2>반도체 구조</h2><p>가격을 보기 전에 병목이 어디서 생기는지 먼저 봅니다.</p></div></div>
-        <div class="diagram-grid">
-          <article class="diagram-card"><img src="assets/diagrams/pc-memory-structure.png" alt="일반 PC에서 CPU, DRAM, GPU, VRAM, NAND SSD가 연결되는 메모리 구조도"><div class="diagram-copy"><h3>일반 PC: 저장 위치의 차이</h3><p>DRAM은 CPU의 즉시 작업공간이고, NAND/SSD는 장기 저장소입니다. GPU는 VRAM을 전용 버퍼로 사용합니다.</p></div></article>
-          <article class="diagram-card"><img src="assets/diagrams/ai-memory-structure.png" alt="AI 시스템에서 Host CPU, SSD, HBF, HBM, AI GPU, Fabric이 연결되는 메모리 구조도"><div class="diagram-copy"><h3>AI 시스템: 데이터 공급 병목</h3><p>AI 학습·추론에서는 SSD, 확장 메모리, HBM, GPU로 갈수록 데이터가 가까워지고 빠르며 비싸집니다.</p></div></article>
+        <div class="section-head"><div><h2>반도체 구조</h2><p>블록을 누르면 역할, 대표 회사, 관련 종목, YouTube 학습 링크가 오른쪽에 표시됩니다.</p></div></div>
+        <div class="diagram-stack">
+          <article class="diagram-card">
+            <div class="diagram-layout">
+              <div class="diagram-visual">
+                <div class="diagram-frame" id="pc-diagram"><img src="assets/diagrams/pc-memory-structure.png" alt="일반 PC에서 CPU, DRAM, GPU, VRAM, NAND SSD가 연결되는 메모리 구조도"></div>
+                <p class="diagram-hint">PC 구조: CPU, DRAM, GPU, NAND/SSD, VRAM 블록을 눌러 설명을 확인합니다.</p>
+              </div>
+              <aside class="component-detail" id="pc-detail" aria-live="polite"></aside>
+            </div>
+          </article>
+          <article class="diagram-card">
+            <div class="diagram-layout">
+              <div class="diagram-visual">
+                <div class="diagram-frame" id="ai-diagram"><img src="assets/diagrams/ai-memory-structure.png" alt="AI 시스템에서 Host CPU, SSD/Data Lake, HBF/CXL Memory, AI GPU/NPU, HBM, Interconnect가 연결되는 메모리 구조도"></div>
+                <p class="diagram-hint">AI 구조: Host CPU, AI GPU/NPU, HBM, HBF/CXL Memory, SSD/Data Lake, Interconnect 블록을 눌러 설명을 확인합니다.</p>
+              </div>
+              <aside class="component-detail" id="ai-detail" aria-live="polite"></aside>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -242,7 +261,7 @@
   <footer><div class="wrap">핵심 원칙: 투자 판단은 가격만 보지 않는다. 매크로 → 산업 병목 → 종목 근거 → 기록 순서로 본다.</div></footer>
 
   <script>
-    const quotes = [
+    const marketQuotes = [
       { id: 'usdkrw', group: 'FX', name: '원/달러', ticker: 'USDKRW=X', format: 'krwFx', url: 'https://finance.yahoo.com/quote/USDKRW=X' },
       { id: 'gold', group: 'Macro', name: '국제 금', ticker: 'GC=F', format: 'gold', url: 'https://finance.yahoo.com/quote/GC=F' },
       { id: 'oil', group: 'Macro', name: 'WTI 유가', ticker: 'CL=F', format: 'usd', url: 'https://finance.yahoo.com/quote/CL=F' },
@@ -253,78 +272,371 @@
       { id: 'kr-rate', group: 'Rate', name: '한국 기준금리', localRate: true, format: 'rate', url: 'https://www.bok.or.kr/portal/main/contents.do?menuNo=200643' }
     ];
 
-    const noteTargets = [['market','시장 메모'],['semiconductor','반도체 구조'],['samsung','삼성전자'],['hynix','SK하이닉스'],['micron','마이크론'],['action','다음 행동']];
-    const QUOTE_CACHE_KEY = 'ty-market-quotes-v3';
+    const coreStocks = [
+      { id: 'samsung', name: '삼성전자', ticker: '005930.KS', displayTicker: '005930 · KRX', tag: '메모리+세트', thesis: 'DRAM·NAND 사이클, 파운드리 개선, 모바일·서버 수요를 함께 확인합니다.', links: [['네이버','https://finance.naver.com/item/main.naver?code=005930'],['FnGuide','https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A005930'],['DART','https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&finalReport=recent']] },
+      { id: 'hynix', name: 'SK하이닉스', ticker: '000660.KS', displayTicker: '000660 · KRX', tag: 'HBM 중심', thesis: 'HBM, 서버 DRAM, AI 가속기 수요가 실적과 밸류에이션을 어떻게 바꾸는지 추적합니다.', links: [['네이버','https://finance.naver.com/item/main.naver?code=000660'],['FnGuide','https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A000660'],['DART','https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&finalReport=recent']] },
+      { id: 'micron-stock', name: '마이크론', ticker: 'MU', displayTicker: 'MU · NASDAQ', tag: '글로벌 메모리', thesis: '미국 메모리 대표주로 가격 사이클, HBM 경쟁력, 글로벌 투자심리를 비교합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/MU'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3AMU']] },
+      { id: 'intel', name: '인텔', ticker: 'INTC', displayTicker: 'INTC · NASDAQ', tag: 'CPU+파운드리', thesis: '서버 CPU, PC CPU, 공정 전환, 파운드리 재건 속도를 함께 봅니다.', links: [['Yahoo','https://finance.yahoo.com/quote/INTC'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=INTC&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3AINTC']] },
+      { id: 'amd', name: 'AMD', ticker: 'AMD', displayTicker: 'AMD · NASDAQ', tag: 'CPU+GPU', thesis: 'EPYC 서버 CPU, Radeon/Instinct GPU, AI 가속기 점유율 변화를 확인합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/AMD'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=AMD&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3AAMD']] },
+      { id: 'nvidia', name: '엔비디아', ticker: 'NVDA', displayTicker: 'NVDA · NASDAQ', tag: 'AI GPU', thesis: 'AI GPU, CUDA 생태계, HBM 수요, 네트워킹까지 반도체 사이클의 중심축입니다.', links: [['Yahoo','https://finance.yahoo.com/quote/NVDA'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=NVDA&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3ANVDA']] },
+      { id: 'sandisk', name: '샌디스크', ticker: 'SNDK', displayTicker: 'SNDK · NASDAQ', tag: 'NAND/SSD', thesis: 'NAND 플래시와 SSD 수요, AI 데이터 저장소 확장 흐름을 추적합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/SNDK'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=SNDK&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3ASNDK']] },
+      { id: 'kioxia', name: '키옥시아', ticker: '285A.T', displayTicker: '285A · TSE', tag: 'NAND/SSD', thesis: '일본 NAND·SSD 핵심 업체로, 샌디스크와 함께 저장장치 사이클을 비교합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/285A.T'],['IR','https://www.kioxia-holdings.com/en-jp/ir.html'],['Chart','https://www.tradingview.com/chart/?symbol=TSE%3A285A']] }
+    ];
+
+    const componentData = {
+      pc: {
+        defaultId: 'cpu',
+        frameId: 'pc-diagram',
+        detailId: 'pc-detail',
+        hotspots: [
+          { id: 'cpu', label: 'CPU', x: 7.5, y: 25.0, w: 23.0, h: 13.0 },
+          { id: 'dram', label: 'DRAM', x: 39.0, y: 25.0, w: 23.0, h: 13.0 },
+          { id: 'gpu', label: 'GPU', x: 71.0, y: 25.0, w: 23.0, h: 13.0 },
+          { id: 'nand', label: 'NAND / SSD', x: 39.0, y: 69.0, w: 23.0, h: 13.0 },
+          { id: 'vram', label: 'VRAM', x: 71.0, y: 69.0, w: 23.0, h: 13.0 }
+        ]
+      },
+      ai: {
+        defaultId: 'ai-gpu',
+        frameId: 'ai-diagram',
+        detailId: 'ai-detail',
+        hotspots: [
+          { id: 'host-cpu', label: 'Host CPU', x: 6.2, y: 18.8, w: 21.0, h: 11.2 },
+          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 33.8, y: 18.8, w: 21.0, h: 11.2 },
+          { id: 'hbm', label: 'HBM', x: 65.5, y: 18.8, w: 21.0, h: 11.2 },
+          { id: 'ssd-lake', label: 'SSD / Data Lake', x: 6.2, y: 64.2, w: 21.0, h: 11.2 },
+          { id: 'hbf-cxl', label: 'HBF / CXL Memory', x: 33.8, y: 64.2, w: 21.0, h: 11.2 },
+          { id: 'interconnect', label: 'Interconnect', x: 65.5, y: 64.2, w: 21.0, h: 11.2 }
+        ]
+      }
+    };
+
+    const components = {
+      'cpu': {
+        title: 'CPU', kind: '연산/제어',
+        desc: '운영체제와 프로그램 흐름을 제어하고, DRAM에서 데이터를 가져와 순차 연산과 분기 판단을 수행하는 범용 프로세서입니다.',
+        why: 'PC에서는 CPU와 DRAM 사이의 지연이 체감 성능의 바닥을 만들고, 서버에서는 GPU·스토리지·네트워크를 조율하는 출발점입니다.',
+        companies: ['Intel', 'AMD', 'Apple', 'Qualcomm', 'Arm', 'TSMC'], related: ['INTC', 'AMD', 'NVDA'],
+        videos: [['Crash Course CPU 검색','https://www.youtube.com/results?search_query=Crash+Course+Computer+Science+CPU'],['Branch Education CPU 검색','https://www.youtube.com/results?search_query=Branch+Education+how+does+a+CPU+work'],['Computerphile CPU 검색','https://www.youtube.com/results?search_query=Computerphile+CPU+explained']]
+      },
+      'dram': {
+        title: 'DRAM', kind: '메모리',
+        desc: '전원이 켜져 있는 동안 CPU가 바로 사용할 데이터를 임시로 올려두는 작업 공간입니다. 빠르지만 전원이 꺼지면 데이터가 사라집니다.',
+        why: 'DRAM 가격과 수요는 PC·서버·AI 투자 사이클을 반영합니다. 서버 DRAM과 HBM 수요가 강하면 메모리 업체 실적이 빠르게 변합니다.',
+        companies: ['Samsung Electronics', 'SK hynix', 'Micron'], related: ['005930', '000660', 'MU'],
+        videos: [['DRAM explained 검색','https://www.youtube.com/results?search_query=DRAM+explained+memory'],['Computerphile RAM 검색','https://www.youtube.com/results?search_query=Computerphile+RAM+memory'],['Branch Education RAM 검색','https://www.youtube.com/results?search_query=Branch+Education+RAM+explained']]
+      },
+      'gpu': {
+        title: 'GPU', kind: '연산/제어',
+        desc: '수많은 단순 연산을 병렬로 처리하는 프로세서입니다. 그래픽 렌더링에서 출발했지만 AI 행렬 연산의 핵심 엔진이 되었습니다.',
+        why: 'GPU 수요가 커질수록 HBM, 패키징, 서버 전력, 네트워킹 수요가 함께 커집니다. 그래서 GPU는 메모리 사이클을 밀어 올리는 상위 병목입니다.',
+        companies: ['NVIDIA', 'AMD', 'Intel', 'TSMC'], related: ['NVDA', 'AMD', 'INTC'],
+        videos: [['NVIDIA GPU explained 검색','https://www.youtube.com/results?search_query=NVIDIA+GPU+explained'],['GPU architecture explained 검색','https://www.youtube.com/results?search_query=GPU+architecture+explained'],['Branch Education GPU 검색','https://www.youtube.com/results?search_query=Branch+Education+GPU+explained']]
+      },
+      'nand': {
+        title: 'NAND / SSD', kind: '메모리',
+        desc: '전원이 꺼져도 데이터가 남는 장기 저장장치입니다. NAND 플래시 칩을 SSD로 묶어 운영체제, 파일, AI 데이터셋을 보관합니다.',
+        why: 'AI 추론과 데이터센터가 커질수록 모델·로그·벡터DB·체크포인트 저장량이 늘어납니다. NAND 업체는 이 저장 수요의 직접 수혜 후보입니다.',
+        companies: ['Samsung Electronics', 'SK hynix / Solidigm', 'Micron', 'SanDisk', 'Kioxia'], related: ['005930', '000660', 'MU', 'SNDK', '285A.T'],
+        videos: [['NAND flash explained 검색','https://www.youtube.com/results?search_query=NAND+flash+memory+explained'],['SSD explained 검색','https://www.youtube.com/results?search_query=SSD+explained+NAND+flash'],['Branch Education SSD 검색','https://www.youtube.com/results?search_query=Branch+Education+SSD+explained']]
+      },
+      'vram': {
+        title: 'VRAM', kind: '메모리',
+        desc: 'GPU가 화면·텍스처·연산 데이터를 빠르게 읽고 쓰는 전용 메모리입니다. 게임과 그래픽에서는 GDDR, AI 서버에서는 HBM이 핵심입니다.',
+        why: 'GPU 성능은 연산 코어만으로 결정되지 않습니다. GPU 옆 메모리가 충분히 빠르지 않으면 코어가 놀게 됩니다.',
+        companies: ['Micron', 'Samsung Electronics', 'SK hynix', 'NVIDIA', 'AMD'], related: ['MU', '005930', '000660', 'NVDA', 'AMD'],
+        videos: [['VRAM explained 검색','https://www.youtube.com/results?search_query=VRAM+explained'],['GDDR memory explained 검색','https://www.youtube.com/results?search_query=GDDR+memory+explained'],['GPU memory bandwidth 검색','https://www.youtube.com/results?search_query=GPU+memory+bandwidth+explained']]
+      },
+      'host-cpu': {
+        title: 'Host CPU', kind: '연산/제어',
+        desc: 'AI 서버에서 데이터 로딩, 작업 배분, 네트워크와 스토리지 제어를 맡는 조율자입니다. 실제 행렬 연산은 주로 GPU/NPU가 담당합니다.',
+        why: 'GPU가 많아질수록 CPU는 연산자라기보다 오케스트레이터가 됩니다. CPU·메모리·PCIe·CXL 구조가 전체 병목을 좌우합니다.',
+        companies: ['Intel Xeon', 'AMD EPYC', 'Arm Neoverse', 'NVIDIA Grace'], related: ['INTC', 'AMD', 'NVDA'],
+        videos: [['Server CPU explained 검색','https://www.youtube.com/results?search_query=server+CPU+explained'],['AMD EPYC Intel Xeon explained 검색','https://www.youtube.com/results?search_query=AMD+EPYC+Intel+Xeon+explained'],['CPU GPU data center explained 검색','https://www.youtube.com/results?search_query=CPU+GPU+data+center+explained']]
+      },
+      'ai-gpu': {
+        title: 'AI GPU / NPU', kind: '연산/제어',
+        desc: '대규모 행렬 곱셈을 병렬 처리하는 AI 연산 엔진입니다. 학습과 추론의 속도를 결정하지만, 데이터 공급이 느리면 성능을 모두 쓰지 못합니다.',
+        why: 'AI GPU 수요는 HBM, 고급 패키징, 전력 인프라, 네트워크, SSD까지 끌고 갑니다. 반도체 투자 흐름의 중심 블록입니다.',
+        companies: ['NVIDIA', 'AMD', 'Google TPU', 'AWS Trainium', 'Intel Gaudi', 'Cerebras'], related: ['NVDA', 'AMD', 'INTC'],
+        videos: [['AI GPU explained 검색','https://www.youtube.com/results?search_query=AI+GPU+explained'],['NVIDIA H100 explained 검색','https://www.youtube.com/results?search_query=NVIDIA+H100+explained'],['TPU vs GPU explained 검색','https://www.youtube.com/results?search_query=TPU+vs+GPU+explained']]
+      },
+      'hbm': {
+        title: 'HBM', kind: '메모리',
+        desc: 'DRAM 칩을 수직으로 쌓고 GPU 가까이에 배치해 매우 넓은 데이터 통로를 제공하는 고대역폭 메모리입니다.',
+        why: 'AI GPU는 초당 막대한 데이터를 먹어야 합니다. HBM 공급이 부족하면 GPU 생산과 AI 서버 증설이 동시에 막힐 수 있습니다.',
+        companies: ['SK hynix', 'Samsung Electronics', 'Micron', 'TSMC CoWoS'], related: ['000660', '005930', 'MU', 'NVDA'],
+        videos: [['HBM explained 검색','https://www.youtube.com/results?search_query=High+Bandwidth+Memory+HBM+explained'],['Asianometry HBM 검색','https://www.youtube.com/results?search_query=Asianometry+HBM+memory'],['NVIDIA HBM explained 검색','https://www.youtube.com/results?search_query=NVIDIA+HBM+explained']]
+      },
+      'hbf-cxl': {
+        title: 'HBF / CXL Memory', kind: '메모리',
+        desc: 'HBM과 SSD 사이의 확장 메모리 계층으로 이해하면 됩니다. 실제 제품에서는 CXL 메모리, pooled memory, SSD 캐시 등으로 구현될 수 있습니다.',
+        why: '모델과 데이터가 커질수록 HBM만으로는 용량이 부족하고 SSD만으로는 느립니다. 중간 계층은 용량과 속도의 타협점입니다.',
+        companies: ['Samsung Electronics', 'SK hynix', 'Micron', 'Astera Labs', 'Marvell', 'Rambus'], related: ['005930', '000660', 'MU'],
+        videos: [['CXL memory explained 검색','https://www.youtube.com/results?search_query=CXL+memory+explained'],['Compute Express Link explained 검색','https://www.youtube.com/results?search_query=Compute+Express+Link+explained'],['memory pooling explained 검색','https://www.youtube.com/results?search_query=memory+pooling+CXL+explained']]
+      },
+      'ssd-lake': {
+        title: 'SSD / Data Lake', kind: '메모리',
+        desc: 'AI 학습 데이터, 추론 로그, 모델 체크포인트, 벡터DB를 보관하는 대용량 저장 계층입니다.',
+        why: 'AI가 학습에서 추론으로 넓어질수록 데이터 저장과 읽기 수요가 커집니다. NAND와 SSD 업체를 따로 봐야 하는 이유입니다.',
+        companies: ['Kioxia', 'SanDisk', 'Samsung Electronics', 'SK hynix / Solidigm', 'Micron', 'Western Digital'], related: ['285A.T', 'SNDK', '005930', '000660', 'MU'],
+        videos: [['Data lake explained 검색','https://www.youtube.com/results?search_query=data+lake+explained'],['AI storage explained 검색','https://www.youtube.com/results?search_query=AI+data+storage+explained'],['SSD NAND explained 검색','https://www.youtube.com/results?search_query=SSD+NAND+explained']]
+      },
+      'interconnect': {
+        title: 'Interconnect', kind: '연결망',
+        desc: 'GPU와 서버 노드를 묶어 하나의 큰 연산 시스템처럼 만드는 고속 연결망입니다. NVLink, InfiniBand, Ethernet 스위치가 여기에 속합니다.',
+        why: 'GPU 한 장의 성능보다 GPU 수천 장이 서로 얼마나 빠르게 데이터를 주고받는지가 AI 클러스터 효율을 결정합니다.',
+        companies: ['NVIDIA Networking', 'Broadcom', 'Marvell', 'Arista', 'Cisco'], related: ['NVDA'],
+        videos: [['NVLink explained 검색','https://www.youtube.com/results?search_query=NVLink+explained'],['InfiniBand explained 검색','https://www.youtube.com/results?search_query=InfiniBand+explained'],['AI networking explained 검색','https://www.youtube.com/results?search_query=AI+data+center+networking+explained']]
+      }
+    };
+
+    const noteTargets = [['market','시장 메모'],['semiconductor','반도체 구조'],['samsung','삼성전자'],['hynix','SK하이닉스'],['micron','마이크론'],['intel','인텔'],['amd','AMD'],['nvidia','엔비디아'],['sandisk','샌디스크'],['kioxia','키옥시아'],['action','다음 행동']];
+    const QUOTE_CACHE_KEY = 'ty-market-quotes-v4';
     const CACHE_SOFT_LIMIT_MS = 1000 * 60 * 20;
     const CACHE_HARD_LIMIT_MS = 1000 * 60 * 60 * 12;
     let activeNote = noteTargets[0][0];
+    let activeComponents = { pc: componentData.pc.defaultId, ai: componentData.ai.defaultId };
 
     function setMarketStatus(text) { const el = document.getElementById('market-status'); if (el) el.textContent = text; }
-    function fmtPrice(value, type) {
-      if (value == null || Number.isNaN(Number(value))) return '—';
+
+    function fmtPrice(value, format, currency) {
       const n = Number(value);
-      if (type === 'krw') return Math.round(n).toLocaleString('ko-KR') + '원';
-      if (type === 'krwFx') return n.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원';
-      if (type === 'usd') return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      if (type === 'gold') return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '/oz';
-      if (type === 'btc') return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
-      if (type === 'rate') return n.toFixed(2) + '%';
-      return n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      if (!Number.isFinite(n)) return '—';
+      const cur = currency || '';
+      if (format === 'rate') return `${n.toFixed(2)}%`;
+      if (format === 'krw' || format === 'krwFx' || cur === 'KRW') return n.toLocaleString('ko-KR', { maximumFractionDigits: format === 'krwFx' ? 2 : 0 }) + '원';
+      if (format === 'gold') return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + '/oz';
+      if (format === 'btc') return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+      if (format === 'index') return n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      if (cur === 'JPY') return '¥' + n.toLocaleString('ja-JP', { maximumFractionDigits: 0 });
+      return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
     }
-    function fmtChange(change, pct, type) {
-      if (change == null || pct == null || Number.isNaN(Number(change)) || Number.isNaN(Number(pct))) return '변동률 없음';
-      const c = Number(change), p = Number(pct), sign = c > 0 ? '+' : '';
-      const value = type === 'krw' || type === 'krwFx' ? (Math.abs(c) >= 10 ? Math.round(c).toLocaleString('ko-KR') : c.toLocaleString('ko-KR', { maximumFractionDigits: 2 })) : c.toLocaleString('en-US', { maximumFractionDigits: 2 });
+
+    function fmtChange(change, pct, format, currency) {
+      const c = Number(change), p = Number(pct);
+      if (!Number.isFinite(c) || !Number.isFinite(p)) return '—';
+      const sign = c > 0 ? '+' : '';
+      const isKrw = format === 'krw' || format === 'krwFx' || currency === 'KRW';
+      const isJpy = currency === 'JPY';
+      let value;
+      if (isKrw) value = (Math.abs(c) >= 10 ? Math.round(c).toLocaleString('ko-KR') : c.toLocaleString('ko-KR', { maximumFractionDigits: 2 })) + '원';
+      else if (isJpy) value = '¥' + Math.round(c).toLocaleString('ja-JP');
+      else value = c.toLocaleString('en-US', { maximumFractionDigits: 2 });
       return `${sign}${value} · ${sign}${p.toFixed(2)}%`;
     }
+
+    function fmtMarketCap(value, currency) {
+      const n = Number(value);
+      if (!Number.isFinite(n) || n <= 0) return '—';
+      if (currency === 'KRW') {
+        if (n >= 1e12) return `₩${(n / 1e12).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}조`;
+        if (n >= 1e8) return `₩${(n / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 0 })}억`;
+        return `₩${n.toLocaleString('ko-KR')}`;
+      }
+      if (currency === 'JPY') {
+        if (n >= 1e12) return `¥${(n / 1e12).toLocaleString('ja-JP', { maximumFractionDigits: 1 })}조`;
+        if (n >= 1e9) return `¥${(n / 1e9).toLocaleString('ja-JP', { maximumFractionDigits: 1 })}B`;
+        return `¥${n.toLocaleString('ja-JP')}`;
+      }
+      if (n >= 1e12) return '$' + (n / 1e12).toLocaleString('en-US', { maximumFractionDigits: 2 }) + 'T';
+      if (n >= 1e9) return '$' + (n / 1e9).toLocaleString('en-US', { maximumFractionDigits: 1 }) + 'B';
+      if (n >= 1e6) return '$' + (n / 1e6).toLocaleString('en-US', { maximumFractionDigits: 1 }) + 'M';
+      return '$' + n.toLocaleString('en-US');
+    }
+
     function ageLabel(ms) { if (!ms || ms < 0) return ''; const min = Math.round(ms / 60000); if (min < 1) return '방금 전'; if (min < 60) return `${min}분 전`; return `${Math.round(min / 60)}시간 전`; }
-    function cardSkeleton(item) { return `<a class="quote-card" href="${item.url}" target="_blank" rel="noopener noreferrer" id="quote-${item.id}"><div><div class="quote-kicker">${item.group}</div><div class="quote-name">${item.name}</div></div><div><div class="quote-price">—</div><div class="quote-change flat">불러오는 중</div><div class="quote-source"></div></div></a>`; }
-    function renderQuoteCards() { document.getElementById('quote-grid').innerHTML = quotes.map(cardSkeleton).join(''); }
     function readQuoteCache() { try { const parsed = JSON.parse(localStorage.getItem(QUOTE_CACHE_KEY) || '{}'); return parsed && parsed.items ? parsed : { updatedAt: 0, items: {} }; } catch { return { updatedAt: 0, items: {} }; } }
     function writeQuoteCache(nextItems) { const prev = readQuoteCache().items || {}; localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify({ updatedAt: Date.now(), items: { ...prev, ...nextItems } })); }
+
+    function renderQuoteCards() {
+      document.getElementById('quote-grid').innerHTML = marketQuotes.map(item => `<a class="quote-card" id="quote-${item.id}" href="${item.url}" target="_blank" rel="noopener noreferrer"><div><div class="quote-kicker">${item.group}</div><div class="quote-name">${item.name}</div></div><div><div class="quote-price">—</div><div class="quote-change flat">대기 중</div><div class="quote-source">—</div></div></a>`).join('');
+    }
+
+    function renderStockCards() {
+      document.getElementById('stock-grid').innerHTML = coreStocks.map(stock => `<article class="stock-card" id="stock-${stock.id}"><div><div class="stock-top"><div><h3>${stock.name}</h3><div class="ticker">${stock.displayTicker}</div></div><span class="tag">${stock.tag}</span></div><p class="stock-thesis">${stock.thesis}</p><div class="stock-metrics"><div class="metric"><div class="metric-label">주가</div><div class="metric-value stock-price">—</div><div class="stock-change flat">대기 중</div></div><div class="metric"><div class="metric-label">시가총액</div><div class="metric-value stock-cap">—</div><div class="quote-source stock-source">—</div></div></div></div><div class="link-row">${stock.links.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></article>`).join('');
+    }
+
     function hydrateCachedQuotes() {
       const cache = readQuoteCache(); const age = Date.now() - Number(cache.updatedAt || 0);
-      if (!cache.items || age > CACHE_HARD_LIMIT_MS) return false;
-      let count = 0; quotes.forEach(item => { const cached = cache.items[item.id]; if (cached) { applyQuote(item, cached, { cached: true, age }); count += 1; } });
-      if (count > 0) setMarketStatus(`저장된 가격을 먼저 표시했습니다. ${ageLabel(age)} 데이터이며 최신 가격을 갱신 중입니다.`);
-      return count > 0;
+      if (!cache.updatedAt || age > CACHE_HARD_LIMIT_MS) return false;
+      let count = 0;
+      marketQuotes.forEach(item => { const cached = cache.items[item.id]; if (cached) { applyMarketQuote(item, cached, { cached: true, age }); count += 1; } });
+      coreStocks.forEach(stock => { const cached = cache.items[stock.id]; if (cached) { applyStockQuote(stock, cached, { cached: true, age }); count += 1; } });
+      if (count) setMarketStatus(`캐시 ${count}개 표시 · 최신 데이터 갱신 중`);
+      return Boolean(count);
     }
-    function fetchWithTimeout(url, timeoutMs) { const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), timeoutMs); return fetch(url, { cache: 'no-store', signal: controller.signal }).finally(() => clearTimeout(timer)); }
-    function proxiedUrls(raw) { const encoded = encodeURIComponent(raw); return [{ url: raw, timeout: 4200 }, { url: `https://api.allorigins.win/raw?url=${encoded}`, timeout: 8500 }, { url: `https://api.codetabs.com/v1/proxy/?quest=${encoded}`, timeout: 8500 }, { url: `https://corsproxy.io/?url=${encoded}`, timeout: 8500 }]; }
-    async function fastJson(raw) { return Promise.any(proxiedUrls(raw).map(({ url, timeout }) => fetchWithTimeout(url, timeout).then(async response => { if (!response.ok) throw new Error('network'); return response.json(); }))); }
+
+    function fetchWithTimeout(url, timeoutMs) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      return fetch(url, { cache: 'no-store', signal: controller.signal }).finally(() => clearTimeout(timer));
+    }
+
+    function proxiedUrls(raw) {
+      const encoded = encodeURIComponent(raw);
+      return [
+        { url: raw, timeout: 4200 },
+        { url: `https://api.allorigins.win/raw?url=${encoded}`, timeout: 8500 },
+        { url: `https://api.codetabs.com/v1/proxy/?quest=${encoded}`, timeout: 8500 },
+        { url: `https://corsproxy.io/?url=${encoded}`, timeout: 8500 }
+      ];
+    }
+
+    async function fastJson(rawUrl) {
+      const response = await Promise.any(proxiedUrls(rawUrl).map(item => fetchWithTimeout(item.url, item.timeout).then(res => { if (!res.ok) throw new Error('bad response'); return res; })));
+      return response.json();
+    }
+
+    function quoteItems() {
+      const all = [...marketQuotes.filter(item => item.ticker), ...coreStocks];
+      const seen = new Set();
+      return all.filter(item => { if (seen.has(item.ticker)) return false; seen.add(item.ticker); return true; });
+    }
+
     async function loadYahooBulk(items) {
-      const symbols = items.map(item => item.ticker).join(',');
-      const json = await fastJson(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols)}`);
-      const rows = json?.quoteResponse?.result || []; if (!rows.length) throw new Error('empty quote response');
-      const bySymbol = new Map(rows.map(row => [row.symbol, row])); const result = {};
-      items.forEach(item => { const row = bySymbol.get(item.ticker); if (!row || row.regularMarketPrice == null) return; const price = Number(row.regularMarketPrice); const change = row.regularMarketChange != null ? Number(row.regularMarketChange) : price - Number(row.regularMarketPreviousClose ?? price); const pct = row.regularMarketChangePercent != null ? Number(row.regularMarketChangePercent) : (price ? (change / (price - change)) * 100 : 0); result[item.id] = { price, change, pct, source: 'Yahoo Finance' }; });
+      const symbols = items.map(item => encodeURIComponent(item.ticker)).join(',');
+      const json = await fastJson(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`);
+      const rows = json?.quoteResponse?.result || [];
+      if (!rows.length) throw new Error('empty quote response');
+      const bySymbol = new Map(rows.map(row => [row.symbol, row]));
+      const result = {};
+      items.forEach(item => {
+        const row = bySymbol.get(item.ticker);
+        if (!row || row.regularMarketPrice == null) return;
+        const price = Number(row.regularMarketPrice);
+        const prev = Number(row.regularMarketPreviousClose ?? price);
+        const change = row.regularMarketChange != null ? Number(row.regularMarketChange) : price - prev;
+        const pct = row.regularMarketChangePercent != null ? Number(row.regularMarketChangePercent) : (prev ? (change / prev) * 100 : 0);
+        result[item.ticker] = { price, change, pct, marketCap: row.marketCap, currency: row.currency, source: 'Yahoo Finance' };
+      });
       return result;
     }
-    async function loadYahooChart(item) { const data = await fastJson(`https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(item.ticker)}?interval=1d&range=1d`); const meta = data?.chart?.result?.[0]?.meta; if (!meta || meta.regularMarketPrice == null) throw new Error('missing quote'); const price = Number(meta.regularMarketPrice); const prev = Number(meta.chartPreviousClose ?? meta.previousClose ?? price); return { price, change: price - prev, pct: prev ? ((price - prev) / prev) * 100 : 0, source: 'Yahoo Finance' }; }
-    async function loadBtcFallback() { const json = await fastJson('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true'); const coin = json?.bitcoin; if (!coin || coin.usd == null) throw new Error('missing btc'); const price = Number(coin.usd); const pct = Number(coin.usd_24h_change ?? 0); return { price, change: price * (pct / 100), pct, source: 'CoinGecko' }; }
-    async function loadYahooIndividually(items) { const settled = await Promise.allSettled(items.map(async item => [item.id, await loadYahooChart(item)])); const result = {}; settled.forEach(entry => { if (entry.status === 'fulfilled') result[entry.value[0]] = entry.value[1]; }); if (!result.btc && items.some(item => item.id === 'btc')) { try { result.btc = await loadBtcFallback(); } catch {} } return result; }
-    async function loadYahooQuotes() { const items = quotes.filter(item => item.ticker); try { const bulk = await loadYahooBulk(items); const missing = items.filter(item => !bulk[item.id]); if (missing.length) return { ...bulk, ...(await loadYahooIndividually(missing)) }; return bulk; } catch { return loadYahooIndividually(items); } }
-    async function loadLocalRate() { const res = await fetch('./rates.json', { cache: 'no-store' }); if (!res.ok) throw new Error('missing rates'); const data = await res.json(); const price = Number(data.kr_base_rate); const prev = Number(data.kr_base_prev ?? data.kr_base_rate); return { price, change: price - prev, pct: 0, updated: data.kr_base_updated, source: 'rates.json' }; }
-    function applyQuote(item, data, options = {}) { const card = document.getElementById(`quote-${item.id}`); if (!card || !data) return; const price = card.querySelector('.quote-price'), change = card.querySelector('.quote-change'), source = card.querySelector('.quote-source'); const dir = Number(data.change) > 0 ? 'up' : Number(data.change) < 0 ? 'down' : 'flat'; price.textContent = fmtPrice(data.price, item.format); change.className = `quote-change ${dir}`; change.textContent = item.localRate && data.updated ? `수동 관리 · ${data.updated}` : fmtChange(data.change, data.pct, item.format); source.textContent = options.cached ? `캐시 · ${ageLabel(options.age)}` : (data.source || '업데이트 완료'); }
-    function failQuote(item) { const card = document.getElementById(`quote-${item.id}`); if (!card) return; card.querySelector('.quote-change').className = 'quote-change flat'; card.querySelector('.quote-change').textContent = '원문 열기'; const source = card.querySelector('.quote-source'); if (source) source.textContent = '데이터 로딩 실패'; }
-    async function loadQuotes(force = false) {
-      renderQuoteCards(); const hadCache = hydrateCachedQuotes(); if (!hadCache) setMarketStatus('최신 가격을 불러오는 중입니다.');
-      const cache = readQuoteCache(); const age = Date.now() - Number(cache.updatedAt || 0);
-      if (!force && hadCache && age < CACHE_SOFT_LIMIT_MS) { setMarketStatus(`저장된 가격을 표시했습니다. ${ageLabel(age)} 데이터입니다. 새로고침 버튼으로 강제 갱신할 수 있습니다.`); return; }
-      const [yahooData, rateData] = await Promise.all([loadYahooQuotes().catch(() => ({})), loadLocalRate().catch(() => null)]); const nextCache = {};
-      quotes.forEach(item => { const data = item.localRate ? rateData : yahooData[item.id]; if (data) { applyQuote(item, data); nextCache[item.id] = data; } else if (!hadCache) failQuote(item); });
-      if (Object.keys(nextCache).length) { writeQuoteCache(nextCache); setMarketStatus(`가격 ${Object.keys(nextCache).length}개를 갱신했습니다. ${new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`); } else setMarketStatus('데이터를 불러오지 못했습니다. 각 카드를 누르면 원문 페이지가 열립니다.');
+
+    async function loadYahooChart(item) {
+      const data = await fastJson(`https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(item.ticker)}?interval=1d&range=1d`);
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (!meta || meta.regularMarketPrice == null) throw new Error('missing quote');
+      const price = Number(meta.regularMarketPrice);
+      const prev = Number(meta.chartPreviousClose ?? meta.previousClose ?? price);
+      return { price, change: price - prev, pct: prev ? ((price - prev) / prev) * 100 : 0, marketCap: null, currency: meta.currency, source: 'Yahoo Finance chart' };
     }
+
+    async function loadBtcFallback() {
+      const json = await fastJson('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+      const coin = json?.bitcoin;
+      if (!coin || coin.usd == null) throw new Error('missing btc');
+      const price = Number(coin.usd);
+      const pct = Number(coin.usd_24h_change ?? 0);
+      return { price, change: price * (pct / 100), pct, currency: 'USD', source: 'CoinGecko' };
+    }
+
+    async function loadAllQuotes() {
+      const items = quoteItems();
+      let bulk = {};
+      try { bulk = await loadYahooBulk(items); } catch { bulk = {}; }
+      const missing = items.filter(item => !bulk[item.ticker]);
+      const fallbackRows = await Promise.allSettled(missing.map(async item => [item.ticker, item.ticker === 'BTC-USD' ? await loadBtcFallback() : await loadYahooChart(item)]));
+      fallbackRows.forEach(row => { if (row.status === 'fulfilled') bulk[row.value[0]] = row.value[1]; });
+      return bulk;
+    }
+
+    async function loadLocalRate() {
+      const res = await fetch('./rates.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('missing rates');
+      const data = await res.json();
+      const price = Number(data.kr_base_rate); const prev = Number(data.kr_base_prev ?? data.kr_base_rate);
+      return { price, change: price - prev, pct: 0, updated: data.kr_base_updated, currency: 'KRW', source: 'rates.json' };
+    }
+
+    function applyMarketQuote(item, data, options = {}) {
+      const card = document.getElementById(`quote-${item.id}`); if (!card || !data) return;
+      const price = card.querySelector('.quote-price'), change = card.querySelector('.quote-change'), source = card.querySelector('.quote-source');
+      const dir = Number(data.change) > 0 ? 'up' : Number(data.change) < 0 ? 'down' : 'flat';
+      price.textContent = fmtPrice(data.price, item.format, data.currency);
+      change.className = `quote-change ${dir}`;
+      change.textContent = item.localRate && data.updated ? `수동 관리 · ${data.updated}` : fmtChange(data.change, data.pct, item.format, data.currency);
+      source.textContent = options.cached ? `캐시 · ${ageLabel(options.age)}` : (data.source || '업데이트 완료');
+    }
+
+    function applyStockQuote(stock, data, options = {}) {
+      const card = document.getElementById(`stock-${stock.id}`); if (!card || !data) return;
+      const dir = Number(data.change) > 0 ? 'up' : Number(data.change) < 0 ? 'down' : 'flat';
+      card.querySelector('.stock-price').textContent = fmtPrice(data.price, 'stock', data.currency);
+      const change = card.querySelector('.stock-change'); change.className = `stock-change ${dir}`; change.textContent = fmtChange(data.change, data.pct, 'stock', data.currency);
+      card.querySelector('.stock-cap').textContent = fmtMarketCap(data.marketCap, data.currency);
+      card.querySelector('.stock-source').textContent = options.cached ? `캐시 · ${ageLabel(options.age)}` : (data.source || '업데이트 완료');
+    }
+
+    function failMarketQuote(item) {
+      const card = document.getElementById(`quote-${item.id}`); if (!card) return;
+      card.querySelector('.quote-change').className = 'quote-change flat'; card.querySelector('.quote-change').textContent = '원문 열기';
+      const source = card.querySelector('.quote-source'); if (source) source.textContent = '데이터 로딩 실패';
+    }
+
+    function failStockQuote(stock) {
+      const card = document.getElementById(`stock-${stock.id}`); if (!card) return;
+      card.querySelector('.stock-change').className = 'stock-change flat'; card.querySelector('.stock-change').textContent = '원문 확인';
+      card.querySelector('.stock-source').textContent = '데이터 로딩 실패';
+    }
+
+    async function refreshData({ force = false } = {}) {
+      if (force) localStorage.removeItem(QUOTE_CACHE_KEY);
+      renderQuoteCards(); renderStockCards();
+      const hadCache = hydrateCachedQuotes();
+      if (!hadCache) setMarketStatus('최신 가격을 불러오는 중입니다.');
+      const cache = readQuoteCache(); const age = Date.now() - Number(cache.updatedAt || 0);
+      if (!force && hadCache && age < CACHE_SOFT_LIMIT_MS) { setMarketStatus(`캐시 사용 중 · ${ageLabel(age)} · 새로고침을 누르면 강제 갱신`); return; }
+      const [quoteRows, rateData] = await Promise.all([loadAllQuotes().catch(() => ({})), loadLocalRate().catch(() => null)]);
+      const nextCache = {};
+      marketQuotes.forEach(item => {
+        const data = item.localRate ? rateData : quoteRows[item.ticker];
+        if (data) { applyMarketQuote(item, data); nextCache[item.id] = data; } else if (!hadCache) failMarketQuote(item);
+      });
+      coreStocks.forEach(stock => {
+        const data = quoteRows[stock.ticker];
+        if (data) { applyStockQuote(stock, data); nextCache[stock.id] = data; } else if (!hadCache) failStockQuote(stock);
+      });
+      if (Object.keys(nextCache).length) { writeQuoteCache(nextCache); setMarketStatus(`최신 데이터 갱신 완료 · ${new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`); }
+      else setMarketStatus('데이터 로딩 실패 · 각 카드의 원문 링크를 확인하세요.');
+    }
+
+    function renderComponentDetail(group, id) {
+      activeComponents[group] = id;
+      const target = document.getElementById(componentData[group].detailId);
+      const item = components[id]; if (!target || !item) return;
+      target.innerHTML = `<div><div class="component-kicker">${item.kind}</div><h3>${item.title}</h3></div><p>${item.desc}</p><div class="detail-block"><strong>투자 판단에서 보는 이유</strong><p>${item.why}</p></div><div class="detail-block"><strong>대표 회사</strong><div class="chip-list">${item.companies.map(v => `<span class="chip">${v}</span>`).join('')}</div></div><div class="detail-block"><strong>관련 종목</strong><div class="chip-list">${item.related.map(v => `<span class="chip">${v}</span>`).join('')}</div></div><div class="detail-block"><strong>YouTube 학습 링크</strong><div class="video-list">${item.videos.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></div>`;
+      document.querySelectorAll(`#${componentData[group].frameId} .hotspot`).forEach(btn => btn.classList.toggle('active', btn.dataset.componentId === id));
+    }
+
+    function initDiagrams() {
+      Object.entries(componentData).forEach(([group, data]) => {
+        const frame = document.getElementById(data.frameId); if (!frame) return;
+        data.hotspots.forEach(h => {
+          const btn = document.createElement('button');
+          btn.type = 'button'; btn.className = 'hotspot'; btn.dataset.componentId = h.id; btn.setAttribute('aria-label', `${h.label} 설명 보기`);
+          btn.style.left = h.x + '%'; btn.style.top = h.y + '%'; btn.style.width = h.w + '%'; btn.style.height = h.h + '%';
+          btn.addEventListener('click', () => renderComponentDetail(group, h.id));
+          frame.appendChild(btn);
+        });
+        renderComponentDetail(group, data.defaultId);
+      });
+    }
+
     function today() { const d = new Date(); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
-    function noteKey(id) { return `ty-stock-study:${id}`; }
-    function noteTemplate(label) { return `[${today()}]\n관찰:\n근거:\n다음 행동:`; }
+    function noteKey(id) { return `ty-note-v4:${id}`; }
     function readNote(id) { try { const data = JSON.parse(localStorage.getItem(noteKey(id)) || '{}'); return { text: data.text || '', updatedAt: data.updatedAt || '' }; } catch { return { text: '', updatedAt: '' }; } }
-    function renderTabs() { document.getElementById('note-tabs').innerHTML = noteTargets.map(([id,label]) => `<button class="note-tab${id === activeNote ? ' active' : ''}" type="button" data-note="${id}">${label}</button>`).join(''); document.querySelectorAll('[data-note]').forEach(btn => btn.addEventListener('click', () => selectNote(btn.dataset.note))); }
+    function noteTemplate(label) { return `[${today()}]\n\n관찰:\n\n근거:\n\n위험:\n\n다음 행동:\n`; }
+    function renderTabs() { document.getElementById('note-tabs').innerHTML = noteTargets.map(([id,label]) => `<button class="note-tab${id === activeNote ? ' active' : ''}" type="button" onclick="selectNote('${id}')">${label}</button>`).join(''); }
     function selectNote(id) { activeNote = id; const label = noteTargets.find(item => item[0] === id)?.[1] || '메모'; const saved = readNote(id); document.getElementById('note-title').textContent = label; document.getElementById('note-area').value = saved.text || noteTemplate(label); document.getElementById('note-status').textContent = saved.updatedAt ? `마지막 저장 ${saved.updatedAt}` : '저장 기록 없음'; renderTabs(); }
     function saveNote() { const value = document.getElementById('note-area').value.trim() || noteTemplate('메모'); const updatedAt = new Date().toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); localStorage.setItem(noteKey(activeNote), JSON.stringify({ text: value, updatedAt })); document.getElementById('note-status').textContent = `마지막 저장 ${updatedAt}`; }
-    document.getElementById('refresh-quotes').addEventListener('click', () => loadQuotes(true));
-    document.getElementById('save-note').addEventListener('click', saveNote);
-    renderTabs(); selectNote(activeNote); loadQuotes();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderQuoteCards(); renderStockCards(); initDiagrams(); selectNote(activeNote);
+      document.getElementById('save-note').addEventListener('click', saveNote);
+      document.getElementById('refresh-quotes').addEventListener('click', () => refreshData({ force: true }));
+      refreshData();
+    });
   </script>
 </body>
 </html>
