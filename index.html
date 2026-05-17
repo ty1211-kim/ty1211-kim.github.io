@@ -172,6 +172,27 @@
     textarea { width: 100%; min-height: 260px; resize: vertical; border: 1px solid rgba(29,29,31,0.12); border-radius: 20px; background: #fff; color: var(--text); padding: 18px; font: inherit; line-height: 1.7; outline: none; }
     textarea:focus { border-color: rgba(0,122,255,0.48); box-shadow: 0 0 0 4px rgba(0,122,255,0.10); }
 
+
+
+    .memory-price-panel { display: grid; gap: 16px; }
+    .price-card-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+    .price-card { border: 1px solid rgba(29,29,31,0.09); border-radius: 22px; padding: 18px; background: linear-gradient(180deg,#fff,#f9fbff); box-shadow: var(--shadow-soft); }
+    .price-card h3 { margin: 0; font-size: 21px; letter-spacing: -0.045em; }
+    .price-card p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    .price-big { margin-top: 14px; font-size: 30px; font-weight: 950; letter-spacing: -0.055em; }
+    .price-note { color: var(--muted); font-size: 12px; }
+    .chart-shell { border: 1px solid rgba(29,29,31,0.09); border-radius: 24px; background: #fff; box-shadow: var(--shadow-soft); padding: 18px; overflow: hidden; }
+    .chart-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .chart-head h3 { margin: 0; font-size: 22px; letter-spacing: -0.045em; }
+    .chart-head p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .legend-inline { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .legend-pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid rgba(29,29,31,0.10); border-radius: 999px; background: #fff; padding: 6px 10px; color: var(--muted-strong); font-size: 12px; font-weight: 850; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+    .memory-chart { width: 100%; height: 340px; display: block; }
+    .source-list { display: grid; gap: 7px; margin-top: 12px; color: var(--muted); font-size: 12px; }
+    .source-list a { color: #0057b8; text-decoration: none; font-weight: 800; }
+    .source-list a:hover { text-decoration: underline; }
+
     .resource-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
     .resource-card { display: block; text-decoration: none; padding: 20px; border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,0.86); box-shadow: var(--shadow-soft); transition: transform .18s ease, border-color .18s ease; }
     .resource-card:hover { transform: translateY(-2px); border-color: rgba(0,122,255,0.24); }
@@ -181,7 +202,7 @@
 
     @media (max-width: 1120px) { .stock-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .diagram-layout { grid-template-columns: 1fr; } .diagram-visual { border-right: 0; border-bottom: 1px solid var(--line); } }
     @media (max-width: 980px) { .hero-grid, .note-layout { grid-template-columns: 1fr; } .quote-grid, .resource-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .hero-card { min-height: auto; } }
-    @media (max-width: 620px) { .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .music-player { right: 12px; bottom: 12px; max-width: calc(100% - 24px); } }
+    @media (max-width: 620px) { .price-card-grid { grid-template-columns: 1fr; } .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .music-player { right: 12px; bottom: 12px; max-width: calc(100% - 24px); } }
   </style>
 </head>
 <body>
@@ -195,7 +216,7 @@
     <div class="wrap topbar-inner">
       <a class="brand" href="#top" aria-label="TY의 주식공부 홈"><span class="brand-mark"></span><span>TY의 주식공부</span></a>
       <nav class="nav" aria-label="주요 메뉴">
-        <a href="#market">시장</a><a href="#stocks">종목</a><a href="#semiconductor">반도체</a><a href="#journal">기록</a><a href="#resources">자료</a>
+        <a href="#market">시장</a><a href="#stocks">종목</a><a href="#prices">현물가</a><a href="#semiconductor">반도체</a><a href="#journal">기록</a><a href="#resources">자료</a>
       </nav>
     </div>
   </header>
@@ -238,6 +259,25 @@
       </div>
     </section>
 
+
+
+    <section id="prices">
+      <div class="wrap">
+        <div class="section-head"><div><h2>DRAM · NAND 현물가 추이</h2><p>공개 기사에서 확인되는 대표 가격점과 보간값으로 만든 참고용 그래프입니다. 정식 DRAMeXchange/TrendForce 원자료가 있으면 <code>data/memory-spot-prices.json</code>만 교체하면 됩니다.</p></div></div>
+        <div class="panel memory-price-panel">
+          <div class="price-card-grid" id="memory-price-cards"></div>
+          <div class="chart-shell">
+            <div class="chart-head">
+              <div><h3>지난 1년 현물가 프록시</h3><p>단위가 서로 달라 가격 자체보다 방향성과 기울기를 봅니다.</p></div>
+              <div class="legend-inline" id="memory-price-legend"></div>
+            </div>
+            <svg class="memory-chart" id="memory-price-chart" role="img" aria-label="DRAM과 NAND 현물가 추이 그래프"></svg>
+            <div class="source-list" id="memory-price-sources"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="semiconductor">
       <div class="wrap">
         <div class="section-head"><div><h2>반도체 구조</h2><p>블록을 누르면 역할, 대표 회사, 관련 종목, YouTube 학습 링크가 오른쪽에 표시됩니다.</p></div></div>
@@ -254,8 +294,8 @@
           <article class="diagram-card">
             <div class="diagram-layout">
               <div class="diagram-visual">
-                <div class="diagram-frame" id="ai-diagram"><img src="assets/diagrams/ai-memory-structure.png" alt="AI 시스템에서 Host CPU, SSD/Data Lake, HBF/CXL Memory, AI GPU/NPU, HBM, Interconnect가 연결되는 메모리 구조도"></div>
-                <p class="diagram-hint">AI 구조: Host CPU, AI GPU/NPU, HBM, HBF/CXL Memory, SSD/Data Lake, Interconnect 블록을 눌러 설명을 확인합니다.</p>
+                <div class="diagram-frame" id="ai-diagram"><img src="assets/diagrams/ai-memory-structure.png" alt="AI 시스템에서 Host CPU, AI GPU/NPU, HBM, HBF, CXL Memory, SOCAMM, SSD/Data Lake, Interconnect가 분리되어 연결되는 메모리 구조도"></div>
+                <p class="diagram-hint">AI 구조: Host CPU, AI GPU/NPU, HBM, HBF, CXL Memory, SOCAMM, SSD/Data Lake, Interconnect 블록을 눌러 설명을 확인합니다.</p>
               </div>
               <aside class="component-detail" id="ai-detail" aria-live="polite"></aside>
             </div>
@@ -300,8 +340,8 @@
       { id: 'intel', name: '인텔', ticker: 'INTC', displayTicker: 'INTC · NASDAQ', tag: 'CPU+파운드리', thesis: '서버 CPU, PC CPU, 공정 전환, 파운드리 재건 속도를 함께 봅니다.', links: [['Yahoo','https://finance.yahoo.com/quote/INTC'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=INTC&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3AINTC']] },
       { id: 'amd', name: 'AMD', ticker: 'AMD', displayTicker: 'AMD · NASDAQ', tag: 'CPU+GPU', thesis: 'EPYC 서버 CPU, Radeon/Instinct GPU, AI 가속기 점유율 변화를 확인합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/AMD'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=AMD&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3AAMD']] },
       { id: 'nvidia', name: '엔비디아', ticker: 'NVDA', displayTicker: 'NVDA · NASDAQ', tag: 'AI GPU', thesis: 'AI GPU, CUDA 생태계, HBM 수요, 네트워킹까지 반도체 사이클의 중심축입니다.', links: [['Yahoo','https://finance.yahoo.com/quote/NVDA'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=NVDA&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3ANVDA']] },
-      { id: 'sandisk', name: '샌디스크', ticker: 'SNDK', displayTicker: 'SNDK · NASDAQ', tag: 'NAND/SSD', thesis: 'NAND 플래시와 SSD 수요, AI 데이터 저장소 확장 흐름을 추적합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/SNDK'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=SNDK&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3ASNDK']] },
-      { id: 'kioxia', name: '키옥시아', ticker: '285A.T', displayTicker: '285A · TSE', tag: 'NAND/SSD', thesis: '일본 NAND·SSD 핵심 업체로, 샌디스크와 함께 저장장치 사이클을 비교합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/285A.T'],['IR','https://www.kioxia-holdings.com/en-jp/ir.html'],['Chart','https://www.tradingview.com/chart/?symbol=TSE%3A285A']] }
+      { id: 'sandisk', name: '샌디스크', ticker: 'SNDK', displayTicker: 'SNDK · NASDAQ', tag: 'HBF+NAND', thesis: 'NAND 플래시, SSD, 그리고 HBF처럼 AI 메모리 계층으로 올라가는 저장장치 흐름을 따로 봅니다.', links: [['Yahoo','https://finance.yahoo.com/quote/SNDK'],['SEC','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=SNDK&type=10-K&owner=include&count=10'],['Chart','https://www.tradingview.com/chart/?symbol=NASDAQ%3ASNDK']] },
+      { id: 'kioxia', name: '키옥시아', ticker: '285A.T', displayTicker: '285A · TSE', tag: 'NAND/SSD', thesis: '일본 NAND·SSD 핵심 업체로, HBF와는 분리해서 순수 저장장치 사이클을 비교합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/285A.T'],['IR','https://www.kioxia-holdings.com/en-jp/ir.html'],['Chart','https://www.tradingview.com/chart/?symbol=TSE%3A285A']] }
     ];
 
     const componentData = {
@@ -322,12 +362,14 @@
         frameId: 'ai-diagram',
         detailId: 'ai-detail',
         hotspots: [
-          { id: 'host-cpu', label: 'Host CPU', x: 5.8, y: 18.7, w: 20.2, h: 10.8 },
-          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 31.8, y: 18.7, w: 20.4, h: 10.8 },
-          { id: 'hbm', label: 'HBM', x: 61.5, y: 18.7, w: 20.2, h: 10.8 },
-          { id: 'ssd-lake', label: 'SSD / Data Lake', x: 5.8, y: 65.0, w: 20.2, h: 10.8 },
-          { id: 'hbf-cxl', label: 'HBF / CXL Memory', x: 31.8, y: 65.0, w: 20.4, h: 10.8 },
-          { id: 'interconnect', label: 'Interconnect', x: 61.5, y: 65.0, w: 20.2, h: 10.8 }
+          { id: 'host-cpu', label: 'Host CPU', x: 6.8, y: 19.4, w: 18.8, h: 11.4 },
+          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 35.0, y: 19.4, w: 20.6, h: 11.4 },
+          { id: 'interconnect', label: 'Interconnect', x: 69.4, y: 19.4, w: 20.6, h: 11.4 },
+          { id: 'socamm', label: 'SOCAMM', x: 6.8, y: 49.0, w: 18.8, h: 11.4 },
+          { id: 'hbm', label: 'HBM', x: 35.0, y: 49.0, w: 20.6, h: 11.4 },
+          { id: 'cxl', label: 'CXL Memory', x: 69.4, y: 49.0, w: 20.6, h: 11.4 },
+          { id: 'ssd-lake', label: 'SSD / Data Lake', x: 6.8, y: 72.0, w: 18.8, h: 11.4 },
+          { id: 'hbf', label: 'HBF', x: 35.0, y: 72.0, w: 20.6, h: 11.4 }
         ]
       }
     };
@@ -389,18 +431,32 @@
         companies: ['SK hynix', 'Samsung Electronics', 'Micron', 'TSMC CoWoS'], related: ['000660', '005930', 'MU', 'NVDA'],
         videos: [['HBM explained 검색','https://www.youtube.com/results?search_query=High+Bandwidth+Memory+HBM+explained'],['Asianometry HBM 검색','https://www.youtube.com/results?search_query=Asianometry+HBM+memory'],['NVIDIA HBM explained 검색','https://www.youtube.com/results?search_query=NVIDIA+HBM+explained']]
       },
-      'hbf-cxl': {
-        title: 'HBF / CXL Memory', kind: '메모리',
-        desc: 'HBM과 SSD 사이의 확장 메모리 계층으로 이해하면 됩니다. 실제 제품에서는 CXL 메모리, pooled memory, SSD 캐시 등으로 구현될 수 있습니다.',
-        why: '모델과 데이터가 커질수록 HBM만으로는 용량이 부족하고 SSD만으로는 느립니다. 중간 계층은 용량과 속도의 타협점입니다.',
+      'hbf': {
+        title: 'HBF', kind: '메모리',
+        desc: 'High Bandwidth Flash입니다. NAND 플래시를 HBM과 비슷한 패키지·인터페이스 계층으로 끌어올려, HBM보다 큰 용량을 AI 추론 쪽에 공급하려는 흐름입니다.',
+        why: 'HBF는 CXL이나 SOCAMM과 같은 범주가 아닙니다. SanDisk처럼 NAND 기반 역량을 가진 업체가 AI 메모리 체인에 다시 들어오는 통로입니다.',
+        companies: ['SanDisk', 'SK hynix', 'Kioxia 후보군', 'NAND 패키징 업체'], related: ['SNDK', '000660', '285A.T'],
+        videos: [['High Bandwidth Flash 검색','https://www.youtube.com/results?search_query=High+Bandwidth+Flash+HBF+explained'],['SanDisk HBF 검색','https://www.youtube.com/results?search_query=SanDisk+High+Bandwidth+Flash+HBF'],['NAND for AI inference 검색','https://www.youtube.com/results?search_query=NAND+flash+AI+inference+memory']]
+      },
+      'cxl': {
+        title: 'CXL Memory', kind: '메모리/인터페이스',
+        desc: 'Compute Express Link 기반 확장 메모리입니다. CPU·가속기·메모리 풀을 PCIe 계열 링크로 묶어 서버 전체의 메모리 용량을 늘리는 방향입니다.',
+        why: 'CXL은 특정 NAND 제품이 아니라 서버 메모리 확장 표준입니다. DRAM, 컨트롤러, 스위치, 리타이머 회사들을 따로 봐야 합니다.',
         companies: ['Samsung Electronics', 'SK hynix', 'Micron', 'Astera Labs', 'Marvell', 'Rambus'], related: ['005930', '000660', 'MU'],
         videos: [['CXL memory explained 검색','https://www.youtube.com/results?search_query=CXL+memory+explained'],['Compute Express Link explained 검색','https://www.youtube.com/results?search_query=Compute+Express+Link+explained'],['memory pooling explained 검색','https://www.youtube.com/results?search_query=memory+pooling+CXL+explained']]
+      },
+      'socamm': {
+        title: 'SOCAMM', kind: '메모리 모듈',
+        desc: 'System-on-Chip Attached Memory Module입니다. LPDDR 계열을 서버 SoC 가까이에 붙여 용량·전력·공간 효율을 높이려는 모듈형 메모리 흐름입니다.',
+        why: 'SOCAMM은 HBF처럼 NAND가 아니고, CXL처럼 범용 확장 링크도 아닙니다. CPU/SoC 가까이에 붙는 LPDRAM 모듈 체인으로 따로 봐야 합니다.',
+        companies: ['Micron', 'Samsung Electronics', 'SK hynix', 'NVIDIA 플랫폼'], related: ['MU', '005930', '000660', 'NVDA'],
+        videos: [['SOCAMM memory 검색','https://www.youtube.com/results?search_query=SOCAMM+memory+explained'],['LPDDR server memory 검색','https://www.youtube.com/results?search_query=LPDDR+server+memory+explained'],['NVIDIA SOCAMM 검색','https://www.youtube.com/results?search_query=NVIDIA+SOCAMM+memory']]
       },
       'ssd-lake': {
         title: 'SSD / Data Lake', kind: '메모리',
         desc: 'AI 학습 데이터, 추론 로그, 모델 체크포인트, 벡터DB를 보관하는 대용량 저장 계층입니다.',
         why: 'AI가 학습에서 추론으로 넓어질수록 데이터 저장과 읽기 수요가 커집니다. NAND와 SSD 업체를 따로 봐야 하는 이유입니다.',
-        companies: ['Kioxia', 'SanDisk', 'Samsung Electronics', 'SK hynix / Solidigm', 'Micron', 'Western Digital'], related: ['285A.T', 'SNDK', '005930', '000660', 'MU'],
+        companies: ['Kioxia', 'Samsung Electronics', 'SK hynix / Solidigm', 'Micron', 'SanDisk'], related: ['285A.T', '005930', '000660', 'MU', 'SNDK'],
         videos: [['Data lake explained 검색','https://www.youtube.com/results?search_query=data+lake+explained'],['AI storage explained 검색','https://www.youtube.com/results?search_query=AI+data+storage+explained'],['SSD NAND explained 검색','https://www.youtube.com/results?search_query=SSD+NAND+explained']]
       },
       'interconnect': {
@@ -412,8 +468,99 @@
       }
     };
 
-    const noteTargets = [['market','시장 메모'],['semiconductor','반도체 구조'],['samsung','삼성전자'],['hynix','SK하이닉스'],['micron','마이크론'],['intel','인텔'],['amd','AMD'],['nvidia','엔비디아'],['sandisk','샌디스크'],['kioxia','키옥시아'],['action','다음 행동']];
-    const QUOTE_CACHE_KEY = 'ty-market-quotes-v4';
+
+
+    const embeddedMemorySpotData = {
+      note: '공개 기사 수치와 보간값을 섞은 참고용 프록시입니다. 정식 현물가 원자료가 있으면 data/memory-spot-prices.json만 교체하세요.',
+      series: [
+        { id: 'dram', name: 'DRAM DDR4 16GB spot proxy', unit: 'USD', color: '#007aff', points: [
+          ['2025-04',3.2],['2025-05',4.8],['2025-06',6.9],['2025-07',8.6],['2025-08',9.17],['2025-09',12.5],['2025-10',25.0],['2025-11',38.0],['2025-12',52.0],['2026-01',68.0],['2026-02',78.1],['2026-03',78.0],['2026-04',74.1]
+        ]},
+        { id: 'nand', name: 'NAND 1Tb TLC wafer proxy', unit: 'USD', color: '#34c759', points: [
+          ['2025-04',4.2],['2025-05',4.4],['2025-06',4.6],['2025-07',4.8],['2025-08',5.8],['2025-09',7.0],['2025-10',8.3],['2025-11',10.7],['2025-12',15.0],['2026-01',20.0],['2026-02',25.0],['2026-03',26.0],['2026-04',27.0]
+        ]}
+      ],
+      sources: [
+        ['DDR4 12개월 급등 및 2026년 4월 가격점', 'https://www.tomshardware.com/tech-industry/ddr4-spot-prices-fall-for-first-time-in-nearly-a-year-as-chinese-channel-inventory-clears'],
+        ['DDR4 2025년 8월 가격점', 'https://www.tomshardware.com/pc-components/ram/ddr4-costs-soar-as-manufacturers-pull-the-plug'],
+        ['NAND 1Tb TLC 2026년 2월 가격점', 'https://www.tomshardware.com/tech-industry/memory-spot-prices-climbed-again-in-february-nand-wafer-costs-surge-25-percent'],
+        ['NAND 2025년 7월·11월 가격점', 'https://www.tomshardware.com/pc-components/ssds/phison-ceo-confirms-nand-prices-have-more-than-doubled-and-will-continue-to-rise-all-2026-production-already-sold-out-ssds-facing-pricing-apocalypse-throughout-2027']
+      ]
+    };
+
+    async function loadMemorySpotData() {
+      try {
+        const res = await fetch('data/memory-spot-prices.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('no file');
+        const data = await res.json();
+        if (!data?.series?.length) throw new Error('bad file');
+        return data;
+      } catch {
+        return embeddedMemorySpotData;
+      }
+    }
+
+    function fmtSpotValue(value, unit) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return '—';
+      return unit === 'USD' ? '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) : n.toLocaleString('ko-KR');
+    }
+
+    function drawMemoryChart(data) {
+      const svg = document.getElementById('memory-price-chart');
+      const cards = document.getElementById('memory-price-cards');
+      const legend = document.getElementById('memory-price-legend');
+      const sources = document.getElementById('memory-price-sources');
+      if (!svg || !data?.series?.length) return;
+
+      const allMonths = [...new Set(data.series.flatMap(s => s.points.map(p => p[0])))].sort();
+      const width = 940, height = 340, left = 56, right = 24, top = 26, bottom = 48;
+      const chartW = width - left - right, chartH = height - top - bottom;
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      svg.innerHTML = '';
+
+      const values = data.series.flatMap(s => s.points.map(p => Number(p[1])).filter(Number.isFinite));
+      const maxV = Math.max(...values) * 1.08;
+      const minV = Math.min(0, Math.min(...values) * 0.95);
+      const x = month => left + (allMonths.indexOf(month) / Math.max(1, allMonths.length - 1)) * chartW;
+      const y = val => top + (1 - ((val - minV) / (maxV - minV || 1))) * chartH;
+
+      function line(attrs) { const el = document.createElementNS('http://www.w3.org/2000/svg', 'line'); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); svg.appendChild(el); return el; }
+      function text(attrs, content) { const el = document.createElementNS('http://www.w3.org/2000/svg', 'text'); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); el.textContent = content; svg.appendChild(el); return el; }
+      function path(attrs) { const el = document.createElementNS('http://www.w3.org/2000/svg', 'path'); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); svg.appendChild(el); return el; }
+      function circle(attrs) { const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); svg.appendChild(el); return el; }
+
+      for (let i = 0; i <= 4; i += 1) {
+        const val = minV + (maxV - minV) * (i / 4);
+        const yy = y(val);
+        line({ x1: left, y1: yy, x2: width - right, y2: yy, stroke: 'rgba(29,29,31,0.08)', 'stroke-width': 1 });
+        text({ x: left - 10, y: yy + 4, 'text-anchor': 'end', fill: '#6e6e73', 'font-size': 12, 'font-weight': 700 }, '$' + val.toFixed(0));
+      }
+      allMonths.forEach((m, i) => {
+        if (i % 2 && i !== allMonths.length - 1) return;
+        const xx = x(m);
+        line({ x1: xx, y1: top, x2: xx, y2: top + chartH, stroke: 'rgba(29,29,31,0.045)', 'stroke-width': 1 });
+        text({ x: xx, y: height - 16, 'text-anchor': 'middle', fill: '#6e6e73', 'font-size': 11, 'font-weight': 750 }, m.slice(5));
+      });
+
+      data.series.forEach(s => {
+        const d = s.points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${x(p[0]).toFixed(1)} ${y(Number(p[1])).toFixed(1)}`).join(' ');
+        path({ d, fill: 'none', stroke: s.color || '#007aff', 'stroke-width': 3.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+        s.points.forEach(p => circle({ cx: x(p[0]), cy: y(Number(p[1])), r: 4.5, fill: '#fff', stroke: s.color || '#007aff', 'stroke-width': 2 }));
+      });
+
+      legend.innerHTML = data.series.map(s => `<span class="legend-pill"><span class="legend-dot" style="background:${s.color || '#007aff'}"></span>${s.name}</span>`).join('');
+      cards.innerHTML = data.series.map(s => {
+        const first = s.points[0], last = s.points[s.points.length - 1];
+        const pct = first && last ? ((Number(last[1]) - Number(first[1])) / Number(first[1])) * 100 : 0;
+        const dir = pct >= 0 ? 'up' : 'down';
+        return `<article class="price-card"><h3>${s.name}</h3><p>최근값 ${last?.[0] || '—'} · ${s.unit || ''}</p><div class="price-big">${fmtSpotValue(last?.[1], s.unit)}</div><div class="price-note ${dir}">${pct >= 0 ? '+' : ''}${pct.toFixed(1)}% / 1년 프록시</div></article>`;
+      }).join('');
+      sources.innerHTML = `<div>${data.note || ''}</div>` + (data.sources || []).map(([label,url]) => `<div>출처: <a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></div>`).join('');
+    }
+
+    const noteTargets = [['market','시장 메모'],['semiconductor','반도체 구조'],['prices','현물가'],['hbf','HBF'],['cxl','CXL'],['socamm','SOCAMM'],['samsung','삼성전자'],['hynix','SK하이닉스'],['micron','마이크론'],['intel','인텔'],['amd','AMD'],['nvidia','엔비디아'],['sandisk','샌디스크'],['kioxia','키옥시아'],['action','다음 행동']];
+    const QUOTE_CACHE_KEY = 'ty-market-quotes-v5';
     const CACHE_SOFT_LIMIT_MS = 1000 * 60 * 20;
     const CACHE_HARD_LIMIT_MS = 1000 * 60 * 60 * 12;
     let activeNote = noteTargets[0][0];
@@ -449,7 +596,7 @@
 
     function fmtMarketCap(value, currency) {
       const n = Number(value);
-      if (!Number.isFinite(n) || n <= 0) return '—';
+      if (!Number.isFinite(n) || n <= 0) return '시총 확인 중';
       if (currency === 'KRW') {
         if (n >= 1e12) return `₩${(n / 1e12).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}조`;
         if (n >= 1e8) return `₩${(n / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 0 })}억`;
@@ -515,6 +662,43 @@
       return all.filter(item => { if (seen.has(item.ticker)) return false; seen.add(item.ticker); return true; });
     }
 
+
+    function yahooNumber(value) {
+      if (value == null) return null;
+      if (typeof value === 'object' && value.raw != null) return Number(value.raw);
+      const n = Number(value);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function extractSummaryQuote(json) {
+      const result = json?.quoteSummary?.result?.[0];
+      if (!result) throw new Error('empty quote summary');
+      const priceBlock = result.price || {};
+      const summary = result.summaryDetail || {};
+      const stats = result.defaultKeyStatistics || {};
+      const price = yahooNumber(priceBlock.regularMarketPrice);
+      const prev = yahooNumber(priceBlock.regularMarketPreviousClose) ?? yahooNumber(summary.previousClose) ?? price;
+      const change = yahooNumber(priceBlock.regularMarketChange) ?? (price != null && prev != null ? price - prev : null);
+      const pct = yahooNumber(priceBlock.regularMarketChangePercent) ?? (prev ? (change / prev) * 100 : 0);
+      const shares = yahooNumber(stats.sharesOutstanding) ?? yahooNumber(priceBlock.sharesOutstanding);
+      const cap = yahooNumber(priceBlock.marketCap) ?? yahooNumber(summary.marketCap) ?? (shares && price ? shares * price : null);
+      return {
+        price,
+        change,
+        pct,
+        marketCap: cap,
+        currency: priceBlock.currency || summary.currency || 'USD',
+        source: cap ? 'Yahoo Finance summary' : 'Yahoo Finance summary · 시총 없음'
+      };
+    }
+
+    async function loadYahooSummary(item) {
+      const json = await fastJson(`https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(item.ticker)}?modules=price,summaryDetail,defaultKeyStatistics`);
+      const data = extractSummaryQuote(json);
+      if (data.price == null && data.marketCap == null) throw new Error('summary missing');
+      return data;
+    }
+
     async function loadYahooBulk(items) {
       const symbols = items.map(item => encodeURIComponent(item.ticker)).join(',');
       const json = await fastJson(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`);
@@ -529,7 +713,8 @@
         const prev = Number(row.regularMarketPreviousClose ?? price);
         const change = row.regularMarketChange != null ? Number(row.regularMarketChange) : price - prev;
         const pct = row.regularMarketChangePercent != null ? Number(row.regularMarketChangePercent) : (prev ? (change / prev) * 100 : 0);
-        result[item.ticker] = { price, change, pct, marketCap: row.marketCap, currency: row.currency, source: 'Yahoo Finance' };
+        const cap = yahooNumber(row.marketCap) ?? (yahooNumber(row.sharesOutstanding) && price ? yahooNumber(row.sharesOutstanding) * price : null);
+        result[item.ticker] = { price, change, pct, marketCap: cap, currency: row.currency, source: cap ? 'Yahoo Finance' : 'Yahoo Finance · 시총 보강 중' };
       });
       return result;
     }
@@ -540,7 +725,7 @@
       if (!meta || meta.regularMarketPrice == null) throw new Error('missing quote');
       const price = Number(meta.regularMarketPrice);
       const prev = Number(meta.chartPreviousClose ?? meta.previousClose ?? price);
-      return { price, change: price - prev, pct: prev ? ((price - prev) / prev) * 100 : 0, marketCap: null, currency: meta.currency, source: 'Yahoo Finance chart' };
+      return { price, change: price - prev, pct: prev ? ((price - prev) / prev) * 100 : 0, marketCap: yahooNumber(meta.marketCap), currency: meta.currency, source: 'Yahoo Finance chart' };
     }
 
     async function loadBtcFallback() {
@@ -559,6 +744,23 @@
       const missing = items.filter(item => !bulk[item.ticker]);
       const fallbackRows = await Promise.allSettled(missing.map(async item => [item.ticker, item.ticker === 'BTC-USD' ? await loadBtcFallback() : await loadYahooChart(item)]));
       fallbackRows.forEach(row => { if (row.status === 'fulfilled') bulk[row.value[0]] = row.value[1]; });
+
+      const stockItems = coreStocks.filter(stock => !bulk[stock.ticker]?.marketCap);
+      const capRows = await Promise.allSettled(stockItems.map(async stock => [stock.ticker, await loadYahooSummary(stock)]));
+      capRows.forEach(row => {
+        if (row.status !== 'fulfilled') return;
+        const [ticker, summary] = row.value;
+        const prev = bulk[ticker] || {};
+        bulk[ticker] = {
+          ...prev,
+          price: prev.price ?? summary.price,
+          change: prev.change ?? summary.change,
+          pct: prev.pct ?? summary.pct,
+          marketCap: prev.marketCap ?? summary.marketCap,
+          currency: prev.currency ?? summary.currency,
+          source: summary.marketCap ? (prev.source ? `${prev.source} + 시총` : summary.source) : (prev.source || summary.source)
+        };
+      });
       return bulk;
     }
 
@@ -645,7 +847,7 @@
     }
 
     function today() { const d = new Date(); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
-    function noteKey(id) { return `ty-note-v4:${id}`; }
+    function noteKey(id) { return `ty-note-v5:${id}`; }
     function readNote(id) { try { const data = JSON.parse(localStorage.getItem(noteKey(id)) || '{}'); return { text: data.text || '', updatedAt: data.updatedAt || '' }; } catch { return { text: '', updatedAt: '' }; } }
     function noteTemplate(label) { return `[${today()}]\n\n관찰:\n\n근거:\n\n위험:\n\n다음 행동:\n`; }
     function renderTabs() { document.getElementById('note-tabs').innerHTML = noteTargets.map(([id,label]) => `<button class="note-tab${id === activeNote ? ' active' : ''}" type="button" onclick="selectNote('${id}')">${label}</button>`).join(''); }
@@ -723,6 +925,7 @@
       renderQuoteCards(); renderStockCards(); initDiagrams(); selectNote(activeNote); initMusic();
       document.getElementById('save-note').addEventListener('click', saveNote);
       document.getElementById('refresh-quotes').addEventListener('click', () => refreshData({ force: true }));
+      loadMemorySpotData().then(drawMemoryChart);
       refreshData();
     });
   </script>
