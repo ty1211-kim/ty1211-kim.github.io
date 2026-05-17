@@ -41,3 +41,13 @@ data/memory-spot-prices.json
 assets/diagrams/pc-memory-structure.png
 assets/diagrams/ai-memory-structure.png
 ```
+
+
+## v6 변경 사항
+
+- AI 블록다이어그램에서 HBF, CXL Memory, SOCAMM을 서로 다른 블록으로 명확히 분리했습니다.
+- 메모리 가격 추이를 두 개의 차트로 나눴습니다.
+  - 차트 1: DDR4 16Gb, DDR5 16Gb, NAND MLC 방향성
+  - 차트 2: 다나와 DDR4 8GB, DDR5 16GB, NVMe SSD 1TB 대표가
+- 가격 데이터는 `data/memory-watch-prices.json`에서 관리합니다. 실데이터를 확보하면 이 파일만 교체하면 됩니다.
+- 시가총액 캐시 키를 v6로 바꿔 이전 버전의 빈 캐시가 남는 문제를 줄였습니다.

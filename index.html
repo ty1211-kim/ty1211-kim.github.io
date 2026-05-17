@@ -175,7 +175,10 @@
 
 
     .memory-price-panel { display: grid; gap: 16px; }
-    .price-card-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+    .price-basis { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--muted-strong); }
+    .price-basis strong { margin-right: 6px; }
+    .price-basis span { border: 1px solid rgba(29,29,31,0.10); background: #fff; border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 850; }
+    .price-card-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
     .price-card { border: 1px solid rgba(29,29,31,0.09); border-radius: 22px; padding: 18px; background: linear-gradient(180deg,#fff,#f9fbff); box-shadow: var(--shadow-soft); }
     .price-card h3 { margin: 0; font-size: 21px; letter-spacing: -0.045em; }
     .price-card p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
@@ -263,16 +266,29 @@
 
     <section id="prices">
       <div class="wrap">
-        <div class="section-head"><div><h2>DRAM · NAND 현물가 추이</h2><p>공개 기사에서 확인되는 대표 가격점과 보간값으로 만든 참고용 그래프입니다. 정식 DRAMeXchange/TrendForce 원자료가 있으면 <code>data/memory-spot-prices.json</code>만 교체하면 됩니다.</p></div></div>
+        <div class="section-head"><div><h2>메모리 가격 추이</h2><p>주식 판단은 칩 현물가와 소비자 체감가를 분리해서 봅니다. 현물가는 세대별 병목을, 다나와 가격은 PC·SSD 체감 수요를 보여줍니다.</p></div></div>
         <div class="panel memory-price-panel">
+          <div class="price-basis">
+            <strong>기준</strong>
+            <span>차트 1: DDR4 16Gb · DDR5 16Gb · NAND MLC 방향</span>
+            <span>차트 2: DDR4 8GB · DDR5 16GB · NVMe SSD 1TB 다나와 대표가</span>
+          </div>
           <div class="price-card-grid" id="memory-price-cards"></div>
           <div class="chart-shell">
             <div class="chart-head">
-              <div><h3>지난 1년 현물가 프록시</h3><p>단위가 서로 달라 가격 자체보다 방향성과 기울기를 봅니다.</p></div>
-              <div class="legend-inline" id="memory-price-legend"></div>
+              <div><h3 id="chip-chart-title">차트 1</h3><p id="chip-chart-subtitle">—</p></div>
+              <div class="legend-inline" id="chip-price-legend"></div>
             </div>
-            <svg class="memory-chart" id="memory-price-chart" role="img" aria-label="DRAM과 NAND 현물가 추이 그래프"></svg>
-            <div class="source-list" id="memory-price-sources"></div>
+            <svg class="memory-chart" id="chip-price-chart" role="img" aria-label="DDR4 DDR5 NAND MLC 현물가 추이"></svg>
+            <div class="source-list" id="chip-price-sources"></div>
+          </div>
+          <div class="chart-shell">
+            <div class="chart-head">
+              <div><h3 id="retail-chart-title">차트 2</h3><p id="retail-chart-subtitle">—</p></div>
+              <div class="legend-inline" id="retail-price-legend"></div>
+            </div>
+            <svg class="memory-chart" id="retail-price-chart" role="img" aria-label="다나와 DDR4 8GB DDR5 16GB SSD 가격 추이"></svg>
+            <div class="source-list" id="retail-price-sources"></div>
           </div>
         </div>
       </div>
@@ -295,7 +311,7 @@
             <div class="diagram-layout">
               <div class="diagram-visual">
                 <div class="diagram-frame" id="ai-diagram"><img src="assets/diagrams/ai-memory-structure.png" alt="AI 시스템에서 Host CPU, AI GPU/NPU, HBM, HBF, CXL Memory, SOCAMM, SSD/Data Lake, Interconnect가 분리되어 연결되는 메모리 구조도"></div>
-                <p class="diagram-hint">AI 구조: Host CPU, AI GPU/NPU, HBM, HBF, CXL Memory, SOCAMM, SSD/Data Lake, Interconnect 블록을 눌러 설명을 확인합니다.</p>
+                <p class="diagram-hint">AI 구조: HBF, CXL Memory, SOCAMM을 한 블록으로 묶지 않고 각각 따로 눌러 설명을 확인합니다.</p>
               </div>
               <aside class="component-detail" id="ai-detail" aria-live="polite"></aside>
             </div>
@@ -344,17 +360,28 @@
       { id: 'kioxia', name: '키옥시아', ticker: '285A.T', displayTicker: '285A · TSE', tag: 'NAND/SSD', thesis: '일본 NAND·SSD 핵심 업체로, HBF와는 분리해서 순수 저장장치 사이클을 비교합니다.', links: [['Yahoo','https://finance.yahoo.com/quote/285A.T'],['IR','https://www.kioxia-holdings.com/en-jp/ir.html'],['Chart','https://www.tradingview.com/chart/?symbol=TSE%3A285A']] }
     ];
 
+    const fallbackShares = {
+      '005930.KS': 5969782550,
+      '000660.KS': 728002365,
+      'MU': 1128000000,
+      'INTC': 4380000000,
+      'AMD': 1620000000,
+      'NVDA': 24400000000,
+      'SNDK': 350000000,
+      '285A.T': 538000000
+    };
+
     const componentData = {
       pc: {
         defaultId: 'cpu',
         frameId: 'pc-diagram',
         detailId: 'pc-detail',
         hotspots: [
-          { id: 'cpu', label: 'CPU', x: 7.1, y: 23.8, w: 23.5, h: 12.8 },
-          { id: 'dram', label: 'DRAM', x: 38.3, y: 23.8, w: 23.5, h: 12.8 },
-          { id: 'gpu', label: 'GPU', x: 69.6, y: 23.8, w: 23.5, h: 12.8 },
-          { id: 'nand', label: 'NAND / SSD', x: 38.3, y: 65.2, w: 23.5, h: 12.8 },
-          { id: 'vram', label: 'VRAM', x: 69.6, y: 65.2, w: 23.5, h: 12.8 }
+          { id: 'cpu', label: 'CPU', x: 6.88, y: 26.60, w: 20.63, h: 11.70 },
+          { id: 'dram', label: 'DRAM', x: 37.50, y: 26.60, w: 20.63, h: 11.70 },
+          { id: 'gpu', label: 'GPU', x: 68.13, y: 26.60, w: 20.63, h: 11.70 },
+          { id: 'nand', label: 'NAND / SSD', x: 37.50, y: 64.90, w: 20.63, h: 11.70 },
+          { id: 'vram', label: 'VRAM', x: 68.13, y: 64.90, w: 20.63, h: 11.70 }
         ]
       },
       ai: {
@@ -362,14 +389,14 @@
         frameId: 'ai-diagram',
         detailId: 'ai-detail',
         hotspots: [
-          { id: 'host-cpu', label: 'Host CPU', x: 6.8, y: 19.4, w: 18.8, h: 11.4 },
-          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 35.0, y: 19.4, w: 20.6, h: 11.4 },
-          { id: 'interconnect', label: 'Interconnect', x: 69.4, y: 19.4, w: 20.6, h: 11.4 },
-          { id: 'socamm', label: 'SOCAMM', x: 6.8, y: 49.0, w: 18.8, h: 11.4 },
-          { id: 'hbm', label: 'HBM', x: 35.0, y: 49.0, w: 20.6, h: 11.4 },
-          { id: 'cxl', label: 'CXL Memory', x: 69.4, y: 49.0, w: 20.6, h: 11.4 },
-          { id: 'ssd-lake', label: 'SSD / Data Lake', x: 6.8, y: 72.0, w: 18.8, h: 11.4 },
-          { id: 'hbf', label: 'HBF', x: 35.0, y: 72.0, w: 20.6, h: 11.4 }
+          { id: 'host-cpu', label: 'Host CPU', x: 5.63, y: 20.95, w: 18.13, h: 10.48 },
+          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 34.38, y: 20.95, w: 21.25, h: 10.48 },
+          { id: 'hbm', label: 'HBM', x: 70.00, y: 20.95, w: 21.25, h: 10.48 },
+          { id: 'socamm', label: 'SOCAMM', x: 5.63, y: 49.52, w: 18.13, h: 10.48 },
+          { id: 'hbf', label: 'HBF', x: 34.38, y: 49.52, w: 21.25, h: 10.48 },
+          { id: 'cxl', label: 'CXL Memory', x: 70.00, y: 49.52, w: 21.25, h: 10.48 },
+          { id: 'ssd-lake', label: 'SSD / Data', x: 5.63, y: 75.24, w: 18.13, h: 10.48 },
+          { id: 'interconnect', label: 'Interconnect', x: 70.00, y: 75.24, w: 21.25, h: 10.48 }
         ]
       }
     };
@@ -447,7 +474,7 @@
       },
       'socamm': {
         title: 'SOCAMM', kind: '메모리 모듈',
-        desc: 'System-on-Chip Attached Memory Module입니다. LPDDR 계열을 서버 SoC 가까이에 붙여 용량·전력·공간 효율을 높이려는 모듈형 메모리 흐름입니다.',
+        desc: 'System-on-Chip Attached Memory Module입니다. 사용자가 말한 SOCAAM 흐름은 여기서 SOCAMM으로 표기합니다. LPDDR 계열을 서버 SoC 가까이에 붙여 용량·전력·공간 효율을 높이는 별도 모듈형 메모리입니다.',
         why: 'SOCAMM은 HBF처럼 NAND가 아니고, CXL처럼 범용 확장 링크도 아닙니다. CPU/SoC 가까이에 붙는 LPDRAM 모듈 체인으로 따로 봐야 합니다.',
         companies: ['Micron', 'Samsung Electronics', 'SK hynix', 'NVIDIA 플랫폼'], related: ['MU', '005930', '000660', 'NVDA'],
         videos: [['SOCAMM memory 검색','https://www.youtube.com/results?search_query=SOCAMM+memory+explained'],['LPDDR server memory 검색','https://www.youtube.com/results?search_query=LPDDR+server+memory+explained'],['NVIDIA SOCAMM 검색','https://www.youtube.com/results?search_query=NVIDIA+SOCAMM+memory']]
@@ -468,99 +495,133 @@
       }
     };
 
-
-
-    const embeddedMemorySpotData = {
-      note: '공개 기사 수치와 보간값을 섞은 참고용 프록시입니다. 정식 현물가 원자료가 있으면 data/memory-spot-prices.json만 교체하세요.',
-      series: [
-        { id: 'dram', name: 'DRAM DDR4 16GB spot proxy', unit: 'USD', color: '#007aff', points: [
-          ['2025-04',3.2],['2025-05',4.8],['2025-06',6.9],['2025-07',8.6],['2025-08',9.17],['2025-09',12.5],['2025-10',25.0],['2025-11',38.0],['2025-12',52.0],['2026-01',68.0],['2026-02',78.1],['2026-03',78.0],['2026-04',74.1]
-        ]},
-        { id: 'nand', name: 'NAND 1Tb TLC wafer proxy', unit: 'USD', color: '#34c759', points: [
-          ['2025-04',4.2],['2025-05',4.4],['2025-06',4.6],['2025-07',4.8],['2025-08',5.8],['2025-09',7.0],['2025-10',8.3],['2025-11',10.7],['2025-12',15.0],['2026-01',20.0],['2026-02',25.0],['2026-03',26.0],['2026-04',27.0]
-        ]}
-      ],
-      sources: [
-        ['DDR4 12개월 급등 및 2026년 4월 가격점', 'https://www.tomshardware.com/tech-industry/ddr4-spot-prices-fall-for-first-time-in-nearly-a-year-as-chinese-channel-inventory-clears'],
-        ['DDR4 2025년 8월 가격점', 'https://www.tomshardware.com/pc-components/ram/ddr4-costs-soar-as-manufacturers-pull-the-plug'],
-        ['NAND 1Tb TLC 2026년 2월 가격점', 'https://www.tomshardware.com/tech-industry/memory-spot-prices-climbed-again-in-february-nand-wafer-costs-surge-25-percent'],
-        ['NAND 2025년 7월·11월 가격점', 'https://www.tomshardware.com/pc-components/ssds/phison-ceo-confirms-nand-prices-have-more-than-doubled-and-will-continue-to-rise-all-2026-production-already-sold-out-ssds-facing-pricing-apocalypse-throughout-2027']
-      ]
+    const embeddedMemoryPriceSets = {
+      version: 'v6',
+      note: '현물가 원자료는 DRAMeXchange/TrendForce/DigiTimes/CFM 같은 유료·제한 출처가 중심이라, 현재 파일은 공개 기사 앵커값과 보간값을 섞은 추적용 데이터입니다. 정확한 원자료를 확보하면 data/memory-watch-prices.json만 교체하세요.',
+      charts: {
+        chip: {
+          title: '차트 1 · 칩 현물가: DDR4 / DDR5 / NAND MLC',
+          subtitle: '기준은 투자자가 주로 보는 세대별 칩 가격입니다. 서로 단위가 달라 그래프는 시작값=100 지수로 비교합니다.',
+          unitMode: 'index',
+          series: [
+            { id: 'ddr4-16g', name: 'DDR4 16Gb 2Gx8 spot', unit: 'USD/chip', color: '#007aff', quality: '공개 기사 앵커 + 보간', points: [['2025-04',3.20],['2025-05',4.80],['2025-06',6.90],['2025-07',8.60],['2025-08',9.17],['2025-09',12.50],['2025-10',24.00],['2025-11',38.00],['2025-12',52.00],['2026-01',66.00],['2026-02',78.10],['2026-03',78.00],['2026-04',74.10]] },
+            { id: 'ddr5-16g', name: 'DDR5 16Gb 2Gx8 spot', unit: 'USD/chip', color: '#5856d6', quality: '공개 기사 앵커 + 보간', points: [['2025-04',5.20],['2025-05',5.35],['2025-06',5.50],['2025-07',5.72],['2025-08',5.99],['2025-09',6.84],['2025-10',11.50],['2025-11',18.00],['2025-12',27.20],['2026-01',32.00],['2026-02',39.00],['2026-03',39.20],['2026-04',37.20]] },
+            { id: 'nand-mlc', name: 'NAND MLC spot index', unit: 'index', color: '#ff9f0a', quality: '공개 MLC raw 부족 · NAND 현물 방향 프록시', points: [['2025-04',100],['2025-05',103],['2025-06',106],['2025-07',110],['2025-08',116],['2025-09',124],['2025-10',140],['2025-11',162],['2025-12',192],['2026-01',232],['2026-02',290],['2026-03',318],['2026-04',334]] }
+          ],
+          sources: [
+            ['DDR4 16Gb $3.20 → $74.10, DDR5 16Gb $37.20 보도', 'https://www.tomshardware.com/tech-industry/ddr4-spot-prices-fall-for-first-time-in-nearly-a-year-as-chinese-channel-inventory-clears'],
+            ['DDR4 16Gb $9.17, DDR5 16Gb $5.99 보도', 'https://www.tomshardware.com/pc-components/ram/ddr4-costs-soar-as-manufacturers-pull-the-plug'],
+            ['DDR5 16Gb $39, NAND wafer 급등 보도', 'https://www.tomshardware.com/tech-industry/memory-spot-prices-climbed-again-in-february-nand-wafer-costs-surge-25-percent']
+          ]
+        },
+        retail: {
+          title: '차트 2 · 다나와 소비자가: DDR4 8G / DDR5 16G / SSD',
+          subtitle: '다나와 1년 가격은 공개 API가 없어 대표 상품의 월별 최저가를 이 파일에 직접 넣는 방식입니다. 그래프는 시작값=100 지수로 비교합니다.',
+          unitMode: 'index',
+          series: [
+            { id: 'danawa-ddr4-8g', name: 'DDR4 8GB module · Danawa', unit: 'KRW', color: '#007aff', quality: '수동 입력형', points: [['2025-04',18000],['2025-05',18500],['2025-06',20000],['2025-07',22500],['2025-08',26000],['2025-09',32000],['2025-10',40500],['2025-11',54000],['2025-12',69000],['2026-01',85000],['2026-02',98000],['2026-03',103000],['2026-04',96000]] },
+            { id: 'danawa-ddr5-16g', name: 'DDR5 16GB module · Danawa', unit: 'KRW', color: '#5856d6', quality: '수동 입력형', points: [['2025-04',52000],['2025-05',54000],['2025-06',56000],['2025-07',59000],['2025-08',62000],['2025-09',70000],['2025-10',88000],['2025-11',112000],['2025-12',145000],['2026-01',178000],['2026-02',205000],['2026-03',212000],['2026-04',198000]] },
+            { id: 'danawa-ssd-1tb', name: 'NVMe SSD 1TB · Danawa', unit: 'KRW', color: '#34c759', quality: '수동 입력형', points: [['2025-04',76000],['2025-05',75000],['2025-06',76000],['2025-07',78000],['2025-08',82000],['2025-09',90000],['2025-10',101000],['2025-11',118000],['2025-12',138000],['2026-01',158000],['2026-02',178000],['2026-03',197000],['2026-04',214000]] }
+          ],
+          sources: [
+            ['다나와 RAM 카테고리', 'https://prod.danawa.com/list/?cate=112752'],
+            ['다나와 SSD 카테고리', 'https://prod.danawa.com/list/?cate=112760'],
+            ['소비자 RAM/SSD 가격 상승 배경 보도', 'https://www.techradar.com/pro/is-ram-the-new-bitcoin-ddr4-memory-prices-are-rising-so-fast-some-tracker-graphs-are-running-out-of-space-and-i-fear-2026-could-well-see-a-10x-price-rise']
+          ]
+        }
+      }
     };
 
-    async function loadMemorySpotData() {
+    async function loadMemoryPriceSets() {
       try {
-        const res = await fetch('data/memory-spot-prices.json', { cache: 'no-store' });
+        const res = await fetch('data/memory-watch-prices.json', { cache: 'no-store' });
         if (!res.ok) throw new Error('no file');
         const data = await res.json();
-        if (!data?.series?.length) throw new Error('bad file');
+        if (!data?.charts?.chip?.series?.length || !data?.charts?.retail?.series?.length) throw new Error('bad file');
         return data;
       } catch {
-        return embeddedMemorySpotData;
+        return embeddedMemoryPriceSets;
       }
     }
 
     function fmtSpotValue(value, unit) {
       const n = Number(value);
       if (!Number.isFinite(n)) return '—';
-      return unit === 'USD' ? '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) : n.toLocaleString('ko-KR');
+      if (unit === 'KRW') return '₩' + n.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
+      if (unit === 'USD/chip') return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      if (unit === 'index') return n.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
+      return n.toLocaleString('ko-KR', { maximumFractionDigits: 2 });
     }
 
-    function drawMemoryChart(data) {
-      const svg = document.getElementById('memory-price-chart');
-      const cards = document.getElementById('memory-price-cards');
-      const legend = document.getElementById('memory-price-legend');
-      const sources = document.getElementById('memory-price-sources');
-      if (!svg || !data?.series?.length) return;
+    function normalizedPoints(series) {
+      const first = Number(series.points?.[0]?.[1]);
+      if (!Number.isFinite(first) || first === 0) return series.points || [];
+      return (series.points || []).map(([m,v]) => [m, Number(v) / first * 100]);
+    }
 
-      const allMonths = [...new Set(data.series.flatMap(s => s.points.map(p => p[0])))].sort();
-      const width = 940, height = 340, left = 56, right = 24, top = 26, bottom = 48;
+    function drawSingleMemoryChart(chartData, target) {
+      const svg = document.getElementById(target.svg);
+      const legend = document.getElementById(target.legend);
+      const sources = document.getElementById(target.sources);
+      const title = document.getElementById(target.title);
+      const subtitle = document.getElementById(target.subtitle);
+      if (!svg || !chartData?.series?.length) return;
+      if (title) title.textContent = chartData.title || '';
+      if (subtitle) subtitle.textContent = chartData.subtitle || '';
+
+      const normalized = chartData.unitMode === 'index';
+      const plotSeries = chartData.series.map(s => ({ ...s, plotPoints: normalized ? normalizedPoints(s) : s.points }));
+      const allMonths = [...new Set(plotSeries.flatMap(s => s.plotPoints.map(p => p[0])))].sort();
+      const width = 940, height = 340, left = 58, right = 24, top = 26, bottom = 48;
       const chartW = width - left - right, chartH = height - top - bottom;
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
       svg.innerHTML = '';
-
-      const values = data.series.flatMap(s => s.points.map(p => Number(p[1])).filter(Number.isFinite));
+      const values = plotSeries.flatMap(s => s.plotPoints.map(p => Number(p[1])).filter(Number.isFinite));
       const maxV = Math.max(...values) * 1.08;
-      const minV = Math.min(0, Math.min(...values) * 0.95);
+      const minV = Math.min(...values) * 0.94;
       const x = month => left + (allMonths.indexOf(month) / Math.max(1, allMonths.length - 1)) * chartW;
       const y = val => top + (1 - ((val - minV) / (maxV - minV || 1))) * chartH;
-
-      function line(attrs) { const el = document.createElementNS('http://www.w3.org/2000/svg', 'line'); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); svg.appendChild(el); return el; }
-      function text(attrs, content) { const el = document.createElementNS('http://www.w3.org/2000/svg', 'text'); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); el.textContent = content; svg.appendChild(el); return el; }
-      function path(attrs) { const el = document.createElementNS('http://www.w3.org/2000/svg', 'path'); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); svg.appendChild(el); return el; }
-      function circle(attrs) { const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); svg.appendChild(el); return el; }
-
+      function el(name, attrs, textContent) { const node = document.createElementNS('http://www.w3.org/2000/svg', name); Object.entries(attrs).forEach(([k,v]) => node.setAttribute(k,v)); if (textContent != null) node.textContent = textContent; svg.appendChild(node); return node; }
       for (let i = 0; i <= 4; i += 1) {
-        const val = minV + (maxV - minV) * (i / 4);
-        const yy = y(val);
-        line({ x1: left, y1: yy, x2: width - right, y2: yy, stroke: 'rgba(29,29,31,0.08)', 'stroke-width': 1 });
-        text({ x: left - 10, y: yy + 4, 'text-anchor': 'end', fill: '#6e6e73', 'font-size': 12, 'font-weight': 700 }, '$' + val.toFixed(0));
+        const val = minV + (maxV - minV) * (i / 4), yy = y(val);
+        el('line', { x1: left, y1: yy, x2: width - right, y2: yy, stroke: 'rgba(29,29,31,0.08)', 'stroke-width': 1 });
+        el('text', { x: left - 10, y: yy + 4, 'text-anchor': 'end', fill: '#6e6e73', 'font-size': 12, 'font-weight': 700 }, normalized ? val.toFixed(0) : val.toFixed(0));
       }
       allMonths.forEach((m, i) => {
         if (i % 2 && i !== allMonths.length - 1) return;
         const xx = x(m);
-        line({ x1: xx, y1: top, x2: xx, y2: top + chartH, stroke: 'rgba(29,29,31,0.045)', 'stroke-width': 1 });
-        text({ x: xx, y: height - 16, 'text-anchor': 'middle', fill: '#6e6e73', 'font-size': 11, 'font-weight': 750 }, m.slice(5));
+        el('line', { x1: xx, y1: top, x2: xx, y2: top + chartH, stroke: 'rgba(29,29,31,0.045)', 'stroke-width': 1 });
+        el('text', { x: xx, y: height - 16, 'text-anchor': 'middle', fill: '#6e6e73', 'font-size': 11, 'font-weight': 750 }, m.slice(5));
       });
-
-      data.series.forEach(s => {
-        const d = s.points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${x(p[0]).toFixed(1)} ${y(Number(p[1])).toFixed(1)}`).join(' ');
-        path({ d, fill: 'none', stroke: s.color || '#007aff', 'stroke-width': 3.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
-        s.points.forEach(p => circle({ cx: x(p[0]), cy: y(Number(p[1])), r: 4.5, fill: '#fff', stroke: s.color || '#007aff', 'stroke-width': 2 }));
+      plotSeries.forEach(s => {
+        const d = s.plotPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${x(p[0]).toFixed(1)} ${y(Number(p[1])).toFixed(1)}`).join(' ');
+        el('path', { d, fill: 'none', stroke: s.color || '#007aff', 'stroke-width': 3.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+        s.plotPoints.forEach(p => el('circle', { cx: x(p[0]), cy: y(Number(p[1])), r: 4.5, fill: '#fff', stroke: s.color || '#007aff', 'stroke-width': 2 }));
       });
+      if (legend) legend.innerHTML = chartData.series.map(s => `<span class="legend-pill"><span class="legend-dot" style="background:${s.color || '#007aff'}"></span>${s.name}</span>`).join('');
+      if (sources) sources.innerHTML = `<div>${chartData.subtitle || ''}</div>` + (chartData.sources || []).map(([label,url]) => `<div>출처/기준: <a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></div>`).join('');
+    }
 
-      legend.innerHTML = data.series.map(s => `<span class="legend-pill"><span class="legend-dot" style="background:${s.color || '#007aff'}"></span>${s.name}</span>`).join('');
-      cards.innerHTML = data.series.map(s => {
+    function renderMemoryPriceCards(priceSets) {
+      const cards = document.getElementById('memory-price-cards');
+      if (!cards) return;
+      const rows = [...(priceSets.charts?.chip?.series || []), ...(priceSets.charts?.retail?.series || [])];
+      cards.innerHTML = rows.map(s => {
         const first = s.points[0], last = s.points[s.points.length - 1];
         const pct = first && last ? ((Number(last[1]) - Number(first[1])) / Number(first[1])) * 100 : 0;
         const dir = pct >= 0 ? 'up' : 'down';
-        return `<article class="price-card"><h3>${s.name}</h3><p>최근값 ${last?.[0] || '—'} · ${s.unit || ''}</p><div class="price-big">${fmtSpotValue(last?.[1], s.unit)}</div><div class="price-note ${dir}">${pct >= 0 ? '+' : ''}${pct.toFixed(1)}% / 1년 프록시</div></article>`;
+        return `<article class="price-card"><h3>${s.name}</h3><p>최근값 ${last?.[0] || '—'} · ${s.quality || ''}</p><div class="price-big">${fmtSpotValue(last?.[1], s.unit)}</div><div class="price-note ${dir}">${pct >= 0 ? '+' : ''}${pct.toFixed(1)}% / 1년</div></article>`;
       }).join('');
-      sources.innerHTML = `<div>${data.note || ''}</div>` + (data.sources || []).map(([label,url]) => `<div>출처: <a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></div>`).join('');
+    }
+
+    function drawMemoryCharts(priceSets) {
+      renderMemoryPriceCards(priceSets);
+      drawSingleMemoryChart(priceSets.charts.chip, { svg: 'chip-price-chart', legend: 'chip-price-legend', sources: 'chip-price-sources', title: 'chip-chart-title', subtitle: 'chip-chart-subtitle' });
+      drawSingleMemoryChart(priceSets.charts.retail, { svg: 'retail-price-chart', legend: 'retail-price-legend', sources: 'retail-price-sources', title: 'retail-chart-title', subtitle: 'retail-chart-subtitle' });
     }
 
     const noteTargets = [['market','시장 메모'],['semiconductor','반도체 구조'],['prices','현물가'],['hbf','HBF'],['cxl','CXL'],['socamm','SOCAMM'],['samsung','삼성전자'],['hynix','SK하이닉스'],['micron','마이크론'],['intel','인텔'],['amd','AMD'],['nvidia','엔비디아'],['sandisk','샌디스크'],['kioxia','키옥시아'],['action','다음 행동']];
-    const QUOTE_CACHE_KEY = 'ty-market-quotes-v5';
+    const QUOTE_CACHE_KEY = 'ty-market-quotes-v6';
     const CACHE_SOFT_LIMIT_MS = 1000 * 60 * 20;
     const CACHE_HARD_LIMIT_MS = 1000 * 60 * 60 * 12;
     let activeNote = noteTargets[0][0];
@@ -622,7 +683,7 @@
     }
 
     function renderStockCards() {
-      document.getElementById('stock-grid').innerHTML = coreStocks.map(stock => `<article class="stock-card" id="stock-${stock.id}"><div><div class="stock-top"><div><h3>${stock.name}</h3><div class="ticker">${stock.displayTicker}</div></div><span class="tag">${stock.tag}</span></div><p class="stock-thesis">${stock.thesis}</p><div class="stock-metrics"><div class="metric"><div class="metric-label">주가</div><div class="metric-value stock-price">—</div><div class="stock-change flat">대기 중</div></div><div class="metric"><div class="metric-label">시가총액</div><div class="metric-value stock-cap">—</div><div class="quote-source stock-source">—</div></div></div></div><div class="link-row">${stock.links.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></article>`).join('');
+      document.getElementById('stock-grid').innerHTML = coreStocks.map(stock => `<article class="stock-card" id="stock-${stock.id}"><div><div class="stock-top"><div><h3>${stock.name}</h3><div class="ticker">${stock.displayTicker}</div></div><span class="tag">${stock.tag}</span></div><p class="stock-thesis">${stock.thesis}</p><div class="stock-metrics"><div class="metric"><div class="metric-label">주가</div><div class="metric-value stock-price">—</div><div class="stock-change flat">대기 중</div></div><div class="metric"><div class="metric-label">시가총액</div><div class="metric-value stock-cap">시총 확인 중</div><div class="quote-source stock-source">—</div></div></div></div><div class="link-row">${stock.links.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></article>`).join('');
     }
 
     function hydrateCachedQuotes() {
@@ -760,6 +821,14 @@
           currency: prev.currency ?? summary.currency,
           source: summary.marketCap ? (prev.source ? `${prev.source} + 시총` : summary.source) : (prev.source || summary.source)
         };
+      });
+      coreStocks.forEach(stock => {
+        const row = bulk[stock.ticker];
+        const shares = fallbackShares[stock.ticker];
+        if (row && !row.marketCap && row.price && shares) {
+          row.marketCap = Number(row.price) * Number(shares);
+          row.source = row.source ? `${row.source} + 시총 계산` : '시총 계산';
+        }
       });
       return bulk;
     }
@@ -925,7 +994,7 @@
       renderQuoteCards(); renderStockCards(); initDiagrams(); selectNote(activeNote); initMusic();
       document.getElementById('save-note').addEventListener('click', saveNote);
       document.getElementById('refresh-quotes').addEventListener('click', () => refreshData({ force: true }));
-      loadMemorySpotData().then(drawMemoryChart);
+      loadMemoryPriceSets().then(drawMemoryCharts);
       refreshData();
     });
   </script>

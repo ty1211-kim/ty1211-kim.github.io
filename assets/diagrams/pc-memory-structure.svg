@@ -1,0 +1,53 @@
+
+<svg class="block-diagram" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" role="img" aria-label="일반 PC 메모리 구조">
+
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7e8a9a"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#6eb85d"/></marker>
+    <marker id="arrow-gold" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#d69b21"/></marker>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#1d1d1f" flood-opacity="0.10"/></filter>
+  </defs>
+
+  <rect class="diagram-bg" x="1" y="1" width="1098" height="648" rx="34"/>
+  <text class="diagram-title" x="58" y="70">일반 PC 메모리 구조</text>
+  <text class="diagram-subtitle" x="58" y="104">CPU는 DRAM을 작업공간으로 쓰고, GPU는 VRAM을 전용 버퍼로 사용한다.</text>
+  <g class="legend" transform="translate(760,58)">
+    <rect class="legend-swatch logic" x="0" y="0" width="18" height="18" rx="6"/><text x="28" y="15">연산/제어</text>
+    <rect class="legend-swatch memory" x="128" y="0" width="18" height="18" rx="6"/><text x="156" y="15">메모리</text>
+    <rect class="legend-swatch fabric" x="246" y="0" width="18" height="18" rx="6"/><text x="274" y="15">연결망</text>
+  </g>
+  <path class="edge" d="M300 205 L420 205" marker-end="url(#arrow-blue)"/><text class="edge-label" x="360" y="186" text-anchor="middle">작업 데이터</text>
+  <path class="edge" d="M660 205 L780 205" marker-end="url(#arrow-blue)"/><text class="edge-label" x="720" y="186" text-anchor="middle">PCIe 위임</text>
+  <path class="edge memory" d="M540 290 L540 390" marker-end="url(#arrow-green)"/>
+  <path class="edge memory" d="M540 390 L540 290" marker-end="url(#arrow-green)"/><text class="edge-label memory" x="540" y="345" text-anchor="middle">로드 / 저장</text>
+  <path class="edge memory" d="M895 290 L895 390" marker-end="url(#arrow-green)"/>
+  <path class="edge memory" d="M895 390 L895 290" marker-end="url(#arrow-green)"/><text class="edge-label memory" x="895" y="345" text-anchor="middle">전용 버퍼</text>
+  <path class="edge dash" d="M650 252 C710 320, 760 365, 815 410" marker-end="url(#arrow-blue)"/><text class="edge-label" x="740" y="340" text-anchor="middle">DMA 전송</text>
+  <g class="diagram-node logic" data-group="pc" data-component-id="cpu" role="button" tabindex="0" aria-label="CPU 설명 보기">
+      <rect class="node-rect" x="80" y="160" width="240" height="92" rx="22"/>
+      <text class="node-title" x="200.0" y="202" text-anchor="middle">CPU</text>
+      <text class="node-sub" x="200.0" y="228" text-anchor="middle">시스템 제어 · 연산</text>
+    </g>
+  <g class="diagram-node memory" data-group="pc" data-component-id="dram" role="button" tabindex="0" aria-label="DRAM 설명 보기">
+      <rect class="node-rect" x="420" y="160" width="240" height="92" rx="22"/>
+      <text class="node-title" x="540.0" y="202" text-anchor="middle">DRAM</text>
+      <text class="node-sub" x="540.0" y="228" text-anchor="middle">실시간 작업공간</text>
+    </g>
+  <g class="diagram-node logic" data-group="pc" data-component-id="gpu" role="button" tabindex="0" aria-label="GPU 설명 보기">
+      <rect class="node-rect" x="780" y="160" width="240" height="92" rx="22"/>
+      <text class="node-title" x="900.0" y="202" text-anchor="middle">GPU</text>
+      <text class="node-sub" x="900.0" y="228" text-anchor="middle">병렬 그래픽 · 연산</text>
+    </g>
+  <g class="diagram-node memory" data-group="pc" data-component-id="nand" role="button" tabindex="0" aria-label="NAND / SSD 설명 보기">
+      <rect class="node-rect" x="420" y="410" width="240" height="92" rx="22"/>
+      <text class="node-title" x="540.0" y="452" text-anchor="middle">NAND / SSD</text>
+      <text class="node-sub" x="540.0" y="478" text-anchor="middle">장기 저장</text>
+    </g>
+  <g class="diagram-node memory" data-group="pc" data-component-id="vram" role="button" tabindex="0" aria-label="VRAM 설명 보기">
+      <rect class="node-rect" x="780" y="410" width="240" height="92" rx="22"/>
+      <text class="node-title" x="900.0" y="452" text-anchor="middle">VRAM</text>
+      <text class="node-sub" x="900.0" y="478" text-anchor="middle">GPU 전용 메모리</text>
+    </g>
+  <rect class="key-box" x="60" y="570" width="980" height="38" rx="16"/>
+  <text class="diagram-key" x="80" y="594">핵심: DRAM · NAND · VRAM은 저장 위치가 다르고, 병목은 연산보다 데이터 이동에서 자주 발생한다.</text>
+</svg>

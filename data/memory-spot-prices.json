@@ -1,11 +1,14 @@
 {
-  "note": "공개 기사 수치와 보간값을 섞은 참고용 프록시입니다. 정식 DRAMeXchange/TrendForce 원자료가 있으면 이 파일만 교체하세요.",
+  "title": "차트 1 · 칩 현물가: DDR4 / DDR5 / NAND MLC",
+  "subtitle": "기준은 투자자가 주로 보는 세대별 칩 가격입니다. 서로 단위가 달라 그래프는 시작값=100 지수로 비교합니다.",
+  "unitMode": "index",
   "series": [
     {
-      "id": "dram",
-      "name": "DRAM DDR4 16GB spot proxy",
-      "unit": "USD",
+      "id": "ddr4-16g",
+      "name": "DDR4 16Gb 2Gx8 spot",
+      "unit": "USD/chip",
       "color": "#007aff",
+      "quality": "공개 기사 앵커 + 보간",
       "points": [
         [
           "2025-04",
@@ -33,7 +36,7 @@
         ],
         [
           "2025-10",
-          25.0
+          24.0
         ],
         [
           "2025-11",
@@ -45,7 +48,7 @@
         ],
         [
           "2026-01",
-          68.0
+          66.0
         ],
         [
           "2026-02",
@@ -62,82 +65,141 @@
       ]
     },
     {
-      "id": "nand",
-      "name": "NAND 1Tb TLC wafer proxy",
-      "unit": "USD",
-      "color": "#34c759",
+      "id": "ddr5-16g",
+      "name": "DDR5 16Gb 2Gx8 spot",
+      "unit": "USD/chip",
+      "color": "#5856d6",
+      "quality": "공개 기사 앵커 + 보간",
       "points": [
         [
           "2025-04",
-          4.2
+          5.2
         ],
         [
           "2025-05",
-          4.4
+          5.35
         ],
         [
           "2025-06",
-          4.6
+          5.5
         ],
         [
           "2025-07",
-          4.8
+          5.72
         ],
         [
           "2025-08",
-          5.8
+          5.99
         ],
         [
           "2025-09",
-          7.0
+          6.84
         ],
         [
           "2025-10",
-          8.3
+          11.5
         ],
         [
           "2025-11",
-          10.7
+          18.0
         ],
         [
           "2025-12",
-          15.0
+          27.2
         ],
         [
           "2026-01",
-          20.0
+          32.0
         ],
         [
           "2026-02",
-          25.0
+          39.0
         ],
         [
           "2026-03",
-          26.0
+          39.2
         ],
         [
           "2026-04",
-          27.0
+          37.2
+        ]
+      ]
+    },
+    {
+      "id": "nand-mlc",
+      "name": "NAND MLC spot index",
+      "unit": "index",
+      "color": "#ff9f0a",
+      "quality": "공개 MLC raw 부족 · NAND 현물 방향 프록시",
+      "points": [
+        [
+          "2025-04",
+          100
+        ],
+        [
+          "2025-05",
+          103
+        ],
+        [
+          "2025-06",
+          106
+        ],
+        [
+          "2025-07",
+          110
+        ],
+        [
+          "2025-08",
+          116
+        ],
+        [
+          "2025-09",
+          124
+        ],
+        [
+          "2025-10",
+          140
+        ],
+        [
+          "2025-11",
+          162
+        ],
+        [
+          "2025-12",
+          192
+        ],
+        [
+          "2026-01",
+          232
+        ],
+        [
+          "2026-02",
+          290
+        ],
+        [
+          "2026-03",
+          318
+        ],
+        [
+          "2026-04",
+          334
         ]
       ]
     }
   ],
   "sources": [
     [
-      "DDR4 12개월 급등 및 2026년 4월 가격점",
+      "DDR4 16Gb $3.20 → $74.10, DDR5 16Gb $37.20 보도",
       "https://www.tomshardware.com/tech-industry/ddr4-spot-prices-fall-for-first-time-in-nearly-a-year-as-chinese-channel-inventory-clears"
     ],
     [
-      "DDR4 2025년 8월 가격점",
+      "DDR4 16Gb $9.17, DDR5 16Gb $5.99 보도",
       "https://www.tomshardware.com/pc-components/ram/ddr4-costs-soar-as-manufacturers-pull-the-plug"
     ],
     [
-      "NAND 1Tb TLC 2026년 2월 가격점",
+      "DDR5 16Gb $39, NAND wafer 급등 보도",
       "https://www.tomshardware.com/tech-industry/memory-spot-prices-climbed-again-in-february-nand-wafer-costs-surge-25-percent"
-    ],
-    [
-      "NAND 2025년 7월·11월 가격점",
-      "https://www.tomshardware.com/pc-components/ssds/phison-ceo-confirms-nand-prices-have-more-than-doubled-and-will-continue-to-rise-all-2026-production-already-sold-out-ssds-facing-pricing-apocalypse-throughout-2027"
     ]
-  ]
+  ],
+  "note": "현물가 원자료는 DRAMeXchange/TrendForce/DigiTimes/CFM 같은 유료·제한 출처가 중심이라, 현재 파일은 공개 기사 앵커값과 보간값을 섞은 추적용 데이터입니다. 정확한 원자료를 확보하면 이 JSON만 교체하세요."
 }

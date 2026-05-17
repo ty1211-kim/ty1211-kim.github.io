@@ -1,0 +1,74 @@
+
+<svg class="block-diagram" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 760" role="img" aria-label="AI 시스템 메모리 구조">
+
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7e8a9a"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#6eb85d"/></marker>
+    <marker id="arrow-gold" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#d69b21"/></marker>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#1d1d1f" flood-opacity="0.10"/></filter>
+  </defs>
+
+  <rect class="diagram-bg" x="1" y="1" width="1098" height="758" rx="34"/>
+  <text class="diagram-title" x="58" y="70">AI 시스템 메모리 구조</text>
+  <text class="diagram-subtitle" x="58" y="104">HBF, SOCAMM, CXL은 같은 것이 아니다. 각각 별도 병목과 수혜 업체를 가진다.</text>
+  <g class="legend" transform="translate(690,58)">
+    <rect class="legend-swatch logic" x="0" y="0" width="18" height="18" rx="6"/><text x="28" y="15">연산/제어</text>
+    <rect class="legend-swatch memory" x="128" y="0" width="18" height="18" rx="6"/><text x="156" y="15">메모리</text>
+    <rect class="legend-swatch fabric" x="246" y="0" width="18" height="18" rx="6"/><text x="274" y="15">인터페이스/연결망</text>
+  </g>
+
+  <path class="edge" d="M280 196 L380 196" marker-end="url(#arrow-blue)"/><text class="edge-label" x="330" y="177" text-anchor="middle">작업 분배</text>
+  <path class="edge memory" d="M620 196 L750 196" marker-end="url(#arrow-green)"/>
+  <path class="edge memory" d="M750 196 L620 196" marker-end="url(#arrow-green)"/><text class="edge-label memory" x="685" y="177" text-anchor="middle">초고대역</text>
+  <path class="edge fabric" d="M500 245 L500 380" marker-end="url(#arrow-gold)"/><text class="edge-label fabric" x="540" y="318" text-anchor="middle">추론 보조</text>
+  <path class="edge memory" d="M170 590 L380 430" marker-end="url(#arrow-green)"/><text class="edge-label memory" x="275" y="514" text-anchor="middle">데이터 캐시</text>
+  <path class="edge memory" d="M500 380 L500 245" marker-end="url(#arrow-green)"/>
+  <path class="edge" d="M170 245 L170 380" marker-end="url(#arrow-blue)"/><text class="edge-label" x="220" y="318" text-anchor="middle">SoC 근접</text>
+  <path class="edge fabric" d="M500 245 C610 310, 705 370, 750 420" marker-end="url(#arrow-gold)"/><text class="edge-label fabric" x="655" y="338" text-anchor="middle">CXL 확장</text>
+  <path class="edge fabric" d="M870 245 L870 380" marker-end="url(#arrow-gold)"/><text class="edge-label fabric" x="930" y="318" text-anchor="middle">메모리 풀</text>
+  <path class="edge fabric" d="M870 472 L870 590" marker-end="url(#arrow-gold)"/><text class="edge-label fabric" x="930" y="548" text-anchor="middle">공유/연결</text>
+  <path class="edge fabric dash" d="M620 196 C730 265, 815 350, 870 590" marker-end="url(#arrow-gold)"/><text class="edge-label fabric" x="765" y="304" text-anchor="middle">NVLink / Fabric</text>
+
+  <g class="diagram-node logic" data-group="ai" data-component-id="host-cpu" role="button" tabindex="0" aria-label="Host CPU 설명 보기">
+      <rect class="node-rect" x="70" y="150" width="210" height="92" rx="22"/>
+      <text class="node-title" x="175.0" y="192" text-anchor="middle">Host CPU</text>
+      <text class="node-sub" x="175.0" y="218" text-anchor="middle">시스템 조율</text>
+    </g>
+  <g class="diagram-node logic" data-group="ai" data-component-id="ai-gpu" role="button" tabindex="0" aria-label="AI GPU / NPU 설명 보기">
+      <rect class="node-rect" x="380" y="150" width="240" height="92" rx="22"/>
+      <text class="node-title" x="500.0" y="192" text-anchor="middle">AI GPU / NPU</text>
+      <text class="node-sub" x="500.0" y="218" text-anchor="middle">행렬 연산 엔진</text>
+    </g>
+  <g class="diagram-node memory" data-group="ai" data-component-id="hbm" role="button" tabindex="0" aria-label="HBM 설명 보기">
+      <rect class="node-rect" x="750" y="150" width="240" height="92" rx="22"/>
+      <text class="node-title" x="870.0" y="192" text-anchor="middle">HBM</text>
+      <text class="node-sub" x="870.0" y="218" text-anchor="middle">GPU 인접 초고대역</text>
+    </g>
+  <g class="diagram-node memory" data-group="ai" data-component-id="socamm" role="button" tabindex="0" aria-label="SOCAMM 설명 보기">
+      <rect class="node-rect" x="70" y="380" width="210" height="92" rx="22"/>
+      <text class="node-title" x="175.0" y="422" text-anchor="middle">SOCAMM</text>
+      <text class="node-sub" x="175.0" y="448" text-anchor="middle">SoC 근접 LPDRAM</text>
+    </g>
+  <g class="diagram-node memory" data-group="ai" data-component-id="hbf" role="button" tabindex="0" aria-label="HBF 설명 보기">
+      <rect class="node-rect" x="380" y="380" width="240" height="92" rx="22"/>
+      <text class="node-title" x="500.0" y="422" text-anchor="middle">HBF</text>
+      <text class="node-sub" x="500.0" y="448" text-anchor="middle">NAND 기반 고대역 플래시</text>
+    </g>
+  <g class="diagram-node fabric" data-group="ai" data-component-id="cxl" role="button" tabindex="0" aria-label="CXL Memory 설명 보기">
+      <rect class="node-rect" x="750" y="380" width="240" height="92" rx="22"/>
+      <text class="node-title" x="870.0" y="422" text-anchor="middle">CXL Memory</text>
+      <text class="node-sub" x="870.0" y="448" text-anchor="middle">확장 메모리 풀</text>
+    </g>
+  <g class="diagram-node memory" data-group="ai" data-component-id="ssd-lake" role="button" tabindex="0" aria-label="SSD / Data Lake 설명 보기">
+      <rect class="node-rect" x="70" y="590" width="210" height="92" rx="22"/>
+      <text class="node-title" x="175.0" y="632" text-anchor="middle">SSD / Data Lake</text>
+      <text class="node-sub" x="175.0" y="658" text-anchor="middle">학습 데이터 저장</text>
+    </g>
+  <g class="diagram-node fabric" data-group="ai" data-component-id="interconnect" role="button" tabindex="0" aria-label="Interconnect 설명 보기">
+      <rect class="node-rect" x="750" y="590" width="240" height="92" rx="22"/>
+      <text class="node-title" x="870.0" y="632" text-anchor="middle">Interconnect</text>
+      <text class="node-sub" x="870.0" y="658" text-anchor="middle">GPU · 서버 연결망</text>
+    </g>
+  <rect class="key-box" x="60" y="705" width="980" height="38" rx="16"/>
+  <text class="diagram-key" x="80" y="729">핵심: HBM은 GPU 옆, HBF는 NAND 기반 보조계층, SOCAMM은 SoC 근접 LPDRAM, CXL은 메모리 확장 인터페이스다.</text>
+</svg>
