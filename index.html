@@ -1,3577 +1,886 @@
-<!DOCTYPE HTML>
+<!doctype html>
 <html lang="ko">
 <head>
-    <title>TY의 주식공부</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <style>
-        :root {
-            --bg:        #1c1c1e;
-            --bg2:       #2c2c2e;
-            --bg3:       #3a3a3c;
-            --card:      rgba(44,44,46,0.92);
-            --border:    rgba(255,255,255,0.10);
-            --text1:     #f5f5f7;
-            --text2:     #98989d;
-            --accent:    #0a84ff;
-            --green:     #30d158;
-            --red:       #ff453a;
-            --yellow:    #ffd60a;
-            --menubar:   rgba(28,28,30,0.88);
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TY의 주식공부</title>
+  <meta name="description" content="반도체 중심 투자 공부를 위한 개인 대시보드. 매크로, 지수, 반도체 종목, 리포트, 공시, 매매일지를 한곳에 정리합니다.">
+  <style>
+    :root {
+      --bg: #080c14;
+      --panel: #0f172a;
+      --panel-2: #111827;
+      --line: rgba(148, 163, 184, 0.18);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --muted-2: #cbd5e1;
+      --blue: #60a5fa;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --radius: 24px;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
 
-        body {
-            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text1);
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
+    html { scroll-behavior: smooth; }
 
-        a { color: inherit; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(96, 165, 250, 0.16), transparent 34%),
+        radial-gradient(circle at 82% 12%, rgba(34, 197, 94, 0.12), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", "Noto Sans CJK KR", "Segoe UI", sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-        /* ── Menubar ── */
-        .menubar {
-            position: sticky;
-            top: 0;
-            z-index: 200;
-            background: var(--menubar);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border);
-            padding: 10px 20px 12px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .menubar-left {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            flex: 1 1 360px;
-            min-width: 0;
-        }
-        .menubar-logo {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--text1);
-            text-decoration: none;
-            cursor: pointer;
-            letter-spacing: -0.3px;
-            user-select: none;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .menubar-nav {
-            display: flex;
-            gap: 24px;
-            min-width: 0;
-            flex-wrap: wrap;
-        }
-        .menubar-nav a {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text2);
-            text-decoration: none;
-            cursor: pointer;
-            transition: color 0.15s;
-            white-space: nowrap;
-        }
-        .menubar-nav a:hover { color: var(--text1); }
+    a { color: inherit; }
 
-        .menubar-macro-wrap {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-left: auto;
-            flex: 1 1 520px;
-            min-width: 0;
-            justify-content: flex-end;
-        }
-        .macro-inline-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text2);
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .menubar-macro {
-            display: flex;
-            align-items: stretch;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 2px;
-            scrollbar-width: thin;
-            max-width: 100%;
-            min-width: 0;
-        }
-        .menubar-macro::-webkit-scrollbar { height: 6px; }
-        .menubar-macro::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.14);
-            border-radius: 999px;
-        }
-        .macro-pill {
-            min-width: 120px;
-            background: rgba(44,44,46,0.9);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 10px 12px;
-            flex: 0 0 auto;
-            cursor: pointer;
-            transition: background 0.15s, transform 0.15s;
-        }
-        .macro-pill:hover { background: rgba(72,72,74,0.95); transform: translateY(-1px); }
-        .macro-pill:active { transform: scale(0.97); }
-        .macro-label {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--text2);
-            letter-spacing: 0.3px;
-            margin-bottom: 4px;
-            white-space: nowrap;
-        }
-        .macro-value {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text1);
-            letter-spacing: -0.3px;
-            margin-bottom: 2px;
-            white-space: nowrap;
-        }
-        .macro-change {
-            font-size: 10px;
-            font-weight: 500;
-            min-height: 14px;
-            white-space: nowrap;
-        }
+    .wrap {
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+    }
 
-        /* ── Layout ── */
-        .layout {
-            max-width: 1360px;
-            margin: 0 auto;
-            padding: 0 28px;
-        }
-        .page {
-            min-width: 0;
-            padding: 28px 0 80px;
-        }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 12, 20, 0.78);
+      backdrop-filter: blur(18px);
+    }
 
-        /* ── Section ── */
-        .section { display: none; }
-        .section.active { display: block; }
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 0;
+    }
 
-        /* ── Breadcrumb ── */
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--text2);
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-        .crumb { cursor: pointer; color: var(--accent); }
-        .crumb, .folder-item, .sub-card, .menubar-logo { text-decoration: none; }
-        .crumb:hover { opacity: 0.75; }
-        .sep { color: var(--bg3); font-size: 11px; }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
 
-        /* ── macOS Window ── */
-        .window {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        .window-titlebar {
-            background: rgba(58,58,60,0.95);
-            border-bottom: 1px solid var(--border);
-            height: 44px;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            gap: 12px;
-        }
-        .traffic-lights { display: flex; gap: 8px; align-items: center; }
-        .tl {
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            cursor: default;
-            transition: filter 0.15s;
-        }
-        .tl:hover { filter: brightness(1.2); }
-        .tl.red    { background: #ff5f57; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
-        .tl.yellow { background: #febc2e; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
-        .tl.green  { background: #28c840; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
-        .window-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text2);
-            flex: 1;
-            text-align: center;
-            margin-right: 52px;
-        }
-        .window-body { padding: 28px; }
+    .brand-mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      box-shadow: 0 0 24px rgba(34, 197, 94, 0.8);
+    }
 
-        /* ── Section Header ── */
-        .section-header { margin-bottom: 28px; }
-        .section-header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--text1);
-            margin-bottom: 6px;
-        }
-        .section-header p { font-size: 15px; color: var(--text2); }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
 
-        /* ── Folder Grid ── */
-        .folder-grid {
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-            padding: 8px 4px;
-        }
-        .folder-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            width: 90px;
-            transition: transform 0.15s;
-            color: inherit;
-        }
-        .folder-item:hover { transform: scale(1.06); }
-        .folder-item:active { transform: scale(0.97); }
-        .folder-item.folder-knowledge .folder-shape {
-            background: linear-gradient(160deg, #8b5cf6 0%, #6d28d9 100%);
-            box-shadow: 0 4px 16px rgba(109,40,217,0.35);
-        }
-        .folder-icon-wrap {
-            position: relative;
-            width: 80px;
-            height: 68px;
-        }
-        .folder-shape {
-            width: 80px;
-            height: 60px;
-            background: linear-gradient(160deg, #3a8ef5 0%, #1d6cd4 100%);
-            border-radius: 6px 10px 10px 10px;
-            position: absolute;
-            bottom: 0;
-            box-shadow: 0 4px 16px rgba(29,108,212,0.4);
-        }
-        .folder-shape::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 0;
-            width: 36px;
-            height: 12px;
-            background: linear-gradient(160deg, #5aa3f7 0%, #2f7ee8 100%);
-            border-radius: 6px 6px 0 0;
-        }
-        .folder-coin .folder-shape {
-            background: linear-gradient(160deg, #ff9f0a 0%, #d4700a 100%);
-            box-shadow: 0 4px 16px rgba(212,112,10,0.4);
-        }
-        .folder-coin .folder-shape::before {
-            background: linear-gradient(160deg, #ffb830 0%, #e88a20 100%);
-        }
-        .folder-emoji {
-            position: absolute;
-            bottom: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 28px;
-        }
-        .folder-label {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text1);
-            text-align: center;
-        }
+    .nav a, .ghost-btn, .primary-btn {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 9px 13px;
+      color: var(--muted-2);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      background: transparent;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
 
-        /* ── Sub card grid ── */
-        .sub-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-        .sub-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 18px 16px;
-            cursor: pointer;
-            transition: transform 0.15s, border-color 0.15s, background 0.15s;
-            color: inherit;
-        }
-        .sub-card:hover { background: rgba(72,72,74,0.9); transform: translateY(-2px); }
-        .sub-card:active { transform: scale(0.98); }
-        .sub-card .icon  { font-size: 26px; margin-bottom: 10px; }
-        .sub-card .label { font-size: 17px; font-weight: 600; color: var(--text1); margin-bottom: 4px; }
-        .sub-card .desc  { font-size: 13px; color: var(--text2); }
+    .nav a:hover, .ghost-btn:hover, .primary-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(148, 163, 184, 0.32);
+      background: rgba(148, 163, 184, 0.08);
+    }
 
-        /* ── Knowledge study ── */
-        .knowledge-hero {
-            display: grid;
-            grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
-            gap: 16px;
-            margin-bottom: 18px;
-        }
-        .knowledge-panel {
-            background: linear-gradient(180deg, rgba(58,58,60,0.58), rgba(44,44,46,0.92));
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 18px;
-        }
-        .knowledge-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        .knowledge-title {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            color: var(--text1);
-        }
-        .knowledge-copy {
-            font-size: 14px;
-            color: var(--text2);
-            line-height: 1.7;
-        }
-        .knowledge-chip-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 14px;
-        }
-        .knowledge-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 11px;
-            border-radius: 999px;
-            background: rgba(10,132,255,0.10);
-            border: 1px solid rgba(10,132,255,0.18);
-            color: #d7ebff;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .knowledge-chip.memory {
-            background: rgba(48,209,88,0.12);
-            border-color: rgba(48,209,88,0.22);
-            color: #d7ffe3;
-        }
-        .knowledge-scenario-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-        .knowledge-scenario-btn {
-            appearance: none;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(44,44,46,0.92);
-            color: var(--text2);
-            border-radius: 14px;
-            padding: 12px 14px;
-            min-width: 180px;
-            cursor: pointer;
-            transition: transform 0.15s, background 0.15s, border-color 0.15s;
-            text-align: left;
-        }
-        .knowledge-scenario-btn:hover { transform: translateY(-1px); background: rgba(72,72,74,0.94); }
-        .knowledge-scenario-btn.active {
-            background: linear-gradient(180deg, rgba(10,132,255,0.28), rgba(10,132,255,0.14));
-            border-color: rgba(10,132,255,0.45);
-            color: var(--text1);
-        }
-        .knowledge-scenario-name {
-            display: block;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .knowledge-scenario-desc {
-            display: block;
-            font-size: 11px;
-            line-height: 1.45;
-        }
-        .knowledge-layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1.52fr) minmax(260px, 0.68fr);
-            gap: 22px;
-            align-items: start;
-        }
-        .knowledge-diagram-card,
-        .knowledge-detail-card {
-            background: rgba(34,34,36,0.88);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 20px;
-            overflow: hidden;
-        }
-        .knowledge-card-kicker {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text2);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        .knowledge-card-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text1);
-        }
-        .knowledge-card-desc {
-            font-size: 13px;
-            color: var(--text2);
-            line-height: 1.65;
-        }
-        .knowledge-highlight-note {
-            margin-top: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            color: #d7ffe3;
-            background: rgba(48,209,88,0.10);
-            border: 1px solid rgba(48,209,88,0.18);
-            border-radius: 999px;
-            padding: 8px 12px;
-        }
-        .knowledge-highlight-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #30d158;
-            box-shadow: 0 0 0 4px rgba(48,209,88,0.16);
-        }
-        .knowledge-diagram {
-            margin-top: 16px;
-            display: grid;
-            gap: 16px;
-            position: relative;
-        }
-        .knowledge-diagram.is-freeform {
-            display: block;
-            overflow: hidden;
-        }
-        .knowledge-block-ff {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            min-height: 96px;
-            box-sizing: border-box;
-            max-width: 220px;
-        }
-        .knowledge-link-overlay {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: visible;
-            z-index: 2;
-        }
-        .knowledge-link-path {
-            fill: none;
-            stroke-width: 3.5;
-            stroke-linecap: round;
-            filter: drop-shadow(0 0 3px rgba(10,132,255,0.25));
-        }
-        .knowledge-link-path.memory {
-            filter: drop-shadow(0 0 3px rgba(48,209,88,0.22));
-        }
-        .knowledge-link-label {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            padding: 5px 9px;
-            border-radius: 999px;
-            background: rgba(18,18,20,0.92);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: var(--text1);
-            font-size: 10px;
-            font-weight: 700;
-            line-height: 1;
-            white-space: nowrap;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-            z-index: 3;
-            pointer-events: none;
-        }
-        .knowledge-link-label.memory {
-            background: rgba(24,40,28,0.96);
-            border-color: rgba(48,209,88,0.28);
-            color: #d7ffe3;
-        }
-        .knowledge-link-label .mini {
-            display: block;
-            margin-top: 3px;
-            font-size: 9px;
-            font-weight: 500;
-            color: var(--text2);
-        }
-        .knowledge-row {
-            display: grid;
-            grid-template-columns: repeat(var(--cells, 1), minmax(0, 1fr));
-            gap: 10px;
-            align-items: stretch;
-        }
-        .knowledge-block {
-            appearance: none;
-            width: 100%;
-            min-height: 110px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-left: 3px solid rgba(10,132,255,0.55);
-            background: linear-gradient(180deg, rgba(58,58,60,0.82), rgba(44,44,46,0.96));
-            color: var(--text1);
-            padding: 14px;
-            cursor: pointer;
-            text-align: left;
-            transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s, background 0.15s;
-            position: relative;
-            overflow: hidden;
-        }
-        .knowledge-block::after {
-            content: '';
-            position: absolute;
-            inset: auto 0 0 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
-            opacity: 0.35;
-        }
-        .knowledge-block:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.18);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.20);
-        }
-        .knowledge-block.active {
-            border-color: rgba(10,132,255,0.50);
-            box-shadow: 0 0 0 2px rgba(10,132,255,0.14), 0 12px 24px rgba(10,132,255,0.10);
-        }
-        .knowledge-block.memory {
-            background: linear-gradient(180deg, rgba(48,209,88,0.22), rgba(28,70,44,0.92));
-            border-color: rgba(48,209,88,0.34);
-            border-left-color: rgba(48,209,88,0.75);
-        }
-        .knowledge-block-kind {
-            display: inline-block;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            color: #9bc8ff;
-            background: rgba(10,132,255,0.15);
-            border: 1px solid rgba(10,132,255,0.25);
-            border-radius: 5px;
-            padding: 2px 6px;
-            margin-bottom: 8px;
-        }
-        .knowledge-block.memory .knowledge-block-kind {
-            color: #7dffab;
-            background: rgba(48,209,88,0.15);
-            border-color: rgba(48,209,88,0.28);
-        }
-        .knowledge-block-name {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .knowledge-block-desc {
-            font-size: 12px;
-            line-height: 1.55;
-            color: rgba(245,245,247,0.84);
-        }
-        .knowledge-bridge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            min-height: unset;
-            padding: 10px 3px;
-            border-radius: 12px;
-            border: 1px solid rgba(10,132,255,0.10);
-            background: linear-gradient(180deg, rgba(10,132,255,0.04), transparent);
-        }
-        .knowledge-bridge.memory {
-            border-color: rgba(48,209,88,0.13);
-            background: linear-gradient(180deg, rgba(48,209,88,0.05), transparent);
-        }
-        .knowledge-bridge-line { display: none; }
-        .knowledge-bridge-arrow {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: rgba(10,132,255,0.18);
-            border: 1px solid rgba(10,132,255,0.30);
-            color: #eef7ff;
-            font-size: 13px;
-            font-weight: 900;
-            line-height: 1;
-            margin-top: -2px;
-            box-shadow: 0 0 0 3px rgba(10,132,255,0.06);
-        }
-        .knowledge-bridge.memory .knowledge-bridge-arrow {
-            background: rgba(48,209,88,0.18);
-            border-color: rgba(48,209,88,0.30);
-            color: #eefdf1;
-            box-shadow: 0 0 0 3px rgba(48,209,88,0.06);
-        }
-        .knowledge-bridge-badge {
-            font-size: 9px;
-            font-weight: 700;
-            color: #9bc8ff;
-            text-align: center;
-            word-break: keep-all;
-            line-height: 1.35;
-            padding: 0 2px;
-        }
-        .knowledge-bridge-badge.memory { color: #7dffab; }
-        .knowledge-bridge-sub { display: none; }
-        .knowledge-tier-stack {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-        .knowledge-tier {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 11px 13px;
-            border-radius: 14px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-        }
-        .knowledge-tier.memory {
-            border-color: rgba(48,209,88,0.18);
-            background: linear-gradient(90deg, rgba(48,209,88,0.07), rgba(48,209,88,0.02));
-        }
-        .knowledge-tier-label {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.55px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 4px;
-        }
-        .knowledge-tier.memory .knowledge-tier-label { color: #7dffab; }
-        .knowledge-tier-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text1);
-        }
-        .knowledge-tier-desc {
-            font-size: 11px;
-            color: var(--text2);
-            text-align: right;
-            line-height: 1.35;
-            max-width: 52%;
-        }
-        .knowledge-detail-list {
-            margin-top: 16px;
-            display: grid;
-            gap: 10px;
-        }
-        .knowledge-detail-item {
-            border-radius: 14px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.03);
-            padding: 12px 14px;
-        }
-        .knowledge-detail-item strong {
-            display: block;
-            font-size: 12px;
-            margin-bottom: 4px;
-            color: var(--text1);
-        }
-        .knowledge-detail-item span {
-            font-size: 12px;
-            color: var(--text2);
-            line-height: 1.6;
-        }
-        .knowledge-empty {
-            color: var(--text2);
-            font-size: 13px;
-            line-height: 1.7;
-        }
+    .primary-btn {
+      background: rgba(96, 165, 250, 0.14);
+      border-color: rgba(96, 165, 250, 0.36);
+      color: #dbeafe;
+    }
 
-        /* ── Study tools ── */
-        .tool-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-        .tool-panel {
-            background: rgba(58,58,60,0.6);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
-        }
-        .tool-panel-wide { grid-column: 1 / -1; }
-        .tool-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text1);
-            margin-bottom: 4px;
-        }
-        .tool-desc {
-            font-size: 13px;
-            color: var(--text2);
-            margin-bottom: 14px;
-        }
-        .watchlist-chips {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .watchlist-chip {
-            appearance: none;
-            border: 1px solid var(--border);
-            background: rgba(44,44,46,0.95);
-            color: var(--text1);
-            border-radius: 999px;
-            padding: 10px 12px;
-            cursor: pointer;
-            transition: transform 0.15s, background 0.15s;
-            font-size: 13px;
-            line-height: 1;
-        }
-        .watchlist-chip:hover { background: rgba(72,72,74,0.95); transform: translateY(-1px); }
-        .watchlist-chip small {
-            display: block;
-            color: var(--text2);
-            font-size: 10px;
-            margin-top: 4px;
-        }
-        .tool-link-list {
-            display: grid;
-            gap: 10px;
-        }
-        .tool-link {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: rgba(44,44,46,0.9);
-            color: var(--text1);
-            text-decoration: none;
-            transition: transform 0.15s, background 0.15s;
-        }
-        .tool-link:hover { background: rgba(72,72,74,0.95); transform: translateY(-1px); }
-        .tool-link-icon { font-size: 18px; line-height: 1.4; flex-shrink: 0; }
-        .tool-link-name { font-size: 13px; font-weight: 600; }
-        .tool-link-desc { font-size: 11px; color: var(--text2); margin-top: 2px; }
-        .note-area {
-            width: 100%;
-            min-height: 160px;
-            resize: vertical;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: rgba(28,28,30,0.95);
-            color: var(--text1);
-            padding: 14px;
-            font: inherit;
-            line-height: 1.55;
-            outline: none;
-        }
-        .note-area:focus { border-color: rgba(10,132,255,0.55); box-shadow: 0 0 0 3px rgba(10,132,255,0.15); }
-        .note-stock-tabs {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 14px;
-            padding: 12px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
-            border-radius: 18px;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-        }
-        .note-stock-chip {
-            appearance: none;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: linear-gradient(180deg, rgba(44,44,46,0.98), rgba(30,30,32,0.98));
-            color: var(--text2);
-            border-radius: 16px;
-            padding: 11px 13px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.03);
-            transition: background 0.15s, color 0.15s, transform 0.15s, border-color 0.15s, box-shadow 0.15s;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 2px;
-            width: 100%;
-            text-align: left;
-        }
-        .note-stock-chip:hover { background: linear-gradient(180deg, rgba(72,72,74,0.98), rgba(44,44,46,0.98)); color: var(--text1); transform: translateY(-1px); box-shadow: 0 10px 22px rgba(0,0,0,0.18); }
-        .note-stock-chip.active {
-            background: linear-gradient(180deg, rgba(10,132,255,0.30), rgba(10,132,255,0.16));
-            color: var(--text1);
-            border-color: rgba(10,132,255,0.52);
-            box-shadow: 0 0 0 2px rgba(10,132,255,0.12), 0 10px 24px rgba(10,132,255,0.12);
-        }
-        .note-chip-title {
-            font-size: 11px;
-            font-weight: 700;
-            line-height: 1.05;
-        }
-        .note-chip-time {
-            font-size: 9px;
-            color: var(--text2);
-            font-weight: 500;
-            line-height: 1;
-        }
-        @media (max-width: 980px) {
-            .note-stock-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .knowledge-hero,
-            .knowledge-layout { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 560px) {
-            .note-stock-tabs { grid-template-columns: 1fr; }
-            .note-meta { align-items: stretch; }
-            .note-date-pill { width: fit-content; }
-            .knowledge-scenario-btn { width: 100%; }
-            .knowledge-row { grid-template-columns: 1fr !important; }
-        }
-        .note-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .note-current-stock {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text1);
-        }
-        .note-current-stock small {
-            color: var(--text2);
-            font-weight: 500;
-            margin-left: 6px;
-        }
-        .note-date-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 10px;
-            color: var(--text2);
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.04);
-            border-radius: 999px;
-            padding: 4px 8px;
-            white-space: nowrap;
-        }
-        .note-date-pill strong {
-            color: var(--text1);
-            font-weight: 700;
-            letter-spacing: -0.2px;
-        }
-        .note-hint {
-            font-size: 9px;
-            color: var(--text2);
-        }
-        .note-status {
-            font-size: 10px;
-            color: var(--text2);
-        }
-        .note-actions {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            align-items: center;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        .note-save-btn {
-            border: 1px solid var(--border);
-            background: rgba(10,132,255,0.18);
-            color: var(--text1);
-            border-radius: 999px;
-            padding: 10px 14px;
-            cursor: pointer;
-            transition: transform 0.15s, background 0.15s;
-        }
-        .note-save-btn:hover { background: rgba(10,132,255,0.3); transform: translateY(-1px); }
-        .note-status { font-size: 12px; color: var(--text2); }
+    .hero {
+      padding: 72px 0 38px;
+    }
 
-        /* ── Ticker Grid ── */
-        .ticker-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-        .ticker-card {
-            background: rgba(58,58,60,0.7);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 18px 16px;
-            transition: transform 0.18s, background 0.18s;
-        }
-        .ticker-card.clickable { cursor: pointer; }
-        .ticker-card.clickable:hover { background: rgba(72,72,74,0.9); transform: translateY(-2px); }
-        .ticker-card:active { transform: scale(0.98); }
-        .ticker-name  { font-size: 11px; font-weight: 600; color: var(--text2); letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 10px; }
-        .ticker-price { font-size: 20px; font-weight: 700; color: var(--text1); letter-spacing: -0.3px; margin-bottom: 6px; }
-        .ticker-change { font-size: 12px; font-weight: 500; }
-        .ticker-hint  { font-size: 11px; color: var(--bg3); margin-top: 6px; }
-        .ticker-card.up   { border-top: 2px solid var(--green); }
-        .ticker-card.down { border-top: 2px solid var(--red); }
-        .ticker-card.flat { border-top: 2px solid var(--bg3); }
-        .up-text   { color: var(--green); }
-        .down-text { color: var(--red); }
-        .flat-text { color: var(--text2); }
-        .updated-label { font-size: 11px; color: var(--bg3); text-align: right; margin-top: 10px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      gap: 22px;
+      align-items: stretch;
+    }
 
-        /* ── 종목 검색 카드 ── */
-        .sc-label { font-size: 11px; font-weight: 600; color: var(--text2); letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 12px; }
-        .market-btns { display: flex; flex-wrap: wrap; gap: 6px; }
-        .market-btn { background: rgba(255,255,255,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.15s; }
-        .market-btn:hover { background: rgba(255,255,255,0.15); color: var(--text1); }
-        .sc-back { background: none; border: none; color: var(--text2); font-size: 11px; cursor: pointer; padding: 0; margin-bottom: 8px; display: block; }
-        .sc-back:hover { color: var(--text1); }
-        .sc-input-wrap { position: relative; }
-        .sc-input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text1); outline: none; transition: border-color 0.15s; }
-        .sc-input:focus { border-color: var(--accent); }
-        .sc-input::placeholder { color: var(--text2); }
-        .sc-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; z-index: 50; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.45); }
-        .sc-dropdown.open { display: block; }
-        .sc-item { padding: 8px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; transition: background 0.1s; }
-        .sc-item:hover { background: rgba(255,255,255,0.08); }
-        .sc-item-name { font-size: 12px; color: var(--text1); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-        .sc-item-sym { font-size: 11px; color: var(--text2); white-space: nowrap; flex-shrink: 0; }
-        .sc-searching { padding: 10px 12px; font-size: 12px; color: var(--text2); text-align: center; }
-        .sc-actions { display: flex; gap: 6px; margin-top: 10px; }
-        .sc-btn { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; font-size: 11px; color: var(--text2); cursor: pointer; text-align: center; transition: all 0.15s; }
-        .sc-btn:hover { background: rgba(255,255,255,0.15); color: var(--text1); }
-        .sc-btn.accent { background: rgba(10,132,255,0.15); border-color: rgba(10,132,255,0.35); color: var(--accent); }
-        .sc-btn.accent:hover { background: rgba(10,132,255,0.28); }
+    .hero-card, .panel, .mini-panel {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(17, 24, 39, 0.84));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
 
-        /* ── Chart ── */
-        .chart-meta { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
-        .chart-meta-name { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; }
-        .chart-meta-sub  { font-size: 14px; color: var(--text2); }
-        .chart-overview {
-            margin-bottom: 18px;
-            display: grid;
-            gap: 14px;
-        }
-        .chart-hero {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 18px 20px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: linear-gradient(180deg, rgba(58,58,60,0.56), rgba(44,44,46,0.92));
-        }
-        .chart-hero-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text2);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        .chart-hero-price {
-            font-size: 34px;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-            line-height: 1.1;
-            margin-bottom: 8px;
-        }
-        .chart-hero-change {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .chart-hero-side {
-            text-align: right;
-            display: grid;
-            gap: 6px;
-            min-width: 170px;
-        }
-        .chart-hero-updated,
-        .chart-hero-source {
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .chart-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-        }
-        .chart-stat {
-            background: rgba(58,58,60,0.6);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px 16px 14px;
-            min-width: 0;
-        }
-        .chart-stat-label {
-            font-size: 11px;
-            color: var(--text2);
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-        .chart-stat-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text1);
-            line-height: 1.35;
-            word-break: keep-all;
-        }
-        .chart-status-line {
-            font-size: 12px;
-            color: var(--text2);
-            padding: 2px 2px 0;
-        }
-        .chart-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
-        .chart-links { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
-        .chart-link-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--accent);
-            text-decoration: none;
-            background: rgba(10,132,255,0.15);
-            padding: 7px 14px;
-            border-radius: 20px;
-            transition: background 0.15s;
-        }
-        .chart-link-btn:hover { background: rgba(10,132,255,0.25); }
-        .chart-link-btn.hidden { display: none; }
-        .chart-provider { font-size: 11px; color: var(--text2); text-align: right; margin-top: 8px; }
+    .hero-card {
+      padding: 38px;
+      min-height: 430px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
 
-        /* ── 리포트 섹션 ── */
-        .report-section { margin-top: 22px; }
-        .report-section-title { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 10px; }
-        .report-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .report-card { display: flex; align-items: flex-start; gap: 10px; background: rgba(58,58,60,0.6); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; text-decoration: none; color: var(--text1); transition: background 0.15s, transform 0.15s; }
-        .report-card:hover { background: rgba(72,72,74,0.9); transform: translateY(-1px); }
-        .report-icon { font-size: 18px; flex-shrink: 0; line-height: 1.4; }
-        .report-name { font-size: 13px; font-weight: 600; color: var(--text1); }
-        .report-desc { font-size: 11px; color: var(--text2); margin-top: 2px; }
-        @media (max-width: 540px) { .report-grid { grid-template-columns: 1fr; } }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      right: -130px;
+      bottom: -150px;
+      background: radial-gradient(circle, rgba(34, 197, 94, 0.2), transparent 68%);
+      pointer-events: none;
+    }
 
-        /* ── Music Player ── */
-        .music-player {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(44,44,46,0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 40px;
-            padding: 10px 18px 10px 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            user-select: none;
-        }
-        .music-player:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
-        .music-player:active { transform: scale(0.97); }
-        body.memory-study-mode .music-player {
-            display: none;
-        }
-        .music-btn {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: var(--text1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; color: var(--bg); flex-shrink: 0;
-        }
-        .music-info { line-height: 1.3; }
-        .music-title  { font-size: 12px; font-weight: 600; color: var(--text1); max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .music-status { font-size: 11px; color: var(--text2); }
-        .music-eq { display: none; align-items: flex-end; gap: 2px; height: 14px; margin-left: 4px; }
-        .music-eq.playing { display: flex; }
-        .music-eq span { width: 3px; background: var(--accent); border-radius: 2px; animation: eq 0.8s infinite ease-in-out; }
-        .music-eq span:nth-child(1) { height: 6px;  animation-delay: 0s; }
-        .music-eq span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
-        .music-eq span:nth-child(3) { height: 8px;  animation-delay: 0.3s; }
-        .music-eq span:nth-child(4) { height: 14px; animation-delay: 0.1s; }
-        @keyframes eq { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      color: #bfdbfe;
+      background: rgba(96, 165, 250, 0.11);
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 800;
+    }
 
-        /* ── Responsive ── */
-        @media (max-width: 1100px) {
-            .ticker-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 900px) {
-            .menubar {
-                padding: 10px 14px 12px;
-                gap: 10px;
-            }
-            .chart-stats-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-            .menubar-left,
-            .menubar-macro-wrap {
-                width: 100%;
-                flex-basis: 100%;
-            }
-            .menubar-left {
-                gap: 18px;
-                justify-content: space-between;
-            }
-            .menubar-nav {
-                gap: 16px;
-            }
-            .menubar-macro-wrap {
-                justify-content: flex-start;
-                margin-left: 0;
-            }
-            .macro-inline-title {
-                align-self: flex-start;
-                padding-top: 10px;
-            }
-            .macro-pill {
-                min-width: 118px;
-            }
-            .layout { padding: 0 16px; }
-        }
-        @media (max-width: 700px) {
-            .ticker-grid { grid-template-columns: 1fr; }
-            .page { padding: 24px 0 60px; }
-            .sub-grid { grid-template-columns: 1fr; }
-            .tool-grid { grid-template-columns: 1fr; }
-            .tool-panel-wide { grid-column: auto; }
-            .section-header h1 { font-size: 26px; }
-            .window-body { padding: 22px 18px; }
-            .music-player {
-                right: 16px;
-                bottom: 16px;
-            }
-        }
-        @media (max-width: 560px) {
-            .menubar-left {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-            .ticker-grid { grid-template-columns: 1fr; }
-            .chart-meta-name { font-size: 22px; }
-            .chart-links { gap: 8px; }
-            .chart-link-btn { font-size: 12px; }
-            .chart-hero {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .chart-hero-side {
-                text-align: left;
-                min-width: 0;
-            }
-            .chart-hero-price { font-size: 28px; }
-            .chart-stats-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin: 20px 0 16px;
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 1.02;
+      letter-spacing: -0.07em;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      color: var(--muted-2);
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .flow-card {
+      padding: 26px;
+    }
+
+    .flow-title {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .flow-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .flow-list li {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .flow-no {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(96, 165, 250, 0.13);
+      color: #bfdbfe;
+      font-weight: 900;
+    }
+
+    .flow-list strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 15px;
+    }
+
+    .flow-list span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    section { padding: 34px 0; }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: -0.055em;
+      line-height: 1.1;
+    }
+
+    .section-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    .panel { padding: 24px; }
+
+    .quote-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .quote-card {
+      min-height: 142px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.035);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .quote-kicker {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .quote-name {
+      margin-top: 2px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .quote-price {
+      margin-top: 12px;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .quote-change {
+      margin-top: 2px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .up { color: #4ade80; }
+    .down { color: #f87171; }
+    .flat { color: var(--muted); }
+
+    .stock-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stock-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .stock-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stock-card h3 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+
+    .ticker {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tag {
+      border: 1px solid rgba(34, 197, 94, 0.24);
+      background: rgba(34, 197, 94, 0.09);
+      color: #bbf7d0;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .stock-thesis {
+      color: var(--muted-2);
+      min-height: 78px;
+      margin-bottom: 18px;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .link-row a {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 11px;
+      color: #dbeafe;
+      background: rgba(96, 165, 250, 0.09);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .diagram-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .diagram-card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+    }
+
+    .diagram-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .diagram-copy {
+      padding: 22px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+    }
+
+    .diagram-copy h3 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+
+    .diagram-copy p {
+      margin: 0;
+      color: var(--muted-2);
+    }
+
+    .note-layout {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .note-tabs {
+      display: grid;
+      gap: 8px;
+    }
+
+    .note-tab {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 13px 14px;
+      color: var(--muted-2);
+      background: rgba(255, 255, 255, 0.03);
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .note-tab.active {
+      color: #dbeafe;
+      background: rgba(96, 165, 250, 0.13);
+      border-color: rgba(96, 165, 250, 0.34);
+    }
+
+    .note-box {
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .note-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    textarea {
+      flex: 1;
+      width: 100%;
+      min-height: 220px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(2, 6, 23, 0.66);
+      color: var(--text);
+      font: inherit;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: rgba(96, 165, 250, 0.55);
+      box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.12);
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .resource-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.035);
+      text-decoration: none;
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96, 165, 250, 0.4);
+    }
+
+    .resource-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 17px;
+      letter-spacing: -0.03em;
+    }
+
+    .resource-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      padding: 44px 0 60px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      margin-top: 40px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid, .note-layout, .diagram-copy { grid-template-columns: 1fr; }
+      .quote-grid, .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stock-grid { grid-template-columns: 1fr; }
+      .hero-card { min-height: auto; }
+    }
+
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 24px, 1180px); }
+      .topbar-inner { align-items: flex-start; flex-direction: column; }
+      .nav { justify-content: flex-start; }
+      .hero { padding-top: 42px; }
+      .hero-card, .panel, .flow-card { padding: 20px; }
+      .quote-grid, .resource-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: start; flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-
-    <!-- YouTube IFrame API -->
-    <div id="yt-player" style="display:none"></div>
-    <script src="https://www.youtube.com/iframe_api"></script>
-
-    <!-- Music Player -->
-    <div class="music-player" id="music-player" onclick="toggleMusic()">
-        <div class="music-btn" id="music-btn">▶</div>
-        <div class="music-info">
-            <div class="music-title">Lofi Chill Mix</div>
-            <div class="music-status" id="music-status">클릭하여 재생</div>
-        </div>
-        <div class="music-eq" id="music-eq">
-            <span></span><span></span><span></span><span></span>
-        </div>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top" aria-label="TY의 주식공부 홈">
+        <span class="brand-mark"></span>
+        <span>TY의 주식공부</span>
+      </a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a href="#market">시장</a>
+        <a href="#stocks">종목</a>
+        <a href="#semiconductor">반도체</a>
+        <a href="#journal">기록</a>
+        <a href="#resources">자료</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- Menubar -->
-    <nav class="menubar">
-        <div class="menubar-left">
-            <a class="menubar-logo" href="#home" onclick="goHome(); return false;">TY의 주식공부</a>
-            <div class="menubar-nav">
-                <a href="#home" onclick="goHome(); return false;">홈</a>
-                <a href="#stock" onclick="showStockSub(); return false;">주식</a>
-                <a href="#coin" onclick="showCoin(); return false;">코인</a>
-                <a href="#knowledge" onclick="showKnowledge(); return false;">지식이모저모</a>
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-card">
+          <div>
+            <div class="eyebrow">반도체 중심 투자 판단 시스템</div>
+            <h1>시장, 산업, 종목, 기록을 하나로 묶는다.</h1>
+            <p class="hero-copy">매크로를 먼저 보고, 반도체 구조를 이해하고, 삼성전자·SK하이닉스·마이크론 판단을 기록하는 개인 대시보드입니다.</p>
+            <div class="hero-actions">
+              <a class="primary-btn" href="#market">오늘 시장 보기</a>
+              <a class="ghost-btn" href="#journal">판단 기록하기</a>
             </div>
+          </div>
         </div>
 
-        <div class="menubar-macro-wrap">
-            <div class="macro-inline-title">글로벌 매크로</div>
-            <div class="menubar-macro">
-                <div class="macro-pill" onclick="openMacroSearch('usdkrw')">
-                    <div class="macro-label">원 / 달러</div>
-                    <div class="macro-value" id="macro-usdkrw">—</div>
-                    <div class="macro-change" id="macro-usdkrw-chg">—</div>
-                </div>
-                <div class="macro-pill" onclick="openMacroSearch('gold')">
-                    <div class="macro-label">국제 금시세</div>
-                    <div class="macro-value" id="macro-gold">—</div>
-                    <div class="macro-change" id="macro-gold-chg">—</div>
-                </div>
-                <div class="macro-pill" onclick="openMacroSearch('oil')">
-                    <div class="macro-label">국제 유가 (WTI)</div>
-                    <div class="macro-value" id="macro-oil">—</div>
-                    <div class="macro-change" id="macro-oil-chg">—</div>
-                </div>
-                <div class="macro-pill" onclick="openMacroSearch('us-rate')">
-                    <div class="macro-label">미국 기준금리</div>
-                    <div class="macro-value" id="macro-us-rate">—</div>
-                    <div class="macro-change flat-text" id="macro-us-rate-chg">연준 공식</div>
-                </div>
-                <div class="macro-pill" onclick="openMacroSearch('kr-rate')">
-                    <div class="macro-label">한국 기준금리</div>
-                    <div class="macro-value" id="macro-kr-rate">—</div>
-                    <div class="macro-change flat-text" id="macro-kr-rate-chg">한국은행 공식</div>
-                </div>
-            </div>
+        <aside class="flow-card mini-panel" aria-label="일일 판단 흐름">
+          <div class="flow-title">Daily Operating Flow</div>
+          <ol class="flow-list">
+            <li><span class="flow-no">1</span><div><strong>매크로</strong><span>환율·금리·유가·지수로 시장 온도를 확인</span></div></li>
+            <li><span class="flow-no">2</span><div><strong>산업</strong><span>메모리 병목과 AI 수요를 기준으로 해석</span></div></li>
+            <li><span class="flow-no">3</span><div><strong>종목</strong><span>삼성전자·SK하이닉스·마이크론만 먼저 비교</span></div></li>
+            <li><span class="flow-no">4</span><div><strong>자료</strong><span>리포트·공시·실적 캘린더로 확인</span></div></li>
+            <li><span class="flow-no">5</span><div><strong>기록</strong><span>오늘의 판단과 다음 행동을 남김</span></div></li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <section id="market">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>오늘의 시장 온도</h2>
+            <p>투자 판단 전에 반드시 보는 최소 지표만 남겼습니다.</p>
+          </div>
+          <button class="ghost-btn" id="refresh-quotes" type="button">새로고침</button>
         </div>
-    </nav>
-
-    <div class="layout">
-        <div class="page">
-
-            <!-- ① 홈 -->
-            <div class="section active" id="page-home">
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span>
-                            <span class="tl yellow"></span>
-                            <span class="tl green"></span>
-                        </div>
-                        <div class="window-title">TY의 주식공부</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="section-header">
-                            <h1>TY의 주식공부</h1>
-                            <p>카테고리를 선택하세요</p>
-                        </div>
-                        <div class="folder-grid">
-                            <a class="folder-item" href="#stock" onclick="showStockSub(); return false;">
-                                <div class="folder-icon-wrap">
-                                    <div class="folder-shape"></div>
-                                    <div class="folder-emoji">📈</div>
-                                </div>
-                                <div class="folder-label">주식</div>
-                            </a>
-                            <a class="folder-item folder-coin" href="#coin" onclick="showCoin(); return false;">
-                                <div class="folder-icon-wrap">
-                                    <div class="folder-shape"></div>
-                                    <div class="folder-emoji">🪙</div>
-                                </div>
-                                <div class="folder-label">코인</div>
-                            </a>
-                            <a class="folder-item folder-knowledge" href="#knowledge" onclick="showKnowledge(); return false;">
-                                <div class="folder-icon-wrap">
-                                    <div class="folder-shape"></div>
-                                    <div class="folder-emoji">🧠</div>
-                                </div>
-                                <div class="folder-label">지식이모저모</div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ② 주식 서브메뉴 -->
-            <div class="section" id="page-stock-sub">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a>
-                    <span class="sep">›</span><span>주식</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">주식</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="sub-grid">
-                            <a class="sub-card" href="#index" onclick="showIndex(); return false;">
-                                <div class="icon">🌐</div>
-                                <div class="label">대표 지수</div>
-                                <div class="desc">나스닥 · S&amp;P500 · 코스피 · 코스닥</div>
-                            </a>
-                            <a class="sub-card" href="#stocks" onclick="showStocks(); return false;">
-                                <div class="icon">🏢</div>
-                                <div class="label">개별 종목</div>
-                                <div class="desc">삼성전자 · 하이닉스 · 마이크론</div>
-                            </a>
-                            <a class="sub-card" href="#tools" onclick="showTools(); return false;">
-                                <div class="icon">🧰</div>
-                                <div class="label">공부 도구</div>
-                                <div class="desc">관심종목 · 뉴스/공시 · 매매일지</div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ③ 지식이모저모 -->
-            <div class="section" id="page-knowledge">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a>
-                    <span class="sep">›</span><span>지식이모저모</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">지식이모저모</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="sub-grid">
-                            <a class="sub-card" href="#semiconductor" onclick="showSemiconductor(); return false;">
-                                <div class="icon">💾</div>
-                                <div class="label">반도체</div>
-                                <div class="desc">메모리반도체 · 비메모리반도체</div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ④ 반도체 -->
-            <div class="section" id="page-semiconductor">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
-                    <a class="crumb" href="#knowledge" onclick="showKnowledge(); return false;">지식이모저모</a><span class="sep">›</span>
-                    <span>반도체</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">반도체</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="sub-grid">
-                            <a class="sub-card" href="#memory-study" onclick="showMemoryStudy(); return false;">
-                                <div class="icon">🧮</div>
-                                <div class="label">메모리반도체</div>
-                                <div class="desc">일반 PC와 AI 시스템 블록다이어그램으로 메모리 위치와 역할을 공부해요</div>
-                            </a>
-                            <a class="sub-card" href="#nonmemory-study" onclick="showNonMemoryStudy(); return false;">
-                                <div class="icon">⚙️</div>
-                                <div class="label">비메모리반도체</div>
-                                <div class="desc">CPU · GPU · NPU · 파운드리 같은 연산 중심 영역을 다음 단계로 확장할 수 있게 자리만 열어둘게요</div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ⑤ 메모리반도체 학습 -->
-            <div class="section" id="page-memory-study">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
-                    <a class="crumb" href="#knowledge" onclick="showKnowledge(); return false;">지식이모저모</a><span class="sep">›</span>
-                    <a class="crumb" href="#semiconductor" onclick="showSemiconductor(); return false;">반도체</a><span class="sep">›</span>
-                    <span>메모리반도체</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">메모리반도체 학습</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="knowledge-hero">
-                            <div class="knowledge-panel">
-                                <div class="knowledge-label">학습 구성</div>
-                                <div class="knowledge-title">메모리 중심 시스템 이해</div>
-                                <div class="knowledge-copy">
-                                    대표님이 나중에 상세 설명만 채워 넣으실 수 있게, 일반 PC와 AI 시스템 두 가지 블록다이어그램 틀을 먼저 세팅해뒀어요.
-                                    메모리 영역은 초록 계열 상자로 하이라이트되고, 각 블록을 누르면 오른쪽 설명 칸이 바뀌게 만들었어요.
-                                </div>
-                                <div class="knowledge-chip-list">
-                                    <span class="knowledge-chip">1번 다이어그램 · 일반 PC</span>
-                                    <span class="knowledge-chip">2번 다이어그램 · AI 시스템</span>
-                                    <span class="knowledge-chip memory">메모리 블록 하이라이트</span>
-                                </div>
-                            </div>
-                            <div class="knowledge-panel">
-                                <div class="knowledge-label">입력 가이드</div>
-                                <div class="knowledge-copy">
-                                    지금 들어간 문구는 전부 자리표시용이에요. 대표님이 주시는 설명에 맞춰
-                                    각 블록별 상세설명, 핵심 포인트, 비교 메모를 그대로 바꿔 끼울 수 있게 구조를 나눠뒀어요.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="knowledge-scenario-tabs" id="memory-diagram-tabs"></div>
-
-                        <div class="knowledge-layout">
-                            <div class="knowledge-diagram-card">
-                                <div class="knowledge-card-kicker">블록다이어그램</div>
-                                <div class="knowledge-card-title" id="memory-diagram-title">—</div>
-                                <div class="knowledge-card-desc" id="memory-diagram-summary">—</div>
-                                <div class="knowledge-highlight-note">
-                                    <span class="knowledge-highlight-dot"></span>
-                                    초록 상자는 메모리 관련 영역이에요
-                                </div>
-                                <div class="knowledge-diagram" id="memory-diagram-canvas"></div>
-                            </div>
-
-                            <div class="knowledge-detail-card">
-                                <div class="knowledge-card-kicker">상세설명</div>
-                                <div class="knowledge-card-title" id="memory-detail-title">—</div>
-                                <div class="knowledge-card-desc" id="memory-detail-text">—</div>
-                                <div class="knowledge-detail-list" id="memory-detail-points"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ⑥ 비메모리반도체 학습 자리 -->
-            <div class="section" id="page-nonmemory-study">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
-                    <a class="crumb" href="#knowledge" onclick="showKnowledge(); return false;">지식이모저모</a><span class="sep">›</span>
-                    <a class="crumb" href="#semiconductor" onclick="showSemiconductor(); return false;">반도체</a><span class="sep">›</span>
-                    <span>비메모리반도체</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">비메모리반도체</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="knowledge-panel">
-                            <div class="knowledge-label">다음 확장 영역</div>
-                            <div class="knowledge-title">비메모리반도체 학습 페이지 자리</div>
-                            <div class="knowledge-copy">
-                                이쪽은 아직 내용 없이 자리만 열어뒀어요. 나중에 대표님이 원하시면 CPU, GPU, NPU, 파운드리, 차량용 칩 같은 흐름으로
-                                메모리 페이지와 같은 방식의 다이어그램 + 상세설명 구조를 바로 이어 붙일 수 있어요.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ⑦ 대표 지수 -->
-            <div class="section" id="page-index">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
-                    <a class="crumb" href="#stock" onclick="showStockSub(); return false;">주식</a><span class="sep">›</span>
-                    <span>대표 지수</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">대표 지수 — 클릭하면 차트 보기</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="ticker-grid">
-                            <div class="ticker-card clickable" id="card-nasdaq" onclick="showChart('nasdaq')">
-                                <div class="ticker-name">나스닥</div>
-                                <div class="ticker-price" id="price-nasdaq">—</div>
-                                <div class="ticker-change" id="change-nasdaq">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <div class="ticker-card clickable" id="card-sp500" onclick="showChart('sp500')">
-                                <div class="ticker-name">S&amp;P 500</div>
-                                <div class="ticker-price" id="price-sp500">—</div>
-                                <div class="ticker-change" id="change-sp500">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <div class="ticker-card clickable" id="card-kospi" onclick="showChart('kospi')">
-                                <div class="ticker-name">코스피</div>
-                                <div class="ticker-price" id="price-kospi">—</div>
-                                <div class="ticker-change" id="change-kospi">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <div class="ticker-card clickable" id="card-kosdaq" onclick="showChart('kosdaq')">
-                                <div class="ticker-name">코스닥</div>
-                                <div class="ticker-price" id="price-kosdaq">—</div>
-                                <div class="ticker-change" id="change-kosdaq">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                        </div>
-                        <div class="updated-label" id="updated-index"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ④ 개별 종목 -->
-            <div class="section" id="page-stocks">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
-                    <a class="crumb" href="#stock" onclick="showStockSub(); return false;">주식</a><span class="sep">›</span>
-                    <span>개별 종목</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">개별 종목 — 클릭하면 차트 보기</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="ticker-grid">
-                            <div class="ticker-card clickable" id="card-samsung" onclick="showChart('samsung')">
-                                <div class="ticker-name">삼성전자 · 005930</div>
-                                <div class="ticker-price" id="price-samsung">—</div>
-                                <div class="ticker-change" id="change-samsung">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <div class="ticker-card clickable" id="card-hynix" onclick="showChart('hynix')">
-                                <div class="ticker-name">SK하이닉스 · 000660</div>
-                                <div class="ticker-price" id="price-hynix">—</div>
-                                <div class="ticker-change" id="change-hynix">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <div class="ticker-card clickable" id="card-micron" onclick="showChart('micron')">
-                                <div class="ticker-name">마이크론 · MU</div>
-                                <div class="ticker-price" id="price-micron">—</div>
-                                <div class="ticker-change" id="change-micron">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <!-- 종목 검색 카드 -->
-                            <div class="ticker-card" id="card-search">
-                                <div id="sc-phase-market">
-                                    <div class="sc-label">시장 선택</div>
-                                    <div class="market-btns">
-                                        <button class="market-btn" onclick="selectSearchMarket('KR')">한국</button>
-                                        <button class="market-btn" onclick="selectSearchMarket('US')">미국</button>
-                                        <button class="market-btn" onclick="selectSearchMarket('JP')">일본</button>
-                                        <button class="market-btn" onclick="selectSearchMarket('HK')">홍콩</button>
-                                    </div>
-                                </div>
-                                <div id="sc-phase-search" style="display:none">
-                                    <button class="sc-back" onclick="resetSearchCard()">← 시장 변경</button>
-                                    <div class="sc-input-wrap">
-                                        <input class="sc-input" id="sc-input" type="text" placeholder="종목명 또는 티커" autocomplete="off" />
-                                        <div class="sc-dropdown" id="sc-dropdown"></div>
-                                    </div>
-                                </div>
-                                <div id="sc-phase-result" style="display:none">
-                                    <div onclick="showSearchedChart()" style="cursor:pointer">
-                                        <div class="ticker-name" id="sc-result-name">—</div>
-                                        <div class="ticker-price" id="sc-result-price">—</div>
-                                        <div class="ticker-change" id="sc-result-change"></div>
-                                        <div class="ticker-hint">차트 · 리포트 보기 →</div>
-                                    </div>
-                                    <div class="sc-actions">
-                                        <button class="sc-btn" onclick="resetSearchCard()">← 다시 검색</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="updated-label" id="updated-stocks"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ⑤ 차트 -->
-            <div class="section" id="page-chart">
-                <div class="breadcrumb" id="chart-breadcrumb-bar"></div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title" id="chart-window-title">차트</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="chart-meta">
-                            <span class="chart-meta-name" id="chart-title">—</span>
-                            <span class="chart-meta-sub"  id="chart-subtitle"></span>
-                        </div>
-
-                        <div class="chart-overview">
-                            <div class="chart-hero">
-                                <div>
-                                    <div class="chart-hero-label">시세 요약</div>
-                                    <div class="chart-hero-price" id="chart-price-main">—</div>
-                                    <div class="chart-hero-change flat-text" id="chart-price-change">데이터를 불러오는 중...</div>
-                                </div>
-                                <div class="chart-hero-side">
-                                    <div class="chart-hero-updated" id="chart-updated-at">업데이트: —</div>
-                                    <div class="chart-hero-source" id="chart-data-source">자체 요약 카드 + TradingView 차트</div>
-                                </div>
-                            </div>
-
-                            <div class="chart-stats-grid" id="chart-stats-grid">
-                                <div class="chart-stat">
-                                    <div class="chart-stat-label" id="chart-stat-label-1">항목 1</div>
-                                    <div class="chart-stat-value" id="chart-stat-value-1">—</div>
-                                </div>
-                                <div class="chart-stat">
-                                    <div class="chart-stat-label" id="chart-stat-label-2">항목 2</div>
-                                    <div class="chart-stat-value" id="chart-stat-value-2">—</div>
-                                </div>
-                                <div class="chart-stat">
-                                    <div class="chart-stat-label" id="chart-stat-label-3">항목 3</div>
-                                    <div class="chart-stat-value" id="chart-stat-value-3">—</div>
-                                </div>
-                                <div class="chart-stat">
-                                    <div class="chart-stat-label" id="chart-stat-label-4">항목 4</div>
-                                    <div class="chart-stat-value" id="chart-stat-value-4">—</div>
-                                </div>
-                                <div class="chart-stat">
-                                    <div class="chart-stat-label" id="chart-stat-label-5">항목 5</div>
-                                    <div class="chart-stat-value" id="chart-stat-value-5">—</div>
-                                </div>
-                                <div class="chart-stat">
-                                    <div class="chart-stat-label" id="chart-stat-label-6">항목 6</div>
-                                    <div class="chart-stat-value" id="chart-stat-value-6">—</div>
-                                </div>
-                            </div>
-
-                            <div class="chart-status-line" id="chart-status-line">
-                                모바일 네이버 페이지를 직접 넣는 대신, 이 페이지에서 핵심 지표를 바로 보여주고 차트는 안정적인 위젯으로 표시합니다.
-                            </div>
-                        </div>
-
-                        <div id="chart-tradingview">
-                            <div class="chart-wrap"><div id="tradingview-container"></div></div>
-                            <div class="chart-provider">차트 제공: <a href="https://www.tradingview.com" target="_blank" rel="noopener noreferrer" style="color:var(--text2)">TradingView</a></div>
-                        </div>
-
-                        <div id="chart-naver" style="display:none">
-                            <div class="chart-wrap">
-                                <iframe id="naver-fchart-frame" src="" width="100%" height="920" frameborder="0" scrolling="yes" style="display:block;"></iframe>
-                            </div>
-                            <div class="chart-provider">차트 제공: <a href="#" id="naver-fchart-link" target="_blank" rel="noopener noreferrer" style="color:var(--text2)">네이버 금융</a></div>
-                        </div>
-
-                        <div class="chart-links">
-                            <a id="naver-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn hidden">📱 모바일 네이버 증권에서 열기</a>
-                            <a id="quote-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">🧾 원본 시세 페이지 열기</a>
-                            <a id="tradingview-link" href="#" target="_blank" rel="noopener noreferrer" class="chart-link-btn">📈 TradingView에서 보기</a>
-                        </div>
-
-                        <!-- 리포트 & 리서치 -->
-                        <div class="report-section" id="chart-report-section" style="display:none">
-                            <div class="report-section-title">리포트 &amp; 리서치</div>
-                            <div class="report-grid" id="chart-report-grid"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ⑥ 매크로 차트 (네이버 금융) -->
-            <!-- ⑦ 코인 -->
-            <div class="section" id="page-coin">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
-                    <span>코인</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">코인 — 클릭하면 차트 보기</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="ticker-grid">
-                            <div class="ticker-card clickable" id="card-btc" onclick="showChart('btc')">
-                                <div class="ticker-name">비트코인 · BTC</div>
-                                <div class="ticker-price" id="price-btc">—</div>
-                                <div class="ticker-change" id="change-btc">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <div class="ticker-card clickable" id="card-eth" onclick="showChart('eth')">
-                                <div class="ticker-name">이더리움 · ETH</div>
-                                <div class="ticker-price" id="price-eth">—</div>
-                                <div class="ticker-change" id="change-eth">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <div class="ticker-card clickable" id="card-sol" onclick="showChart('sol')">
-                                <div class="ticker-name">솔라나 · SOL</div>
-                                <div class="ticker-price" id="price-sol">—</div>
-                                <div class="ticker-change" id="change-sol">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                            <div class="ticker-card clickable" id="card-xrp" onclick="showChart('xrp')">
-                                <div class="ticker-name">리플 · XRP</div>
-                                <div class="ticker-price" id="price-xrp">—</div>
-                                <div class="ticker-change" id="change-xrp">불러오는 중...</div>
-                                <div class="ticker-hint">차트 보기 →</div>
-                            </div>
-                        </div>
-                        <div class="updated-label" id="updated-coin"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ⑧ 공부 도구 -->
-            <div class="section" id="page-tools">
-                <div class="breadcrumb">
-                    <a class="crumb" href="#home" onclick="goHome(); return false;">홈</a><span class="sep">›</span>
-                    <a class="crumb" href="#stock" onclick="showStockSub(); return false;">주식</a><span class="sep">›</span>
-                    <span>공부 도구</span>
-                </div>
-                <div class="window">
-                    <div class="window-titlebar">
-                        <div class="traffic-lights">
-                            <span class="tl red"></span><span class="tl yellow"></span><span class="tl green"></span>
-                        </div>
-                        <div class="window-title">공부 도구 — 관심종목 · 뉴스 · 메모</div>
-                    </div>
-                    <div class="window-body">
-                        <div class="tool-grid">
-                            <div class="tool-panel">
-                                <div class="tool-title">관심종목</div>
-                                <div class="tool-desc">자주 보는 종목을 바로 열어두면 공부가 훨씬 빨라져요.</div>
-                                <div class="watchlist-chips" id="watchlist-chips"></div>
-                            </div>
-
-                            <div class="tool-panel">
-                                <div class="tool-title">뉴스 · 공시 · 실적 캘린더</div>
-                                <div class="tool-desc">매일 확인할 링크만 정리해두는 용도예요.</div>
-                                <div class="tool-link-list">
-                                    <a class="tool-link" href="https://finance.naver.com/news/mainnews.naver" target="_blank" rel="noopener noreferrer">
-                                        <span class="tool-link-icon">📰</span>
-                                        <span><span class="tool-link-name">시장 뉴스</span><span class="tool-link-desc"><br>네이버 금융 메인 뉴스</span></span>
-                                    </a>
-                                    <a class="tool-link" href="https://dart.fss.or.kr/dsab002/search.ax" target="_blank" rel="noopener noreferrer">
-                                        <span class="tool-link-icon">📢</span>
-                                        <span><span class="tool-link-name">공시</span><span class="tool-link-desc"><br>DART 공시 검색</span></span>
-                                    </a>
-                                    <a class="tool-link" href="https://finance.yahoo.com/calendar/earnings" target="_blank" rel="noopener noreferrer">
-                                        <span class="tool-link-icon">📅</span>
-                                        <span><span class="tool-link-name">실적 캘린더</span><span class="tool-link-desc"><br>Yahoo Finance earnings calendar</span></span>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="tool-panel tool-panel-wide">
-                                <div class="tool-title">메모 / 매매일지</div>
-                                <div class="tool-desc">종목별로 나눠서 적어둘 수 있게 바꿔뒀어요. 공통 메모도 같이 남길 수 있어요.</div>
-                                <div class="note-stock-tabs" id="note-stock-tabs"></div>
-                                <div class="note-meta">
-                                    <div class="note-current-stock" id="note-current-stock">공통 메모 <small>전체 전략</small></div>
-                                    <div class="note-date-pill" id="note-date-pill">수정 <strong id="note-date-text">없음</strong></div>
-                                    <div class="note-hint">선택한 칸만 저장돼요</div>
-                                </div>
-                                <textarea class="note-area" id="trade-note" placeholder="예: 1) 60일선 위에서만 진입  2) 실적 발표 전 비중 축소  3) 다음 저항선 확인"></textarea>
-                                <div class="note-actions">
-                                    <button class="note-save-btn" onclick="saveTradeNote()">저장</button>
-                                    <span class="note-status" id="note-status">아직 저장되지 않았어요</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="panel">
+          <div class="quote-grid" id="quote-grid"></div>
         </div>
-    </div>
+      </div>
+    </section>
 
-    <script>
-    // ── YouTube IFrame API ───────────────────────────────────────
-    let ytPlayer;
-    let ytReady = false;
-    let activeChartId = null;
+    <section id="stocks">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>핵심 종목</h2>
+            <p>반도체 사이클을 보기 위한 최소 종목군입니다.</p>
+          </div>
+        </div>
+        <div class="stock-grid">
+          <article class="stock-card">
+            <div class="stock-top"><div><h3>삼성전자</h3><div class="ticker">005930 · KRX</div></div><span class="tag">메모리+세트</span></div>
+            <p class="stock-thesis">DRAM·NAND 사이클, 파운드리 개선, 모바일·서버 수요를 함께 확인합니다.</p>
+            <div class="link-row">
+              <a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer">네이버</a>
+              <a href="https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A005930" target="_blank" rel="noopener noreferrer">FnGuide</a>
+              <a href="https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&finalReport=recent" target="_blank" rel="noopener noreferrer">DART</a>
+            </div>
+          </article>
 
-    function onYouTubeIframeAPIReady() {
-        ytPlayer = new YT.Player('yt-player', {
-            height: '0',
-            width: '0',
-            videoId: 'RWQ-jvnzvhM',
-            playerVars: { autoplay: 0, loop: 1, playlist: 'RWQ-jvnzvhM', controls: 0 },
-            events: {
-                onReady: function() { ytReady = true; },
-                onStateChange: function(e) {
-                    if (e.data === YT.PlayerState.ENDED) ytPlayer.playVideo();
-                    const playing = e.data === YT.PlayerState.PLAYING;
-                    document.getElementById('music-btn').textContent    = playing ? '⏸' : '▶';
-                    document.getElementById('music-status').textContent = playing ? '재생 중' : '일시정지';
-                    document.getElementById('music-eq').classList.toggle('playing', playing);
-                }
-            }
-        });
-    }
+          <article class="stock-card">
+            <div class="stock-top"><div><h3>SK하이닉스</h3><div class="ticker">000660 · KRX</div></div><span class="tag">HBM 중심</span></div>
+            <p class="stock-thesis">HBM, 서버 DRAM, AI 가속기 수요가 실적과 밸류에이션을 어떻게 바꾸는지 추적합니다.</p>
+            <div class="link-row">
+              <a href="https://finance.naver.com/item/main.naver?code=000660" target="_blank" rel="noopener noreferrer">네이버</a>
+              <a href="https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A000660" target="_blank" rel="noopener noreferrer">FnGuide</a>
+              <a href="https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&finalReport=recent" target="_blank" rel="noopener noreferrer">DART</a>
+            </div>
+          </article>
 
-    function toggleMusic() {
-        if (!ytReady) return;
-        const state = ytPlayer.getPlayerState();
-        if (state === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
-        else ytPlayer.playVideo();
-    }
+          <article class="stock-card">
+            <div class="stock-top"><div><h3>마이크론</h3><div class="ticker">MU · NASDAQ</div></div><span class="tag">글로벌 비교</span></div>
+            <p class="stock-thesis">미국 메모리 대표주로 가격 사이클, HBM 경쟁력, 글로벌 투자심리를 비교합니다.</p>
+            <div class="link-row">
+              <a href="https://finance.yahoo.com/quote/MU" target="_blank" rel="noopener noreferrer">Yahoo</a>
+              <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&owner=include&count=10" target="_blank" rel="noopener noreferrer">SEC</a>
+              <a href="https://www.tradingview.com/chart/?symbol=NASDAQ%3AMU" target="_blank" rel="noopener noreferrer">Chart</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    // ── 페이지 전환 ──────────────────────────────────────────────
-    const PAGES = ['page-home','page-stock-sub','page-knowledge','page-semiconductor','page-memory-study','page-nonmemory-study','page-index','page-stocks','page-chart','page-coin','page-tools'];
+    <section id="semiconductor">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>반도체 구조</h2>
+            <p>가격을 보기 전에 병목이 어디서 생기는지 먼저 봅니다.</p>
+          </div>
+        </div>
+        <div class="diagram-grid">
+          <article class="diagram-card">
+            <img src="assets/diagrams/pc-memory-structure.png" alt="일반 PC에서 CPU, DRAM, GPU, VRAM, NAND SSD가 연결되는 메모리 구조도">
+            <div class="diagram-copy">
+              <h3>일반 PC: 저장 위치의 차이</h3>
+              <p>DRAM은 CPU의 즉시 작업공간이고, NAND/SSD는 장기 저장소입니다. GPU는 VRAM을 전용 버퍼로 사용합니다.</p>
+            </div>
+          </article>
 
-    function showOnly(id, doScroll = true) {
-        PAGES.forEach(p => {
-            const el = document.getElementById(p);
-            if (el) el.classList.toggle('active', p === id);
-        });
+          <article class="diagram-card">
+            <img src="assets/diagrams/ai-memory-structure.png" alt="AI 시스템에서 Host CPU, SSD, HBF, HBM, AI GPU, Fabric이 연결되는 메모리 구조도">
+            <div class="diagram-copy">
+              <h3>AI 시스템: 데이터 공급 병목</h3>
+              <p>AI 학습·추론에서는 SSD, 확장 메모리, HBM, GPU로 갈수록 데이터가 가까워지고 빠르며 비싸집니다.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-        if (doScroll) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }
+    <section id="journal">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>판단 기록</h2>
+            <p>맞혔는지가 아니라 어떤 근거로 판단했는지를 남깁니다.</p>
+          </div>
+          <button class="primary-btn" id="save-note" type="button">저장</button>
+        </div>
+        <div class="panel note-layout">
+          <div class="note-tabs" id="note-tabs"></div>
+          <div class="note-box">
+            <div class="note-meta"><strong id="note-title">시장 메모</strong><span id="note-status">저장 기록 없음</span></div>
+            <textarea id="note-area" spellcheck="false"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    function setRoute(hash, replace = false) {
-        const next = '#' + hash;
+    <section id="resources">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>확인 자료</h2>
+            <p>매일 확인할 출처만 남겼습니다.</p>
+          </div>
+        </div>
+        <div class="resource-grid">
+          <a class="resource-card" href="https://finance.naver.com/news/mainnews.naver" target="_blank" rel="noopener noreferrer"><strong>시장 뉴스</strong><span>네이버 금융 주요 뉴스</span></a>
+          <a class="resource-card" href="https://dart.fss.or.kr/dsab002/search.ax" target="_blank" rel="noopener noreferrer"><strong>DART 공시</strong><span>국내 기업 공시 원문</span></a>
+          <a class="resource-card" href="https://finance.yahoo.com/calendar/earnings" target="_blank" rel="noopener noreferrer"><strong>실적 캘린더</strong><span>미국 기업 실적 일정</span></a>
+          <a class="resource-card" href="https://www.tradingview.com/markets/" target="_blank" rel="noopener noreferrer"><strong>TradingView</strong><span>차트와 시장 맵</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-        if (location.hash === next) {
-            applyRoute();
-            return;
-        }
+  <footer>
+    <div class="wrap">핵심 원칙: 투자 판단은 가격만 보지 않는다. 매크로 → 산업 병목 → 종목 근거 → 기록 순서로 본다.</div>
+  </footer>
 
-        if (replace) {
-            history.replaceState(null, '', next);
-            applyRoute();
-        } else {
-            location.hash = next;
-        }
-    }
-
-    function goHome()            { setRoute('home'); }
-    function showStockSub()      { setRoute('stock'); }
-    function showCoin()          { setRoute('coin'); }
-    function showKnowledge()     { setRoute('knowledge'); }
-    function showSemiconductor() { setRoute('semiconductor'); }
-    function showMemoryStudy()   { setRoute('memory-study'); }
-    function showNonMemoryStudy(){ setRoute('nonmemory-study'); }
-    function showIndex()         { setRoute('index'); }
-    function showStocks()        { setRoute('stocks'); }
-    function showTools()         { setRoute('tools'); }
-
-    const MEMORY_STUDY_SCENARIOS = {
-        pc: {
-            name: '일반 PC 시스템',
-            desc: 'CPU · DRAM · NAND Flash · GPU · VRAM으로 이어지는 기본 PC 구조예요.',
-            summary: '대표님이 설명을 채우실 때 가장 기본이 되는 메모리 흐름이에요. CPU 옆 DRAM, 저장장치 쪽 NAND Flash, GPU 옆 VRAM을 구분해서 보여주도록 짜뒀어요.',
-            defaultComponentId: 'dram',
-            arrows: ['연산 경로', '메모리 접근', '그래픽 처리'],
-            rows: [
-                [
-                    { id: 'pc-cpu', kind: 'logic', name: 'CPU', short: '시스템 제어와 연산', detail: 'CPU는 컴퓨터의 두뇌로, 운영체제 실행부터 프로그램 연산까지 모든 작업을 총괄합니다. DRAM에서 데이터를 가져와 처리한 뒤 결과를 다시 메모리에 저장하는 과정을 반복하며, 메모리와의 빠른 소통이 시스템 성능의 핵심입니다.', points: ['총괄 제어: 모든 프로그램 실행을 지휘', '순차 연산: 복잡한 논리 판단에 최적화', '메모리 허브: DRAM과 끊임없이 데이터 교환'], memory: false },
-                    { id: 'dram', kind: 'memory', name: 'DRAM', short: '메인 메모리', detail: 'DRAM은 CPU가 지금 당장 사용할 데이터를 임시로 올려놓는 작업 공간입니다. 전원이 꺼지면 내용이 사라지지만, NAND보다 수십 배 빠른 속도로 데이터를 읽고 쓸 수 있어 실시간 처리에 필수적입니다.', points: ['임시 저장: 실행 중인 데이터를 보관', '고속 접근: NAND 대비 수십 배 빠름', '휘발성: 전원 꺼지면 데이터 소멸'], memory: true },
-                    { id: 'nand', kind: 'memory', name: 'NAND Flash', short: '장기 저장용 스토리지', detail: 'NAND Flash는 전원이 꺼져도 데이터가 유지되는 저장 장치로, SSD의 핵심 부품입니다. 용량 대비 가격이 저렴해 운영체제, 프로그램, 파일 등을 장기간 보관하는 역할을 합니다.', points: ['비휘발성: 전원 없이도 데이터 유지', '대용량: 테라바이트급 저장 가능', '장기 보관: OS와 파일을 영구 저장'], memory: true }
-                ],
-                [
-                    { id: 'pc-gpu', kind: 'logic', name: 'GPU', short: '병렬 그래픽/연산 처리', detail: 'GPU는 수천 개의 작은 코어로 대량의 단순 연산을 동시에 처리하는 프로세서입니다. 원래 화면에 그래픽을 그리기 위해 만들어졌지만, 병렬 처리 능력 덕분에 영상 편집이나 3D 렌더링에도 활용됩니다.', points: ['병렬 처리: 수천 코어가 동시에 연산', '그래픽 출력: 화면 렌더링 전담 처리', '범용 연산: 영상·3D 작업도 가속'], memory: false },
-                    { id: 'vram', kind: 'memory', name: 'VRAM', short: 'GPU 전용 메모리', detail: 'VRAM은 GPU 바로 옆에 붙어 있는 전용 메모리로, 텍스처·프레임 등 그래픽 데이터를 저장합니다. GPU가 시스템 DRAM까지 갈 필요 없이 빠르게 데이터를 주고받을 수 있어 렌더링 속도를 크게 높여 줍니다.', points: ['GPU 전용: 그래픽 데이터 전담 저장', '고속 대역: 시스템 DRAM보다 빠름', '근접 배치: GPU 옆에서 지연 최소화'], memory: true }
-                ]
-            ],
-            freeform: {
-                height: 450,
-                positions: {
-                    'pc-cpu': { x: 0.22, y: 0.14, w: 0.22 },
-                    'dram':   { x: 0.22, y: 0.50, w: 0.22 },
-                    'nand':   { x: 0.22, y: 0.82, w: 0.22 },
-                    'pc-gpu': { x: 0.72, y: 0.14, w: 0.22 },
-                    'vram':   { x: 0.72, y: 0.50, w: 0.22 },
-                }
-            },
-            connections: [
-                { from: 'pc-cpu', to: 'dram',   label: '작업공간',  mini: 'CPU → DRAM',      memory: false, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
-                { from: 'dram',   to: 'nand',   label: '저장복귀',  mini: 'DRAM ↔ NAND',     memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
-                { from: 'pc-gpu', to: 'vram',   label: '그래픽버퍼', mini: 'GPU ↔ VRAM',     memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'bottom', endSide: 'top' } },
-                { from: 'pc-cpu', to: 'pc-gpu', label: 'PCIe',     mini: 'CPU → GPU 위임',   memory: false, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
-                { from: 'dram',   to: 'vram',   label: 'DMA',      mini: '시스템↔그래픽 전송', memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
-            ]
-        },
-        ai: {
-            name: 'AI 시스템',
-            desc: 'Host CPU · AI GPU/NPU · HBM · HBF · SSD/데이터 저장소 흐름으로 이어지는 AI 연산 구조예요.',
-            summary: 'AI 학습·추론 시스템에서 연산 계층과 저장 계층이 어떻게 연결되는지 흐름 중심으로 볼 수 있어요. 초록 상자가 메모리 영역이에요.',
-            defaultComponentId: 'hbm',
-            rows: [
-                [
-                    { id: 'host-cpu', kind: 'logic', name: 'Host CPU', short: '시스템 오케스트레이션', detail: 'AI 시스템에서 Host CPU는 학습 작업 자체보다는 전체 시스템을 조율하는 지휘자 역할을 합니다. 데이터를 불러와 GPU에 전달하고, 여러 GPU 간 작업을 배분하며, 네트워크와 스토리지를 관리하는 오케스트레이터입니다.', points: ['작업 배분: GPU에 연산 작업 할당', '데이터 관리: 스토리지↔GPU 흐름 제어', '시스템 조율: 전체 인프라를 통합 관리'], memory: false },
-                    { id: 'ai-gpu', kind: 'logic', name: 'AI GPU / NPU', short: '대규모 연산 처리', detail: 'AI GPU·NPU는 딥러닝의 핵심인 행렬 곱셈을 초고속으로 처리하는 연산 엔진입니다. 수만 개의 코어가 동시에 작동하며, 모델 학습과 추론에서 CPU 대비 수백 배 빠른 성능을 제공합니다.', points: ['행렬 연산: 딥러닝 핵심 연산 특화', '초병렬: 수만 코어 동시 가동', '학습 가속: CPU 대비 수백 배 빠름'], memory: false },
-                    { id: 'hbf', kind: 'memory', name: 'HBF', short: '계층형 대역폭 패브릭 메모리', detail: 'HBF는 HBM과 SSD 사이의 성능·용량 격차를 메우는 새로운 메모리 계층입니다. HBM보다 큰 용량을 제공하면서도 SSD보다 훨씬 빠른 대역폭을 갖춰, 초대형 AI 모델의 데이터를 효율적으로 계층화합니다.', points: ['중간 계층: HBM과 SSD 사이를 연결', '대용량: HBM보다 넉넉한 저장 공간', '고대역폭: SSD보다 훨씬 빠른 전송'], memory: true }
-                ],
-                [
-                    { id: 'fabric', kind: 'logic', name: 'Interconnect / Fabric', short: '노드 간 연결', detail: 'Interconnect는 여러 GPU와 서버 노드를 하나의 거대한 연산 장치처럼 연결하는 초고속 네트워크입니다. NVLink, InfiniBand 같은 기술로 노드 간 데이터를 빠르게 주고받아 대규모 분산 학습을 가능하게 합니다.', points: ['노드 연결: 여러 서버를 하나로 통합', '초고속: NVLink·IB로 저지연 통신', '분산 학습: 대규모 병렬 훈련 지원'], memory: false },
-                    { id: 'hbm', kind: 'memory', name: 'HBM', short: '초고대역 메모리', detail: 'HBM은 메모리 칩을 수직으로 쌓아 올려 GPU 바로 옆에 배치한 초고대역 메모리입니다. 일반 DRAM보다 수 배 넓은 데이터 통로를 제공하여, 대규모 AI 모델의 파라미터를 빠르게 공급하는 핵심 부품입니다.', points: ['수직 적층: 칩을 쌓아 대역폭 확보', '초고대역: 일반 DRAM의 수 배 속도', 'GPU 인접: 최소 거리로 지연 감소'], memory: true },
-                    { id: 'ai-ssd', kind: 'memory', name: 'SSD / 데이터 저장소', short: '학습 데이터 보관', detail: 'AI 시스템의 SSD는 수십 테라바이트 규모의 학습 데이터셋과 모델 체크포인트를 보관하는 대용량 저장소입니다. 학습 시작 시 데이터를 메모리로 올려 보내고, 학습 중간 결과를 안전하게 저장하는 역할을 합니다.', points: ['대량 보관: 학습 데이터셋 영구 저장', '체크포인트: 학습 중간 결과를 보존', '데이터 공급: 메모리로 데이터를 전달'], memory: true }
-                ]
-            ],
-            freeform: {
-                height: 760,
-                positions: {
-                    'host-cpu': { x: 0.22, y: 0.12, w: 0.16 },
-                    'fabric':   { x: 0.78, y: 0.12, w: 0.16 },
-                    'ai-gpu':   { x: 0.22, y: 0.42, w: 0.16 },
-                    'hbm':      { x: 0.78, y: 0.42, w: 0.16 },
-                    'hbf':      { x: 0.22, y: 0.75, w: 0.16 },
-                    'ai-ssd':   { x: 0.78, y: 0.75, w: 0.16 },
-                }
-            },
-            connections: [
-                { from: 'host-cpu', to: 'fabric',  label: 'PCIe',     mini: 'CPU → Fabric 제어', memory: false, route: { mode: 'orth',     startSide: 'right',  endSide: 'left' } },
-                { from: 'host-cpu', to: 'ai-gpu',  label: '작업분배',  mini: 'CPU → GPU',        memory: false, route: { mode: 'orth',     startSide: 'bottom', endSide: 'top' } },
-                { from: 'fabric',   to: 'ai-gpu',  label: 'NVLink',   mini: 'GPU 간 고속 통신',  memory: false, route: { mode: 'h-bypass', startSide: 'bottom', endSide: 'top',   fixedLaneY: 0.27 } },
-                { from: 'ai-gpu',   to: 'hbm',     label: '초고대역',  mini: 'GPU ↔ HBM',        memory: true,  bidirectional: true, route: { mode: 'orth', startSide: 'right', endSide: 'left' } },
-                { from: 'hbm',      to: 'hbf',     label: '계층화',   mini: 'HBM → HBF',         memory: true,  route: { mode: 'h-bypass', startSide: 'bottom', endSide: 'right', fixedLaneY: 0.58 } },
-                { from: 'ai-gpu',   to: 'hbf',     label: 'CXL',      mini: '추론 확장 메모리',   memory: true,  route: { mode: 'orth',     startSide: 'bottom', endSide: 'top' } },
-                { from: 'hbf',      to: 'ai-ssd',  label: '장기저장',  mini: 'HBF → SSD',         memory: true,  route: { mode: 'orth',     startSide: 'right',  endSide: 'left' } },
-            ]
-        }
-    };
-    let activeMemoryScenarioId = 'pc';
-    let activeMemoryComponentId = MEMORY_STUDY_SCENARIOS[activeMemoryScenarioId].defaultComponentId;
-
-    function renderMemoryScenarioTabs() {
-        const wrap = document.getElementById('memory-diagram-tabs');
-        if (!wrap) return;
-        wrap.innerHTML = Object.entries(MEMORY_STUDY_SCENARIOS).map(([id, item]) => `
-            <button class="knowledge-scenario-btn${id === activeMemoryScenarioId ? ' active' : ''}" onclick="selectMemoryScenario('${id}')">
-                <span class="knowledge-scenario-name">${item.name}</span>
-                <span class="knowledge-scenario-desc">${item.desc}</span>
-            </button>
-        `).join('');
-    }
-
-    function getMemoryComponent(scenarioId, componentId) {
-        const scenario = MEMORY_STUDY_SCENARIOS[scenarioId];
-        if (!scenario) return null;
-        const all = scenario.rows.flat();
-        return all.find(item => item.id === componentId) || all[0] || null;
-    }
-
-    function renderMemoryDiagram() {
-        const scenario = MEMORY_STUDY_SCENARIOS[activeMemoryScenarioId];
-        const canvas = document.getElementById('memory-diagram-canvas');
-        if (!scenario || !canvas) return;
-
-        const title = document.getElementById('memory-diagram-title');
-        const summary = document.getElementById('memory-diagram-summary');
-        if (title) title.textContent = scenario.name;
-        if (summary) summary.textContent = scenario.summary;
-
-        const useFreeform = Boolean(scenario.freeform) && canvas.clientWidth >= 520;
-        if (useFreeform) {
-            canvas.classList.add('is-freeform');
-            renderFreeformDiagram(scenario, canvas);
-            return;
-        }
-        canvas.classList.remove('is-freeform');
-        canvas.style.height = '';
-
-        const tierMarkup = scenario.tiers?.length
-            ? `<div class="knowledge-tier-stack">${scenario.tiers.map(tier => `
-                <div class="knowledge-tier${tier.memory ? ' memory' : ''}">
-                    <div>
-                        <div class="knowledge-tier-label">${tier.label}</div>
-                        <div class="knowledge-tier-title">${tier.title}</div>
-                    </div>
-                    <div class="knowledge-tier-desc">${tier.desc}</div>
-                </div>
-            `).join('')}</div>`
-            : '';
-
-        canvas.innerHTML = tierMarkup + scenario.rows.map((row, idx) => {
-            const links = scenario.links?.[idx] || [];
-            const cells = [];
-            const useInlineBridges = true;
-
-            row.forEach((block, blockIdx) => {
-                cells.push(`
-                    <button class="knowledge-block${block.memory ? ' memory' : ''}${block.id === activeMemoryComponentId ? ' active' : ''}" data-block-id="${block.id}" id="knowledge-block-${block.id}" onclick="selectMemoryComponent('${block.id}')">
-                        <div class="knowledge-block-kind">${block.kind === 'memory' ? '메모리' : '연산'}</div>
-                        <div class="knowledge-block-name">${block.name}</div>
-                        <div class="knowledge-block-desc">${block.short}</div>
-                    </button>
-                `);
-                if (useInlineBridges && blockIdx < row.length - 1) {
-                    const link = links[blockIdx] || {};
-                    const isMemoryBridge = Boolean(row[blockIdx + 1]?.memory || block.memory);
-                    cells.push(`
-                        <div class="knowledge-bridge${isMemoryBridge ? ' memory' : ''}">
-                            <div class="knowledge-bridge-arrow">${link.arrow || '→'}</div>
-                            <div class="knowledge-bridge-badge${isMemoryBridge ? ' memory' : ''}">${link.label || '연결'}</div>
-                        </div>
-                    `);
-                }
-            });
-
-            let colTemplate;
-            if (useInlineBridges) {
-                const colParts = [];
-                for (let i = 0; i < row.length; i++) {
-                    if (i > 0) colParts.push('62px');
-                    colParts.push('1fr');
-                }
-                colTemplate = colParts.join(' ');
-            } else {
-                colTemplate = `repeat(${row.length}, 1fr)`;
-            }
-            return `<div class="knowledge-row" style="grid-template-columns:${colTemplate}">${cells.join('')}</div>`;
-        }).join('') + (scenario.connections ? '<svg class="knowledge-link-overlay" aria-hidden="true"></svg>' : '');
-
-        if (scenario.connections) {
-            requestAnimationFrame(() => drawKnowledgeConnections(canvas, scenario.connections));
-        }
-    }
-
-    function drawKnowledgeConnections(canvas, connections) {
-        const svg = canvas.querySelector('.knowledge-link-overlay');
-        if (!svg) return;
-
-        const canvasRect = canvas.getBoundingClientRect();
-        svg.setAttribute('viewBox', `0 0 ${canvasRect.width} ${canvasRect.height}`);
-        svg.setAttribute('width', canvasRect.width);
-        svg.setAttribute('height', canvasRect.height);
-        svg.innerHTML = '';
-
-        const blocks = new Map();
-        canvas.querySelectorAll('[data-block-id]').forEach(el => {
-            blocks.set(el.dataset.blockId, el.getBoundingClientRect());
-        });
-
-        function edgePoint(rect, side) {
-            const l = rect.left - canvasRect.left, r = rect.right - canvasRect.left;
-            const t = rect.top - canvasRect.top,   b = rect.bottom - canvasRect.top;
-            const cx = (l + r) / 2, cy = (t + b) / 2;
-            if (side === 'top')    return { x: cx, y: t };
-            if (side === 'bottom') return { x: cx, y: b };
-            if (side === 'left')   return { x: l,  y: cy };
-            return { x: r, y: cy }; // right
-        }
-
-        connections.forEach((conn) => {
-            const from = blocks.get(conn.from);
-            const to = blocks.get(conn.to);
-            if (!from || !to) return;
-
-            const route = conn.route || {};
-            const ss = route.startSide || 'bottom';
-            const es = route.endSide   || 'top';
-
-            const p1 = edgePoint(from, ss);
-            const p2 = edgePoint(to,   es);
-
-            // Control point direction follows the edge side
-            const bend = Math.max(24, (Math.abs(p2.x - p1.x) + Math.abs(p2.y - p1.y)) * 0.3);
-            const dir = { top: [0,-1], bottom: [0,1], left: [-1,0], right: [1,0] };
-            const [dx1, dy1] = dir[ss];
-            const [dx2, dy2] = dir[es];
-            const cx1 = p1.x + dx1 * bend, cy1 = p1.y + dy1 * bend;
-            const cx2 = p2.x + dx2 * bend, cy2 = p2.y + dy2 * bend;
-
-            const midX = (p1.x + p2.x) / 2 + (conn.labelDx || 0);
-            const midY = (p1.y + p2.y) / 2 + (conn.labelDy || 0);
-
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('d', `M ${p1.x} ${p1.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${p2.x} ${p2.y}`);
-            path.setAttribute('class', `knowledge-link-path${conn.memory ? ' memory' : ''}`);
-            path.setAttribute('stroke', conn.memory ? '#30d158' : '#0a84ff');
-            svg.appendChild(path);
-
-            const label = document.createElement('div');
-            label.className = `knowledge-link-label${conn.memory ? ' memory' : ''}`;
-            label.style.left = `${midX}px`;
-            label.style.top = `${midY - 18}px`;
-            label.innerHTML = `${conn.label || '연결'}<span class="mini">${conn.mini || ''}</span>`;
-            canvas.appendChild(label);
-        });
-    }
-
-    function renderFreeformDiagram(scenario, canvas) {
-        const ff = scenario.freeform;
-        canvas.style.height = ff.height + 'px';
-        canvas.innerHTML = '<svg class="knowledge-link-overlay" aria-hidden="true"></svg>';
-        const allBlocks = scenario.rows.flat();
-        allBlocks.forEach(block => {
-            const pos = ff.positions[block.id];
-            if (!pos) return;
-            const isActive = block.id === activeMemoryComponentId;
-            const btn = document.createElement('button');
-            btn.className = `knowledge-block knowledge-block-ff${block.memory ? ' memory' : ''}${isActive ? ' active' : ''}`;
-            btn.dataset.blockId = block.id;
-            btn.id = `knowledge-block-${block.id}`;
-            btn.setAttribute('onclick', `selectMemoryComponent('${block.id}')`);
-            btn.style.left = (pos.x * 100) + '%';
-            btn.style.top  = (pos.y * 100) + '%';
-            btn.style.width = ((pos.w || 0.28) * 100) + '%';
-            btn.innerHTML = `
-                <div class="knowledge-block-kind">${block.kind === 'memory' ? '메모리' : '연산'}</div>
-                <div class="knowledge-block-name">${block.name}</div>
-                <div class="knowledge-block-desc">${block.short}</div>
-            `;
-            canvas.appendChild(btn);
-        });
-        requestAnimationFrame(() => {
-            const canvasRect = canvas.getBoundingClientRect();
-            const availW = canvasRect.width || canvas.clientWidth || 600;
-            // Scale height proportionally to canvas width (layout designed at 860px)
-            const scale = Math.min(1, availW / 860);
-            // Ensure top blocks aren't clipped: need H >= blockHalf / minTopY
-            const blockHalf = 58;
-            const positions = Object.values(ff.positions);
-            const minTopY  = Math.min(...positions.map(p => p.y));
-            const maxBotY  = Math.max(...positions.map(p => p.y));
-            const minHForTop = Math.ceil(blockHalf / minTopY) + 20;
-            const minHForBot = Math.ceil(blockHalf / (1 - maxBotY)) + 60;
-            const scaledH = Math.max(minHForTop, minHForBot, Math.ceil(ff.height * scale + 60));
-            canvas.style.height = scaledH + 'px';
-            requestAnimationFrame(() => drawFreeformConnections(canvas, scenario.connections || []));
-        });
-    }
-
-    function drawFreeformConnections(canvas, connections) {
-        const svg = canvas.querySelector('.knowledge-link-overlay');
-        if (!svg) return;
-        const cr = canvas.getBoundingClientRect();
-        svg.setAttribute('viewBox', `0 0 ${cr.width} ${cr.height}`);
-        svg.setAttribute('width', cr.width);
-        svg.setAttribute('height', cr.height);
-        svg.innerHTML = `<defs>
-            <marker id="ffa-logic"     markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#0a84ff"/></marker>
-            <marker id="ffa-logic-rev" markerWidth="9" markerHeight="7" refX="1" refY="3.5" orient="auto-start-reverse"><polygon points="0 0,9 3.5,0 7" fill="#0a84ff"/></marker>
-            <marker id="ffa-mem"       markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#30d158"/></marker>
-            <marker id="ffa-mem-rev"   markerWidth="9" markerHeight="7" refX="1" refY="3.5" orient="auto-start-reverse"><polygon points="0 0,9 3.5,0 7" fill="#30d158"/></marker>
-        </defs>`;
-
-        const blocks = new Map();
-        const allBounds = [];
-        canvas.querySelectorAll('[data-block-id]').forEach(el => {
-            const r = el.getBoundingClientRect();
-            const box = { left: r.left - cr.left, top: r.top - cr.top, right: r.right - cr.left, bottom: r.bottom - cr.top, cx: r.left - cr.left + r.width/2, cy: r.top - cr.top + r.height/2, w: r.width, h: r.height };
-            blocks.set(el.dataset.blockId, box);
-            allBounds.push(box);
-        });
-
-        function pointOnEdge(b, side, gap = 0) {
-            const d = side || 'right';
-            if (d === 'top') return { x: b.cx, y: b.top - gap };
-            if (d === 'bottom') return { x: b.cx, y: b.bottom + gap };
-            if (d === 'left') return { x: b.left - gap, y: b.cy };
-            return { x: b.right + gap, y: b.cy };
-        }
-
-        function polylineMidPoint(points) {
-            let total = 0;
-            for (let i = 1; i < points.length; i++) total += Math.hypot(points[i].x - points[i-1].x, points[i].y - points[i-1].y);
-            let half = total / 2;
-            for (let i = 1; i < points.length; i++) {
-                const seg = Math.hypot(points[i].x - points[i-1].x, points[i].y - points[i-1].y);
-                if (half <= seg) {
-                    const t = seg ? half / seg : 0;
-                    return { x: points[i-1].x + (points[i].x - points[i-1].x) * t, y: points[i-1].y + (points[i].y - points[i-1].y) * t };
-                }
-                half -= seg;
-            }
-            return points[Math.floor(points.length / 2)] || { x: 0, y: 0 };
-        }
-
-        function pushLine(points, x, y) {
-            const last = points[points.length - 1];
-            if (!last || last.x !== x || last.y !== y) points.push({ x, y });
-        }
-
-        function buildRoute(conn, from, to) {
-            const route = conn.route || {};
-            const start = pointOnEdge(from, route.startSide || 'right', 6);
-            const end = pointOnEdge(to, route.endSide || 'left', 4);
-            const laneGap = route.laneGap || 28;
-            const points = [start];
-
-            const mode = route.mode || 'orth';
-            if (mode === 'top-bypass') {
-                const laneY = Math.max(18, Math.min(from.top, to.top) - laneGap);
-                pushLine(points, start.x, laneY);
-                pushLine(points, end.x, laneY);
-                pushLine(points, end.x, end.y);
-            } else if (mode === 'bottom-bypass') {
-                const maxBottom = Math.max(...allBounds.map(b => b.bottom));
-                const laneY = Math.min(cr.height - 18, maxBottom + laneGap);
-                pushLine(points, start.x, laneY);
-                pushLine(points, end.x, laneY);
-                pushLine(points, end.x, end.y);
-            } else if (mode === 'h-bypass') {
-                let laneY = route.fixedLaneY != null ? route.fixedLaneY * cr.height : (from.cy + to.cy) / 2;
-                // Push lane down if it overlaps any block in the horizontal corridor
-                const lx0 = Math.min(start.x, end.x), lx1 = Math.max(start.x, end.x);
-                for (let pass = 0; pass < 10; pass++) {
-                    const hit = allBounds.find(b => b !== from && b !== to &&
-                        b.left < lx1 - 4 && b.right > lx0 + 4 &&
-                        b.top < laneY + 6 && b.bottom > laneY - 6);
-                    if (!hit) break;
-                    laneY = hit.bottom + laneGap;
-                }
-                pushLine(points, start.x, laneY);
-                pushLine(points, end.x, laneY);
-                pushLine(points, end.x, end.y);
-            } else {
-                const horizontalFirst = Math.abs(start.x - end.x) > Math.abs(start.y - end.y);
-                if (horizontalFirst) {
-                    pushLine(points, end.x, start.y);
-                    pushLine(points, end.x, end.y);
-                } else {
-                    pushLine(points, start.x, end.y);
-                    pushLine(points, end.x, end.y);
-                }
-            }
-
-            pushLine(points, end.x, end.y);
-            return points;
-        }
-
-        connections.forEach(conn => {
-            const from = blocks.get(conn.from);
-            const to   = blocks.get(conn.to);
-            if (!from || !to) return;
-            const pts = buildRoute(conn, from, to);
-            const color = conn.memory ? '#30d158' : '#0a84ff';
-            const mEnd   = conn.memory ? 'ffa-mem'     : 'ffa-logic';
-            const mStart = conn.memory ? 'ffa-mem-rev' : 'ffa-logic-rev';
-
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('d', pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' '));
-            path.setAttribute('fill', 'none');
-            path.setAttribute('stroke', color);
-            path.setAttribute('stroke-width', '2.5');
-            path.setAttribute('stroke-linecap', 'round');
-            path.setAttribute('stroke-linejoin', 'round');
-            path.setAttribute('marker-end', `url(#${mEnd})`);
-            if (conn.bidirectional) path.setAttribute('marker-start', `url(#${mStart})`);
-            svg.appendChild(path);
-
-            const mid = polylineMidPoint(pts);
-            const lbl = document.createElement('div');
-            lbl.className = `knowledge-link-label${conn.memory ? ' memory' : ''}`;
-            lbl.style.left = (mid.x + (conn.labelDx || 0)) + 'px';
-            lbl.style.top  = (mid.y + (conn.labelDy || 0) - 18) + 'px';
-            lbl.innerHTML  = `${conn.label}<span class="mini">${conn.mini || ''}</span>`;
-            canvas.appendChild(lbl);
-        });
-    }
-
-    function renderMemoryDetail() {
-        const component = getMemoryComponent(activeMemoryScenarioId, activeMemoryComponentId);
-        const title = document.getElementById('memory-detail-title');
-        const text = document.getElementById('memory-detail-text');
-        const points = document.getElementById('memory-detail-points');
-        if (!component) {
-            if (title) title.textContent = '설명 준비중';
-            if (text) text.textContent = '블록을 누르면 여기에 상세설명이 보여요.';
-            if (points) points.innerHTML = '<div class="knowledge-empty">설정된 항목이 아직 없어요.</div>';
-            return;
-        }
-        if (title) title.textContent = component.name;
-        if (text) text.textContent = component.detail;
-        if (points) {
-            points.innerHTML = (component.points || []).map((item, idx) => `
-                <div class="knowledge-detail-item">
-                    <strong>포인트 ${idx + 1}</strong>
-                    <span>${item}</span>
-                </div>
-            `).join('');
-        }
-    }
-
-    function renderMemoryStudyPage() {
-        renderMemoryScenarioTabs();
-        renderMemoryDiagram();
-        renderMemoryDetail();
-    }
-
-    function selectMemoryScenario(id) {
-        if (!MEMORY_STUDY_SCENARIOS[id]) return;
-        activeMemoryScenarioId = id;
-        activeMemoryComponentId = MEMORY_STUDY_SCENARIOS[id].defaultComponentId;
-        renderMemoryStudyPage();
-    }
-
-    function selectMemoryComponent(id) {
-        activeMemoryComponentId = id;
-        renderMemoryDiagram();
-        renderMemoryDetail();
-    }
-
-    const TRADE_NOTE_KEY = 'ty-stock-study-note';
-    const NOTE_STOCKS = [
-        { id: 'common', name: '공통 메모', code: '전체 전략' },
-        { id: 'samsung', name: '삼성전자', code: '005930' },
-        { id: 'hynix', name: 'SK하이닉스', code: '000660' },
-        { id: 'micron', name: '마이크론', code: 'MU' },
-        { id: 'nasdaq', name: '나스닥', code: '^IXIC' },
-        { id: 'kospi', name: '코스피', code: '^KS11' },
-        { id: 'btc', name: '비트코인', code: 'BTC' },
-        { id: 'eth', name: '이더리움', code: 'ETH' },
-    ];
-    let activeNoteStockId = 'common';
-    const TOOL_WATCHLIST = [
-        { id: 'samsung', name: '삼성전자', code: '005930' },
-        { id: 'hynix', name: 'SK하이닉스', code: '000660' },
-        { id: 'nasdaq', name: '나스닥', code: '^IXIC' },
-        { id: 'kospi', name: '코스피', code: '^KS11' },
-        { id: 'btc', name: '비트코인', code: 'BTC' },
-        { id: 'eth', name: '이더리움', code: 'ETH' },
+  <script>
+    const quotes = [
+      { id: 'usdkrw', group: 'Macro', name: '원/달러', ticker: 'USDKRW=X', format: 'krw', url: 'https://finance.yahoo.com/quote/USDKRW=X' },
+      { id: 'oil', group: 'Macro', name: 'WTI 유가', ticker: 'CL=F', format: 'usd', url: 'https://finance.yahoo.com/quote/CL=F' },
+      { id: 'nasdaq', group: 'Index', name: '나스닥', ticker: '^IXIC', format: 'index', url: 'https://finance.yahoo.com/quote/%5EIXIC' },
+      { id: 'kospi', group: 'Index', name: '코스피', ticker: '^KS11', format: 'index', url: 'https://finance.yahoo.com/quote/%5EKS11' },
+      { id: 'samsung', group: 'Stock', name: '삼성전자', ticker: '005930.KS', format: 'krw', url: 'https://finance.yahoo.com/quote/005930.KS' },
+      { id: 'hynix', group: 'Stock', name: 'SK하이닉스', ticker: '000660.KS', format: 'krw', url: 'https://finance.yahoo.com/quote/000660.KS' },
+      { id: 'micron', group: 'Stock', name: '마이크론', ticker: 'MU', format: 'usd', url: 'https://finance.yahoo.com/quote/MU' },
+      { id: 'kr-rate', group: 'Rate', name: '한국 기준금리', localRate: true, format: 'rate', url: 'https://www.bok.or.kr/portal/main/contents.do?menuNo=200643' }
     ];
 
-    function renderWatchlistChips() {
-        const wrap = document.getElementById('watchlist-chips');
-        if (!wrap) return;
-        wrap.innerHTML = TOOL_WATCHLIST.map(item => `
-            <button class="watchlist-chip" onclick="showChart('${item.id}')">
-                ${item.name}
-                <small>${item.code}</small>
-            </button>
-        `).join('');
+    const noteTargets = [
+      ['market', '시장 메모'],
+      ['semiconductor', '반도체 구조'],
+      ['samsung', '삼성전자'],
+      ['hynix', 'SK하이닉스'],
+      ['micron', '마이크론'],
+      ['action', '다음 행동']
+    ];
+
+    let activeNote = noteTargets[0][0];
+
+    function fmtPrice(value, type) {
+      if (value == null || Number.isNaN(value)) return '—';
+      if (type === 'krw') return Math.round(value).toLocaleString('ko-KR') + '원';
+      if (type === 'usd') return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (type === 'rate') return Number(value).toFixed(2) + '%';
+      return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
     }
 
-    function getTradeNoteStorageKey(stockId) {
-        return `${TRADE_NOTE_KEY}:${stockId}`;
+    function fmtChange(change, pct, type) {
+      if (change == null || pct == null || Number.isNaN(change) || Number.isNaN(pct)) return '변동률 없음';
+      const sign = change > 0 ? '+' : '';
+      const value = type === 'krw' ? Math.round(change).toLocaleString('ko-KR') : change.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      return `${sign}${value} · ${sign}${pct.toFixed(2)}%`;
     }
 
-    function getTodayStamp() {
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = String(now.getMonth() + 1).padStart(2, '0');
-        const d = String(now.getDate()).padStart(2, '0');
-        return `${y}.${m}.${d}`;
+    function cardSkeleton(item) {
+      return `<a class="quote-card" href="${item.url}" target="_blank" rel="noopener noreferrer" id="quote-${item.id}">
+        <div><div class="quote-kicker">${item.group}</div><div class="quote-name">${item.name}</div></div>
+        <div><div class="quote-price">—</div><div class="quote-change flat">불러오는 중</div></div>
+      </a>`;
     }
 
-    function pad2(n) {
-        return String(n).padStart(2, '0');
+    function renderQuoteCards() {
+      document.getElementById('quote-grid').innerHTML = quotes.map(cardSkeleton).join('');
     }
 
-    function formatLastUpdated(value) {
-        if (!value) return '없음';
-        const dt = new Date(value);
-        if (Number.isNaN(dt.getTime())) return '없음';
-        return `${pad2(dt.getMonth() + 1)}.${pad2(dt.getDate())} ${pad2(dt.getHours())}:${pad2(dt.getMinutes())}`;
+    function proxyUrls(raw) {
+      const encoded = encodeURIComponent(raw);
+      return [
+        `https://api.allorigins.win/raw?url=${encoded}`,
+        `https://api.codetabs.com/v1/proxy/?quest=${raw}`
+      ];
     }
 
-    function normalizeTradeNoteRecord(raw) {
-        if (!raw) return { text: '', updatedAt: '' };
+    async function firstJson(raw) {
+      const urls = proxyUrls(raw);
+      let lastError;
+      for (const url of urls) {
         try {
-            const parsed = JSON.parse(raw);
-            if (parsed && typeof parsed === 'object' && typeof parsed.text === 'string') {
-                return {
-                    text: parsed.text,
-                    updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : '',
-                };
-            }
-        } catch (e) {
-            // 이전 문자열 저장 형식 호환
-        }
-        return { text: raw, updatedAt: '' };
-    }
-
-    function readTradeNoteRecord(stockId) {
-        return normalizeTradeNoteRecord(localStorage.getItem(getTradeNoteStorageKey(stockId)) || '');
-    }
-
-    function writeTradeNoteRecord(stockId, text) {
-        const record = {
-            text,
-            updatedAt: new Date().toISOString(),
-        };
-        localStorage.setItem(getTradeNoteStorageKey(stockId), JSON.stringify(record));
-        return record;
-    }
-
-    function ensureTradeNoteStamp(text) {
-        const body = (text || '').trim();
-        if (!body) return `[${getTodayStamp()}]\n`;
-        const firstLine = body.split('\n', 1)[0].trim();
-        if (/^\[\d{4}\.\d{2}\.\d{2}\]$/.test(firstLine)) return text;
-        return `[${getTodayStamp()}]\n${text}`;
-    }
-
-    function updateNoteDatePill(record) {
-        const el = document.getElementById('note-date-text');
-        if (el) el.textContent = formatLastUpdated(record?.updatedAt);
-    }
-
-    function updateNoteTabState() {
-        const current = NOTE_STOCKS.find(item => item.id === activeNoteStockId) || NOTE_STOCKS[0];
-        const currentRecord = readTradeNoteRecord(activeNoteStockId);
-        document.querySelectorAll('.note-stock-chip').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.stockId === activeNoteStockId);
-        });
-
-        const label = document.getElementById('note-current-stock');
-        if (label) {
-            label.innerHTML = `${current.name} <small>${current.code}</small>`;
-        }
-
-        const status = document.getElementById('note-status');
-        if (status) {
-            status.textContent = currentRecord.updatedAt
-                ? `수정 ${formatLastUpdated(currentRecord.updatedAt)}`
-                : '아직 저장되지 않았어요';
-        }
-
-        const chips = document.querySelectorAll('.note-stock-chip');
-        chips.forEach(btn => {
-            const stockId = btn.dataset.stockId;
-            const record = readTradeNoteRecord(stockId);
-            const time = record.updatedAt ? formatLastUpdated(record.updatedAt) : '미작성';
-            btn.innerHTML = `<span class="note-chip-title">${NOTE_STOCKS.find(item => item.id === stockId)?.name || stockId}</span><span class="note-chip-time">${time}</span>`;
-        });
-    }
-
-    function renderNoteStockTabs() {
-        const wrap = document.getElementById('note-stock-tabs');
-        if (!wrap) return;
-        wrap.innerHTML = NOTE_STOCKS.map(item => `
-            <button
-                class="note-stock-chip${item.id === activeNoteStockId ? ' active' : ''}"
-                data-stock-id="${item.id}"
-                onclick="selectTradeNoteStock('${item.id}')"
-            ></button>
-        `).join('');
-        updateNoteTabState();
-    }
-
-    function loadTradeNote() {
-        const area = document.getElementById('trade-note');
-        if (!area) return;
-        const record = readTradeNoteRecord(activeNoteStockId);
-        area.value = record.text ? record.text : `[${getTodayStamp()}]\n`;
-        updateNoteDatePill(record);
-        updateNoteTabState();
-    }
-
-    function saveTradeNote() {
-        const area = document.getElementById('trade-note');
-        if (!area) return;
-        area.value = ensureTradeNoteStamp(area.value);
-        const record = writeTradeNoteRecord(activeNoteStockId, area.value);
-        const status = document.getElementById('note-status');
-        const current = NOTE_STOCKS.find(item => item.id === activeNoteStockId) || NOTE_STOCKS[0];
-        if (status) status.textContent = `${current.name} 수정 ${formatLastUpdated(record.updatedAt)}`;
-        updateNoteDatePill(record);
-        updateNoteTabState();
-    }
-
-    function selectTradeNoteStock(stockId) {
-        activeNoteStockId = stockId;
-        loadTradeNote();
-    }
-
-    function syncTradeNoteStockFromChartId(id) {
-        const matched = NOTE_STOCKS.some(item => item.id === id);
-        if (!matched) return;
-        activeNoteStockId = id;
-        const toolPage = document.getElementById('page-tools');
-        if (toolPage && toolPage.classList.contains('active')) {
-            renderNoteStockTabs();
-            loadTradeNote();
-        }
-    }
-
-    function initToolsPage() {
-        renderWatchlistChips();
-        renderNoteStockTabs();
-        loadTradeNote();
-    }
-
-    // ── 매크로 필 클릭 → 네이버 검색 새 탭 ──────────────────────
-    const MACRO_SEARCH_URLS = {
-        'usdkrw':  'https://search.naver.com/search.naver?query=%ED%99%98%EC%9C%A8',
-        'gold':    'https://search.naver.com/search.naver?query=%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%8B%9C%EC%84%B8',
-        'oil':     'https://search.naver.com/search.naver?query=%EC%9C%A0%EA%B0%80',
-        'us-rate': 'https://search.naver.com/search.naver?query=%EB%AF%B8%EA%B5%AD+%EA%B8%88%EB%A6%AC',
-        'kr-rate': 'https://search.naver.com/search.naver?query=%EA%B8%88%EB%A6%AC',
-    };
-
-    function openMacroSearch(id) {
-        const url = MACRO_SEARCH_URLS[id];
-        if (url) window.open(url, '_blank', 'noopener,noreferrer');
-    }
-
-    // ── 차트 정보 ────────────────────────────────────────────────
-    const CHART_INFO = {
-        nasdaq: {
-            name: '나스닥',
-            subtitle: 'NASDAQ Composite (^IXIC)',
-            symbol: 'NASDAQ:QQQ',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=NASDAQ%3AQQQ',
-            quote_url: 'https://finance.yahoo.com/quote/%5EIXIC',
-            data_kind: 'market',
-            data_ticker: '%5EIXIC',
-            from: 'index'
-        },
-        sp500: {
-            name: 'S&P 500',
-            subtitle: 'S&P 500 Index (^GSPC)',
-            symbol: 'AMEX:SPY',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=AMEX%3ASPY',
-            quote_url: 'https://finance.yahoo.com/quote/%5EGSPC',
-            data_kind: 'market',
-            data_ticker: '%5EGSPC',
-            from: 'index'
-        },
-        kospi: {
-            name: '코스피',
-            subtitle: 'KOSPI Index (^KS11)',
-            chart_type: 'naver',
-            naver_fchart: 'https://finance.naver.com/sise/sise_index.naver?code=KOSPI',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3AKOSPI',
-            quote_url: 'https://finance.yahoo.com/quote/%5EKS11',
-            naver_url: 'https://m.stock.naver.com/domestic/index/KOSPI/total',
-            data_kind: 'market',
-            data_ticker: '%5EKS11',
-            from: 'index'
-        },
-        kosdaq: {
-            name: '코스닥',
-            subtitle: 'KOSDAQ Index (^KQ11)',
-            chart_type: 'naver',
-            naver_fchart: 'https://finance.naver.com/sise/sise_index.naver?code=KOSDAQ',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3AKOSDAQ',
-            quote_url: 'https://finance.yahoo.com/quote/%5EKQ11',
-            naver_url: 'https://m.stock.naver.com/domestic/index/KOSDAQ/total',
-            data_kind: 'market',
-            data_ticker: '%5EKQ11',
-            from: 'index'
-        },
-        samsung: {
-            name: '삼성전자',
-            subtitle: 'KRX · 005930',
-            chart_type: 'naver',
-            naver_fchart: 'https://finance.naver.com/item/fchart.naver?code=005930',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3A005930',
-            quote_url: 'https://finance.yahoo.com/quote/005930.KS',
-            naver_url: 'https://m.stock.naver.com/domestic/stock/005930/total',
-            data_kind: 'market',
-            data_ticker: '005930.KS',
-            from: 'stocks',
-            report_links: [
-                { icon: '📋', name: '네이버 리서치', desc: '국내 증권사 리포트 모음', url: 'https://finance.naver.com/research/company_list.naver?searchType=itemCode&itemCode=005930' },
-                { icon: '📊', name: '에프앤가이드', desc: '컨센서스 · 목표주가 · 재무', url: 'https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A005930' },
-                { icon: '📢', name: 'DART 공시', desc: '분기·사업보고서 원문', url: 'https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=삼성전자&finalReport=recent' },
-                { icon: '🏠', name: '네이버 금융', desc: '종목 종합 정보', url: 'https://finance.naver.com/item/main.naver?code=005930' },
-            ],
-        },
-        hynix: {
-            name: 'SK하이닉스',
-            subtitle: 'KRX · 000660',
-            chart_type: 'naver',
-            naver_fchart: 'https://finance.naver.com/item/fchart.naver?code=000660',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=KRX%3A000660',
-            quote_url: 'https://finance.yahoo.com/quote/000660.KS',
-            naver_url: 'https://m.stock.naver.com/domestic/stock/000660/total',
-            data_kind: 'market',
-            data_ticker: '000660.KS',
-            from: 'stocks',
-            report_links: [
-                { icon: '📋', name: '네이버 리서치', desc: '국내 증권사 리포트 모음', url: 'https://finance.naver.com/research/company_list.naver?searchType=itemCode&itemCode=000660' },
-                { icon: '📊', name: '에프앤가이드', desc: '컨센서스 · 목표주가 · 재무', url: 'https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A000660' },
-                { icon: '📢', name: 'DART 공시', desc: '분기·사업보고서 원문', url: 'https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=SK하이닉스&finalReport=recent' },
-                { icon: '🏠', name: '네이버 금융', desc: '종목 종합 정보', url: 'https://finance.naver.com/item/main.naver?code=000660' },
-            ],
-        },
-        micron: {
-            name: '마이크론',
-            subtitle: 'NASDAQ · MU',
-            symbol: 'NASDAQ:MU',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=NASDAQ%3AMU',
-            quote_url: 'https://finance.yahoo.com/quote/MU',
-            data_kind: 'market',
-            data_ticker: 'MU',
-            from: 'stocks',
-            report_links: [
-                { icon: '📋', name: 'Seeking Alpha', desc: '애널리스트 리포트 · 평가', url: 'https://seekingalpha.com/symbol/MU/research' },
-                { icon: '📊', name: 'Yahoo Finance', desc: '애널리스트 전망 · 목표가', url: 'https://finance.yahoo.com/quote/MU/analysis' },
-                { icon: '📈', name: 'MarketBeat', desc: '컨센서스 · 등급 · 목표가', url: 'https://www.marketbeat.com/stocks/NASDAQ/MU/forecast/' },
-                { icon: '📢', name: 'SEC Filings', desc: '10-K · 10-Q 원문 공시', url: 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&dateb=&owner=include&count=10' },
-            ],
-        },
-        btc: {
-            name: '비트코인',
-            subtitle: 'BTC / USDT',
-            symbol: 'BINANCE:BTCUSDT',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
-            quote_url: 'https://www.coingecko.com/en/coins/bitcoin',
-            data_kind: 'coin',
-            gecko_id: 'bitcoin',
-            from: 'coin'
-        },
-        eth: {
-            name: '이더리움',
-            subtitle: 'ETH / USDT',
-            symbol: 'BINANCE:ETHUSDT',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=BINANCE%3AETHUSDT',
-            quote_url: 'https://www.coingecko.com/en/coins/ethereum',
-            data_kind: 'coin',
-            gecko_id: 'ethereum',
-            from: 'coin'
-        },
-        sol: {
-            name: '솔라나',
-            subtitle: 'SOL / USDT',
-            symbol: 'BINANCE:SOLUSDT',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ASOLUSDT',
-            quote_url: 'https://www.coingecko.com/en/coins/solana',
-            data_kind: 'coin',
-            gecko_id: 'solana',
-            from: 'coin'
-        },
-        xrp: {
-            name: '리플',
-            subtitle: 'XRP / USDT',
-            symbol: 'BINANCE:XRPUSDT',
-            tv_url: 'https://www.tradingview.com/chart/?symbol=BINANCE%3AXRPUSDT',
-            quote_url: 'https://www.coingecko.com/en/coins/xrp',
-            data_kind: 'coin',
-            gecko_id: 'ripple',
-            from: 'coin'
-        },
-    };
-
-    const FROM_LABELS = { index: '대표 지수', stocks: '개별 종목', coin: '코인' };
-
-    function showChart(id, updateHash = true) {
-        const info = CHART_INFO[id];
-        if (!info) return;
-
-        activeChartId = id;
-        syncTradeNoteStockFromChartId(id);
-        showOnly('page-chart', updateHash);
-
-        document.getElementById('chart-title').textContent = info.name;
-        document.getElementById('chart-subtitle').textContent = info.subtitle;
-        document.getElementById('chart-window-title').textContent = info.name + ' 차트';
-
-        const fromLabel = FROM_LABELS[info.from];
-        const fromFnStr = info.from === 'index' ? 'showIndex()' : info.from === 'coin' ? 'showCoin()' : 'showStocks()';
-        const stockCrumb = (info.from !== 'coin')
-            ? '<span class="crumb" onclick="showStockSub()">주식</span><span class="sep">›</span>'
-            : '';
-
-        document.getElementById('chart-breadcrumb-bar').innerHTML =
-            `<span class="crumb" onclick="goHome()">홈</span><span class="sep">›</span>
-             ${stockCrumb}
-             <span class="crumb" onclick="${fromFnStr}">${fromLabel}</span>
-             <span class="sep">›</span><span>${info.name}</span>`;
-
-        document.getElementById('tradingview-link').href = info.tv_url;
-        document.getElementById('quote-link').href = info.quote_url;
-
-        const naverBtn = document.getElementById('naver-link');
-        if (info.naver_url) {
-            naverBtn.href = info.naver_url;
-            naverBtn.classList.remove('hidden');
-        } else {
-            naverBtn.href = '#';
-            naverBtn.classList.add('hidden');
-        }
-
-        setChartLoadingState(info);
-        renderChart(id, info);
-        loadChartOverview(id);
-        renderReportLinks(info);
-
-        if (updateHash) {
-            setRoute(`chart:${id}`);
-        }
-    }
-
-    function renderReportLinks(info) {
-        const section = document.getElementById('chart-report-section');
-        const grid    = document.getElementById('chart-report-grid');
-        if (!info.report_links?.length) { section.style.display = 'none'; return; }
-        grid.innerHTML = info.report_links.map(r =>
-            `<a class="report-card" href="${r.url}" target="_blank" rel="noopener noreferrer">
-                <span class="report-icon">${r.icon}</span>
-                <div>
-                    <div class="report-name">${r.name}</div>
-                    <div class="report-desc">${r.desc}</div>
-                </div>
-            </a>`
-        ).join('');
-        section.style.display = '';
-    }
-
-    function renderChart(id, info) {
-        const useNaver = info.chart_type === 'naver';
-        document.getElementById('chart-tradingview').style.display = useNaver ? 'none' : '';
-        document.getElementById('chart-naver').style.display       = useNaver ? '' : 'none';
-        if (useNaver) {
-            document.getElementById('naver-fchart-frame').src = info.naver_fchart;
-            document.getElementById('naver-fchart-link').href = info.naver_fchart;
-        } else {
-            renderTradingView(info);
-        }
-    }
-
-    function renderTradingView(info) {
-        const container = document.getElementById('tradingview-container');
-        container.innerHTML = '';
-
-        const doWidget = () => new TradingView.widget({
-            container_id: 'tradingview-container',
-            width: '100%',
-            height: 580,
-            symbol: info.symbol,
-            interval: 'D',
-            timezone: 'Asia/Seoul',
-            theme: 'dark',
-            style: '1',
-            locale: 'ko',
-            toolbar_bg: '#2c2c2e',
-            enable_publishing: false,
-            allow_symbol_change: true,
-            studies: ['MASimple@tv-basicstudies', 'RSI@tv-basicstudies', 'MACD@tv-basicstudies', 'BB@tv-basicstudies'],
-            show_popup_button: true,
-            popup_width: '1000',
-            popup_height: '650',
-        });
-
-        if (typeof TradingView !== 'undefined') {
-            doWidget();
-        } else {
-            const s = document.createElement('script');
-            s.src = 'https://s3.tradingview.com/tv.js';
-            s.onload = doWidget;
-            document.head.appendChild(s);
-        }
-    }
-
-    function setChartLoadingState(info) {
-        document.getElementById('chart-price-main').textContent = '—';
-        document.getElementById('chart-price-change').className = 'chart-hero-change flat-text';
-        document.getElementById('chart-price-change').textContent = '데이터를 불러오는 중...';
-        document.getElementById('chart-updated-at').textContent = '업데이트: —';
-        document.getElementById('chart-data-source').textContent =
-            info.data_kind === 'coin'
-                ? 'CoinGecko 요약 + TradingView 차트'
-                : '자체 요약 카드 + TradingView 차트';
-        document.getElementById('chart-status-line').textContent =
-            info.naver_url
-                ? '모바일 네이버 페이지를 직접 넣는 대신, 핵심 지표를 이 화면에서 바로 보고 필요할 때 모바일 네이버 링크로 이동할 수 있게 했습니다.'
-                : '핵심 지표를 이 화면에서 바로 확인하고, 상세 차트는 TradingView로 볼 수 있습니다.';
-
-        for (let i = 1; i <= 6; i += 1) {
-            document.getElementById(`chart-stat-label-${i}`).textContent = `항목 ${i}`;
-            document.getElementById(`chart-stat-value-${i}`).textContent = '—';
-        }
-    }
-
-    async function loadChartOverview(id) {
-        const info = CHART_INFO[id];
-
-        try {
-            const data = await withRetry(() =>
-                info.data_kind === 'coin' ? fetchCoinOverview(info) : fetchMarketOverview(info)
-            );
-
-            if (activeChartId !== id) return;
-            applyChartOverview(info, data);
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error('network');
+          return await res.json();
         } catch (error) {
-            if (activeChartId !== id) return;
-            document.getElementById('chart-price-main').textContent = '—';
-            document.getElementById('chart-price-change').className = 'chart-hero-change flat-text';
-            document.getElementById('chart-price-change').textContent = '요약 데이터를 불러오지 못했습니다.';
-            document.getElementById('chart-status-line').textContent =
-                '요약 데이터 로딩에 실패했습니다. 잠시 뒤 다시 시도하거나 아래 링크로 원본 시세 페이지를 열어보세요.';
+          lastError = error;
         }
+      }
+      throw lastError || new Error('fetch failed');
     }
 
-    // ── 시세 데이터 ──────────────────────────────────────────────
-    const INDEX_STOCKS = [
-        { id: 'nasdaq', ticker: '%5EIXIC', currency: 'USD' },
-        { id: 'sp500',  ticker: '%5EGSPC', currency: 'USD' },
-        { id: 'kospi',  ticker: '%5EKS11', currency: 'KRW' },
-        { id: 'kosdaq', ticker: '%5EKQ11', currency: 'KRW' },
-    ];
-    const INDIVIDUAL_STOCKS = [
-        { id: 'samsung', ticker: '005930.KS', currency: 'KRW' },
-        { id: 'hynix',   ticker: '000660.KS', currency: 'KRW' },
-        { id: 'micron',  ticker: 'MU', currency: 'USD' },
-    ];
-
-    // 프록시 캐스케이드: 3개 프록시 동시 시도 → 먼저 성공한 쪽 사용
-    async function proxiedFetch(rawUrl) {
-        const race = (url, ms) => new Promise((res, rej) => {
-            const t = setTimeout(() => rej(new Error('timeout')), ms);
-            fetch(url, { cache: 'no-store' })
-                .then(r => { clearTimeout(t); r.ok ? res(r) : rej(new Error('not ok')); })
-                .catch(e => { clearTimeout(t); rej(e); });
-        });
-        // allorigins는 rawUrl을 이중 인코딩 없이 그대로 전달 (rawUrl에 이미 %3D 등 포함 가능)
-        return Promise.any([
-            race(`https://corsproxy.io/?url=${encodeURIComponent(rawUrl)}`, 12000),
-            race(`https://api.codetabs.com/v1/proxy/?quest=${rawUrl}`, 12000),
-            race(`https://api.allorigins.win/raw?url=${rawUrl}`, 20000),
-        ]);
+    async function loadYahooQuote(item) {
+      const raw = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(item.ticker)}?interval=1d&range=1d`;
+      const data = await firstJson(raw);
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (!meta || meta.regularMarketPrice == null) throw new Error('missing quote');
+      const price = meta.regularMarketPrice;
+      const prev = meta.chartPreviousClose ?? meta.previousClose ?? price;
+      const change = price - prev;
+      const pct = prev ? (change / prev) * 100 : 0;
+      return { price, change, pct };
     }
 
-    // 실패 시 최대 retries 횟수만큼 재시도 (500ms, 1500ms 간격)
-    async function withRetry(fn, retries = 3) {
-        for (let i = 0; i < retries; i++) {
-            try { return await fn(); }
-            catch (e) {
-                if (i === retries - 1) throw e;
-                await new Promise(r => setTimeout(r, 500 + i * 1000));
-            }
-        }
+    async function loadLocalRate() {
+      const res = await fetch('./rates.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('missing rates');
+      const data = await res.json();
+      return { price: Number(data.kr_base_rate), change: Number(data.kr_base_rate) - Number(data.kr_base_prev ?? data.kr_base_rate), pct: 0, updated: data.kr_base_updated };
     }
 
-    function formatPercent(pct) {
-        const sign = pct >= 0 ? '+' : '';
-        return `${sign}${pct.toFixed(2)}%`;
+    function applyQuote(item, data) {
+      const card = document.getElementById(`quote-${item.id}`);
+      if (!card) return;
+      const price = card.querySelector('.quote-price');
+      const change = card.querySelector('.quote-change');
+      const dir = data.change > 0 ? 'up' : data.change < 0 ? 'down' : 'flat';
+      price.textContent = fmtPrice(data.price, item.format);
+      change.className = `quote-change ${dir}`;
+      change.textContent = item.localRate && data.updated ? `수동 관리 · ${data.updated}` : fmtChange(data.change, data.pct, item.format);
     }
 
-    function formatDateTime(dateObj) {
-        if (!dateObj) return '업데이트: —';
-        return '업데이트: ' + dateObj.toLocaleString('ko-KR', {
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    function failQuote(item) {
+      const card = document.getElementById(`quote-${item.id}`);
+      if (!card) return;
+      card.querySelector('.quote-change').textContent = '원문 열기';
     }
 
-    function formatCompactNumber(value, currency) {
-        if (value == null || Number.isNaN(value)) return '—';
-        const abs = Math.abs(value);
-
-        if (currency === 'KRW') {
-            if (abs >= 1e12) return `${(value / 1e12).toFixed(2)}조원`;
-            if (abs >= 1e8) return `${(value / 1e8).toFixed(0)}억원`;
-            return Math.round(value).toLocaleString('ko-KR') + '원';
-        }
-
-        return '$' + new Intl.NumberFormat('en-US', {
-            notation: 'compact',
-            maximumFractionDigits: 2
-        }).format(value);
-    }
-
-    function formatVolume(value) {
-        if (value == null || Number.isNaN(value)) return '—';
-        return new Intl.NumberFormat('en-US', {
-            notation: 'compact',
-            maximumFractionDigits: 2
-        }).format(value);
-    }
-
-    function formatRange(low, high, currency) {
-        if (low == null || high == null) return '—';
-        return `${fmtPrice(low, currency)} ~ ${fmtPrice(high, currency)}`;
-    }
-
-    function formatAbsoluteChange(change, currency) {
-        if (change == null || Number.isNaN(change)) return '—';
-        if (currency === 'KRW') {
-            const sign = change >= 0 ? '+' : '';
-            return `${sign}${Math.round(change).toLocaleString('ko-KR')}원`;
-        }
-        const sign = change >= 0 ? '+' : '';
-        return `${sign}${change.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-
-    function setChartStats(items) {
-        const normalized = [...items];
-        while (normalized.length < 6) normalized.push({ label: '—', value: '—' });
-        normalized.slice(0, 6).forEach((item, index) => {
-            document.getElementById(`chart-stat-label-${index + 1}`).textContent = item.label;
-            document.getElementById(`chart-stat-value-${index + 1}`).textContent = item.value;
-        });
-    }
-
-    function applyChartOverview(info, data) {
-        const changeDir = data.change > 0 ? 'up' : data.change < 0 ? 'down' : 'flat';
-        const arrow = data.change > 0 ? '▲' : data.change < 0 ? '▼' : '—';
-
-        document.getElementById('chart-price-main').textContent = fmtPrice(data.price, data.currency);
-        document.getElementById('chart-price-change').className = `chart-hero-change ${changeDir}-text`;
-        document.getElementById('chart-price-change').textContent =
-            `${arrow} ${formatAbsoluteChange(data.change, data.currency)} (${formatPercent(data.changePct)})`;
-        document.getElementById('chart-updated-at').textContent = formatDateTime(data.updatedAt);
-        document.getElementById('chart-data-source').textContent = data.sourceText;
-        document.getElementById('chart-status-line').textContent = data.statusText;
-        setChartStats(data.stats);
-    }
-
-    async function fetchMarketOverview(info) {
-        const chartJson = await (await proxiedFetch(
-            `https://query2.finance.yahoo.com/v8/finance/chart/${info.data_ticker}?interval=1d&range=1d`
-        )).json();
-
-        const chartResult = chartJson?.chart?.result?.[0];
-        if (!chartResult) throw new Error('chart result missing');
-
-        const meta = chartResult.meta || {};
-        const price = meta.regularMarketPrice;
-        if (!price) throw new Error('no price');
-        const prev = meta.chartPreviousClose ?? meta.previousClose;
-        const change = price - prev;
-        const changePct = prev ? (change / prev) * 100 : 0;
-        const currency = meta.currency ?? 'USD';
-
-        const stats = [
-            { label: '시가', value: fmtPrice(meta.regularMarketOpen, currency) },
-            { label: '전일 종가', value: fmtPrice(prev, currency) },
-            { label: '당일 범위', value: formatRange(meta.regularMarketDayLow, meta.regularMarketDayHigh, currency) },
-            { label: '52주 범위', value: formatRange(meta.fiftyTwoWeekLow, meta.fiftyTwoWeekHigh, currency) },
-            { label: '거래량', value: formatVolume(meta.regularMarketVolume) },
-            { label: '통화', value: currency }
-        ];
-
-        return {
-            price,
-            currency,
-            change,
-            changePct,
-            updatedAt: meta.regularMarketTime ? new Date(meta.regularMarketTime * 1000) : new Date(),
-            sourceText: 'Yahoo Finance 요약 + TradingView 차트',
-            statusText: info.naver_url
-                ? '핵심 수치와 차트를 이 페이지에서 바로 보고, 필요할 때만 모바일 네이버 증권으로 넘어갈 수 있게 구성했습니다.'
-                : '핵심 수치와 차트를 이 페이지에서 바로 확인할 수 있습니다.',
-            stats
-        };
-    }
-
-    async function fetchCoinOverview(info) {
-        const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${info.gecko_id}&price_change_percentage=24h`;
-        const arr = await (await proxiedFetch(url)).json();
-        const coin = arr?.[0];
-        if (!coin) throw new Error('coin data missing');
-
-        return {
-            price: coin.current_price,
-            currency: 'USD',
-            change: coin.price_change_24h,
-            changePct: coin.price_change_percentage_24h ?? 0,
-            updatedAt: coin.last_updated ? new Date(coin.last_updated) : new Date(),
-            sourceText: 'CoinGecko 요약 + TradingView 차트',
-            statusText: '코인은 현재가와 핵심 수치를 직접 보여주고, 차트는 TradingView로 확인할 수 있습니다.',
-            stats: [
-                { label: '24시간 고가', value: fmtPrice(coin.high_24h, 'USD') },
-                { label: '24시간 저가', value: fmtPrice(coin.low_24h, 'USD') },
-                { label: '24시간 변동률', value: formatPercent(coin.price_change_percentage_24h ?? 0) },
-                { label: '시가총액', value: formatCompactNumber(coin.market_cap, 'USD') },
-                { label: '24시간 거래대금', value: formatCompactNumber(coin.total_volume, 'USD') },
-                { label: '사상 최고가', value: fmtPrice(coin.ath, 'USD') }
-            ]
-        };
-    }
-
-    function fmtPrice(v, cur) {
-        if (v == null || isNaN(v)) return '—';
-        if (cur === 'KRW') return v.toLocaleString('ko-KR') + '원';
-        if (cur === 'JPY') return '¥' + Math.round(v).toLocaleString('en-US');
-        if (cur === 'HKD') return 'HK$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-    function fmtChange(change, pct) {
-        const s = change >= 0 ? '+' : '';
-        return `${s}${change.toLocaleString('ko-KR', { maximumFractionDigits: 2 })} (${s}${pct.toFixed(2)}%)`;
-    }
-
-    async function fetchStock(stock) {
-        const data = await (await proxiedFetch(
-            `https://query2.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=1d`
-        )).json();
-        const meta = data?.chart?.result?.[0]?.meta;
-        if (!meta?.regularMarketPrice) throw new Error('no data');
-        return {
-            price: meta.regularMarketPrice,
-            prev: meta.chartPreviousClose || meta.previousClose,
-            currency: meta.currency || stock.currency
-        };
-    }
-
-    function updateCard(id, price, prev, currency) {
-        const change = price - prev;
-        const pct = (change / prev) * 100;
-        const dir = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
-        const arrow = change > 0 ? '▲' : change < 0 ? '▼' : '—';
-
-        const card = document.getElementById('card-' + id);
-        if (card) card.className = card.className.replace(/\b(up|down|flat)\b/g, '').trim() + ' ' + dir;
-
-        document.getElementById('price-' + id).textContent = fmtPrice(price, currency);
-        const el = document.getElementById('change-' + id);
-        el.innerHTML = `<span class="${dir}-text">${arrow} ${fmtChange(change, pct)}</span>`;
-    }
-
-    async function loadGroup(stocks, updatedId) {
-        await Promise.all(stocks.map(async s => {
-            try {
-                const d = await withRetry(() => fetchStock(s));
-                updateCard(s.id, d.price, d.prev, d.currency);
-            } catch {
-                const el = document.getElementById('change-' + s.id);
-                if (el) el.textContent = '불러오기 실패';
-            }
-        }));
-        const el = document.getElementById(updatedId);
-        if (el) el.textContent = '업데이트: ' + new Date().toLocaleString('ko-KR');
-    }
-
-    // ── 코인 (CoinGecko) ─────────────────────────────────────────
-    async function loadCoins() {
+    async function loadQuotes() {
+      renderQuoteCards();
+      await Promise.all(quotes.map(async item => {
         try {
-            const url = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple&vs_currencies=usd&include_24hr_change=true';
-            const data = await (await proxiedFetch(url)).json();
-
-            [['btc','bitcoin'],['eth','ethereum'],['sol','solana'],['xrp','ripple']].forEach(([id, gecko]) => {
-                const d = data[gecko];
-                const pct = d.usd_24h_change;
-                const dir = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
-                const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
-                const sign = pct >= 0 ? '+' : '';
-
-                const card = document.getElementById('card-' + id);
-                if (card) card.className = 'ticker-card clickable ' + dir;
-
-                document.getElementById('price-' + id).textContent =
-                    '$' + d.usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-                const el = document.getElementById('change-' + id);
-                el.innerHTML = `<span class="${dir}-text">${arrow} ${sign}${pct.toFixed(2)}% (24h)</span>`;
-            });
-
-            document.getElementById('updated-coin').textContent = '업데이트: ' + new Date().toLocaleString('ko-KR');
-        } catch {
-            ['btc','eth','sol','xrp'].forEach(id => {
-                const el = document.getElementById('change-' + id);
-                if (el) el.textContent = '불러오기 실패';
-            });
+          const data = item.localRate ? await loadLocalRate() : await loadYahooQuote(item);
+          applyQuote(item, data);
+        } catch (error) {
+          failQuote(item);
         }
+      }));
     }
 
-    // ── 매크로 (5개 병렬 로딩) ────────────────────────────────────
-    const MARKET_MACRO_ITEMS = [
-        { id: 'usdkrw',  ticker: 'KRW%3DX',     fmt: v => v.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원' },
-        { id: 'gold',    ticker: 'GC%3DF',       fmt: v => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 1 }) },
-        { id: 'oil',     ticker: 'CL%3DF',       fmt: v => '$' + v.toLocaleString('en-US', { maximumFractionDigits: 2 }) },
-        // FRED 미국 기준금리 (상단 목표금리)
-        { id: 'us-rate', fred_id: 'DFEDTARU', fmt: v => v.toFixed(2) + '%' },
-        // 한국 기준금리: 네이버 금융 IRR_KRBF 페이지 파싱
-        { id: 'kr-rate', type: 'naver_base', fmt: v => v.toFixed(2) + '%' },
-    ];
-
-    function setMacroMarket(itemId, priceText, changeText, dir = 'flat') {
-        document.getElementById(`macro-${itemId}`).textContent = priceText;
-        document.getElementById(`macro-${itemId}-chg`).innerHTML = `<span class="${dir}-text">${changeText}</span>`;
+    function today() {
+      const d = new Date();
+      return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
     }
 
-    async function fetchMacroQuote(item) {
-        const data = await (await proxiedFetch(
-            `https://query2.finance.yahoo.com/v8/finance/chart/${item.ticker}?interval=1d&range=1d`
-        )).json();
-        const meta = data?.chart?.result?.[0]?.meta;
-        if (!meta?.regularMarketPrice) throw new Error('no data');
-        return { price: meta.regularMarketPrice, prev: meta.chartPreviousClose || meta.previousClose };
+    function noteKey(id) {
+      return `ty-stock-study:${id}`;
     }
 
-    async function fetchFredRate(seriesId) {
-        const text = await (await proxiedFetch(
-            `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`
-        )).text();
-        // FRED는 최신 날짜 값이 '.'(미입력)일 수 있으므로 유효한 숫자만 필터링
-        const validLines = text.trim().split('\n')
-            .filter(l => !l.startsWith('DATE') && l.includes(','))
-            .filter(l => { const v = (l.split(',')[1] || '').trim(); return v !== '.' && !isNaN(parseFloat(v)); });
-        if (!validLines.length) throw new Error('no valid data');
-        const last  = validLines[validLines.length - 1].split(',');
-        const prev2 = validLines.length > 1 ? validLines[validLines.length - 2].split(',') : null;
-        const price = parseFloat(last[1]);
-        const prev  = prev2 ? parseFloat(prev2[1]) : price;
-        return { price, prev };
+    function noteTemplate(label) {
+      return `[${today()}]\n관찰:\n근거:\n다음 행동:`;
     }
 
-    async function fetchKoreaBaseRate() {
-        // rates.json (동일 origin)에서 한국은행 기준금리 로딩
-        // BOK 금리 결정 후 rates.json 파일의 kr_base_rate / kr_base_prev 값을 업데이트하세요.
-        const data = await (await fetch('/rates.json', { cache: 'no-store' })).json();
-        const price = parseFloat(data.kr_base_rate);
-        const prev  = parseFloat(data.kr_base_prev ?? data.kr_base_rate);
-        if (isNaN(price)) throw new Error('invalid rate');
-        return { price, prev };
+    function readNote(id) {
+      try {
+        const data = JSON.parse(localStorage.getItem(noteKey(id)) || '{}');
+        return { text: data.text || '', updatedAt: data.updatedAt || '' };
+      } catch {
+        return { text: '', updatedAt: '' };
+      }
     }
 
-    async function loadMacro() {
-        await Promise.all(MARKET_MACRO_ITEMS.map(async item => {
-            try {
-                const { price, prev } = await withRetry(() => {
-                    if (item.type === 'naver_base') return fetchKoreaBaseRate();
-                    if (item.fred_id) return fetchFredRate(item.fred_id);
-                    return fetchMacroQuote(item);
-                });
-                const change = price - prev;
-                const pct = prev ? (change / prev) * 100 : 0;
-                const dir = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
-                const arrow = change > 0 ? '▲' : change < 0 ? '▼' : '—';
-                const sign = change >= 0 ? '+' : '';
-                const changeLabel = change === 0
-                    ? (item.fred_id || item.type === 'naver_base' ? '변동없음' : `— 0.00%`)
-                    : `${arrow} ${sign}${pct.toFixed(2)}%`;
-                setMacroMarket(item.id, item.fmt(price), changeLabel, dir);
-            } catch {
-                setMacroMarket(item.id, '—', '실패');
-            }
-        }));
+    function renderTabs() {
+      document.getElementById('note-tabs').innerHTML = noteTargets.map(([id, label]) => `<button class="note-tab${id === activeNote ? ' active' : ''}" type="button" data-note="${id}">${label}</button>`).join('');
+      document.querySelectorAll('[data-note]').forEach(btn => btn.addEventListener('click', () => selectNote(btn.dataset.note)));
     }
 
-    // ── 종목 검색 카드 ───────────────────────────────────────────
-    const SEARCH_MARKETS = {
-        KR: { label: '한국',  exchanges: new Set(['KSC','KOE','KOQ']), currency: 'KRW', lang: 'ko-KR', region: 'KR' },
-        US: { label: '미국',  exchanges: new Set(['NYQ','NMS','NGM','PCX','ASE','NasdaqGS','NasdaqGM','NasdaqCM','BATS','ARCA','NCM']), currency: 'USD', lang: 'en-US', region: 'US' },
-        JP: { label: '일본',  exchanges: new Set(['TYO','OSA','SAP','FUO','NGO']), currency: 'JPY', lang: 'ja-JP', region: 'JP' },
-        HK: { label: '홍콩',  exchanges: new Set(['HKG']), currency: 'HKD', lang: 'zh-Hant-HK', region: 'HK' },
-    };
-    let scMarket = null, scSymbol = null, scExchange = null, scSearchTimer = null;
-
-    function selectSearchMarket(mkt) {
-        scMarket = mkt;
-        document.getElementById('sc-phase-market').style.display = 'none';
-        document.getElementById('sc-phase-search').style.display  = 'block';
-        const inp = document.getElementById('sc-input');
-        inp.placeholder = SEARCH_MARKETS[mkt].label + ' 종목명 또는 티커';
-        inp.value = '';
-        inp.focus();
+    function selectNote(id) {
+      activeNote = id;
+      const label = noteTargets.find(item => item[0] === id)?.[1] || '메모';
+      const saved = readNote(id);
+      document.getElementById('note-title').textContent = label;
+      document.getElementById('note-area').value = saved.text || noteTemplate(label);
+      document.getElementById('note-status').textContent = saved.updatedAt ? `마지막 저장 ${saved.updatedAt}` : '저장 기록 없음';
+      renderTabs();
     }
 
-    function resetSearchCard() {
-        scMarket = null; scSymbol = null; scExchange = null;
-        document.getElementById('sc-phase-market').style.display = 'block';
-        document.getElementById('sc-phase-search').style.display  = 'none';
-        document.getElementById('sc-phase-result').style.display  = 'none';
-        document.getElementById('sc-dropdown').classList.remove('open');
-        document.getElementById('card-search').className = 'ticker-card';
+    function saveNote() {
+      const value = document.getElementById('note-area').value.trim() || noteTemplate('메모');
+      const updatedAt = new Date().toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+      localStorage.setItem(noteKey(activeNote), JSON.stringify({ text: value, updatedAt }));
+      document.getElementById('note-status').textContent = `마지막 저장 ${updatedAt}`;
     }
 
-    document.getElementById('sc-input').addEventListener('input', function () {
-        clearTimeout(scSearchTimer);
-        const q = this.value.trim();
-        if (!q) { document.getElementById('sc-dropdown').classList.remove('open'); return; }
-        const dd = document.getElementById('sc-dropdown');
-        dd.innerHTML = '<div class="sc-searching">검색 중...</div>';
-        dd.classList.add('open');
-        scSearchTimer = setTimeout(() => doTickerSearch(q), 380);
-    });
-
-    document.getElementById('sc-input').addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') document.getElementById('sc-dropdown').classList.remove('open');
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!e.target.closest('#card-search')) {
-            document.getElementById('sc-dropdown').classList.remove('open');
-        }
-    });
-
-    // 프록시 경유 fetch 헬퍼 (검색 전용 — encodeURIComponent로 전체 URL 인코딩)
-    function searchRaceProxy(rawUrl, ms) {
-        const enc = encodeURIComponent(rawUrl);
-        const go  = (proxyUrl) => new Promise((res, rej) => {
-            const t = setTimeout(() => rej(new Error('timeout')), ms);
-            fetch(proxyUrl, { cache: 'no-store' })
-                .then(r => { clearTimeout(t); r.ok ? res(r) : rej(new Error('not ok')); })
-                .catch(e => { clearTimeout(t); rej(e); });
-        });
-        return Promise.any([
-            go(`https://corsproxy.io/?url=${enc}`),
-            go(`https://api.allorigins.win/raw?url=${enc}`),
-        ]);
-    }
-
-    async function doTickerSearch(q) {
-        const cfg = SEARCH_MARKETS[scMarket];
-        // 한국 시장 + 한글 입력 → 네이버 금융 자동완성 사용 (Yahoo는 한글 종목명 검색 미지원)
-        if (scMarket === 'KR' && /[\uAC00-\uD7A3]/.test(q)) {
-            return doKrSearch(q);
-        }
-        // 그 외 시장(또는 영문/숫자 티커) → Yahoo Finance 검색
-        const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=10&newsCount=0&listsCount=0&lang=${cfg.lang}&region=${cfg.region}`;
-        try {
-            const res    = await searchRaceProxy(yahooUrl, 15000);
-            const data   = await res.json();
-            const result = data?.finance?.result;
-            const quotes = (Array.isArray(result) ? result[0]?.quotes : result?.quotes)
-                        ?? data?.quotes ?? [];
-            const filtered = quotes.filter(it =>
-                it.isYahooFinance && it.quoteType === 'EQUITY' && cfg.exchanges.has(it.exchange)
-            ).slice(0, 7);
-            renderSearchDropdown(filtered);
-        } catch {
-            document.getElementById('sc-dropdown').innerHTML = '<div class="sc-searching">검색 실패 — 티커를 직접 입력하고 선택하세요</div>';
-        }
-    }
-
-    // 로컬 한국 종목 DB (한글 검색 폴백용) — [코드, 종목명, 거래소(KSC=코스피/KOE=코스닥)]
-    const KR_STOCK_DB = [
-        // ── 코스피 대형주 ──────────────────────────────────────────
-        ['005930','삼성전자','KSC'],['000660','SK하이닉스','KSC'],['207940','삼성바이오로직스','KSC'],
-        ['373220','LG에너지솔루션','KSC'],['005380','현대차','KSC'],['000270','기아','KSC'],
-        ['051910','LG화학','KSC'],['006400','삼성SDI','KSC'],['035420','NAVER','KSC'],
-        ['035720','카카오','KSC'],['068270','셀트리온','KSC'],['028260','삼성물산','KSC'],
-        ['012330','현대모비스','KSC'],['066570','LG전자','KSC'],['003550','LG','KSC'],
-        ['017670','SK텔레콤','KSC'],['030200','KT','KSC'],['032830','삼성생명','KSC'],
-        ['086790','하나금융지주','KSC'],['105560','KB금융','KSC'],['055550','신한지주','KSC'],
-        ['316140','우리금융지주','KSC'],['024110','기업은행','KSC'],['096770','SK이노베이션','KSC'],
-        ['034730','SK','KSC'],['018880','한온시스템','KSC'],['011200','HMM','KSC'],
-        ['000810','삼성화재','KSC'],['032640','LG유플러스','KSC'],['009150','삼성전기','KSC'],
-        ['010130','고려아연','KSC'],['011070','LG이노텍','KSC'],['021240','코웨이','KSC'],
-        ['047050','포스코인터내셔널','KSC'],['005490','POSCO홀딩스','KSC'],['033780','KT&G','KSC'],
-        ['036570','엔씨소프트','KSC'],['251270','넷마블','KSC'],['259960','크래프톤','KSC'],
-        ['018260','삼성에스디에스','KSC'],['009830','한화솔루션','KSC'],['008770','호텔신라','KSC'],
-        ['004020','현대제철','KSC'],['010950','S-Oil','KSC'],['029780','삼성카드','KSC'],
-        ['000100','유한양행','KSC'],['128940','한미약품','KSC'],['326030','SK바이오팜','KSC'],
-        ['009540','HD한국조선해양','KSC'],['329180','현대중공업','KSC'],['042660','한화오션','KSC'],
-        ['267250','HD현대','KSC'],['012450','한화에어로스페이스','KSC'],['011790','SKC','KSC'],
-        ['010120','LS ELECTRIC','KSC'],['000720','현대건설','KSC'],['375500','DL이앤씨','KSC'],
-        ['006360','GS건설','KSC'],['004170','신세계','KSC'],['069960','현대백화점','KSC'],
-        ['139480','이마트','KSC'],['018670','SK가스','KSC'],['002380','KCC','KSC'],
-        ['010060','OCI홀딩스','KSC'],['000080','하이트진로','KSC'],['271560','오리온','KSC'],
-        ['097950','CJ제일제당','KSC'],['007070','GS리테일','KSC'],['282330','BGF리테일','KSC'],
-        ['003490','대한항공','KSC'],['020560','아시아나항공','KSC'],['180640','한진칼','KSC'],
-        ['005940','NH투자증권','KSC'],['016360','삼성증권','KSC'],['071050','한국금융지주','KSC'],
-        ['039490','키움증권','KSC'],['006800','미래에셋증권','KSC'],['003620','대신증권','KSC'],
-        ['032350','롯데렌탈','KSC'],['004990','롯데지주','KSC'],['011170','롯데케미칼','KSC'],
-        ['023530','롯데쇼핑','KSC'],['000150','두산','KSC'],['034020','두산에너빌리티','KSC'],
-        ['036460','한국가스공사','KSC'],['015760','한국전력','KSC'],['010140','삼성중공업','KSC'],
-        ['010620','현대미포조선','KSC'],['000880','한화','KSC'],['001040','CJ','KSC'],
-        ['002790','아모레퍼시픽그룹','KSC'],['090430','아모레퍼시픽','KSC'],['030000','제일기획','KSC'],
-        ['003670','포스코퓨처엠','KSC'],['028670','팬오션','KSC'],['064350','현대로템','KSC'],
-        ['012630','HDC현대산업개발','KSC'],['000210','DL','KSC'],['001120','LX홀딩스','KSC'],
-        ['000240','한국타이어앤테크놀로지','KSC'],['323410','카카오뱅크','KSC'],
-        ['377300','카카오페이','KSC'],['352820','하이브','KSC'],['285130','SK바이오사이언스','KSC'],
-        ['079160','CJ CGV','KSC'],['000120','CJ대한통운','KSC'],['086280','현대글로비스','KSC'],
-        ['004800','효성','KSC'],['298040','효성중공업','KSC'],['336260','두산밥캣','KSC'],
-        ['009240','한샘','KSC'],['042670','HD현대인프라코어','KSC'],['000990','DB하이텍','KSC'],
-        ['241560','두산퓨얼셀','KSC'],['016380','대신증권','KSC'],['001800','오리온홀딩스','KSC'],
-        ['004800','효성','KSC'],['003230','삼양식품','KSC'],['145995','삼양라운드스퀘어','KSC'],
-        ['005180','빙그레','KSC'],['007310','오뚜기','KSC'],['092200','케이씨씨글라스','KSC'],
-        ['138930','BNK금융지주','KSC'],['139130','DGB금융지주','KSC'],['175330','JB금융지주','KSC'],
-        ['000060','메리츠화재','KSC'],['000370','한화손해보험','KSC'],['088350','한화생명','KSC'],
-        ['002550','LIG넥스원','KSC'],['047810','한국항공우주','KSC'],['034830','한국토지신탁','KSC'],
-        ['069080','웅진씽크빅','KSC'],['002380','KCC','KSC'],['011070','LG이노텍','KSC'],
-        // ── 코스닥 ────────────────────────────────────────────────
-        ['086520','에코프로','KOE'],['247540','에코프로비엠','KOE'],['196170','알테오젠','KOE'],
-        ['263750','펄어비스','KOE'],['293490','카카오게임즈','KOE'],['112040','위메이드','KOE'],
-        ['357780','솔브레인','KOE'],['145020','휴젤','KOE'],['068760','셀트리온제약','KOE'],
-        ['041510','에스엠','KOE'],['035900','JYP엔터테인먼트','KOE'],['122870','YG엔터테인먼트','KOE'],
-        ['042700','한미반도체','KOE'],['095660','네오위즈','KOE'],['253450','스튜디오드래곤','KOE'],
-        ['237690','에스티팜','KOE'],['064760','티씨케이','KOE'],['091810','티웨이항공','KOE'],
-        ['039030','이오테크닉스','KOE'],['078020','이베스트투자증권','KOE'],['900290','GreenTree호텔리츠','KOE'],
-        ['205470','휴마시스','KOE'],['214150','클래시스','KOE'],['039610','화승인더','KOE'],
-        ['054540','삼영전자','KOE'],['131970','두산테스나','KOE'],['357120','코람코에너지플러스리츠','KOE'],
-        ['950130','엑스페릭스','KOE'],['357550','디앤씨미디어','KOE'],['041440','현대에버다임','KOE'],
-        ['067310','하나마이크론','KOE'],['950160','코오롱티슈진','KOE'],['236340','메가스터디교육','KOE'],
-        ['078130','대웅제약','KOE'],['281820','케이씨텍','KOE'],['049520','유아이엘','KOE'],
-        ['041190','우리기술투자','KOE'],['347550','에코프로에이치엔','KOE'],['018290','레인보우로보틱스','KOE'],
-        ['058470','리노공업','KOE'],['232140','와이아이케이','KOE'],['900140','엘브이엠씨홀딩스','KOE'],
-        ['039200','오스코텍','KOE'],['099190','아이텍','KOE'],['094360','칩스앤미디어','KOE'],
-        ['022100','포스코DX','KOE'],['041830','인바디','KOE'],['052260','에스에프에이','KOE'],
-        ['036830','솔브레인홀딩스','KOE'],['131290','티와이홀딩스','KOE'],['101930','인화정공','KOE'],
-    ];
-
-    // 한글 검색: Naver 모바일 API 시도 → 실패시 로컬 DB 폴백
-    async function doKrSearch(q) {
-        // Naver 모바일 검색 API (전체 상장종목 커버)
-        const naverUrl = `https://m.stock.naver.com/api/search/all?query=${encodeURIComponent(q)}&type=stock`;
-        try {
-            const res  = await proxiedFetch(naverUrl);
-            const text = await res.text();
-            const data = JSON.parse(text);
-            // 응답 구조: { stocks: [{itemCode, name, stockExchangeType:{code}}] }
-            const items = data.stocks || data.items || [];
-            if (items.length > 0) {
-                const quotes = items.slice(0, 8).map(item => {
-                    const code = item.itemCode || item.code;
-                    const name = item.name || item.stockName;
-                    const mkt  = (item.stockExchangeType?.code || item.market || '').toUpperCase();
-                    const isKQ = mkt.includes('KOSDAQ') || mkt.includes('코스닥');
-                    return {
-                        symbol:         code + (isKQ ? '.KQ' : '.KS'),
-                        longname:       name,
-                        exchange:       isKQ ? 'KOE' : 'KSC',
-                        quoteType:      'EQUITY',
-                        isYahooFinance: true,
-                    };
-                });
-                renderSearchDropdown(quotes);
-                return;
-            }
-        } catch(_) {}
-        // 폴백: 로컬 DB
-        doKrLocalSearch(q);
-    }
-
-    function doKrLocalSearch(q) {
-        const norm = q.replace(/\s/g, '');
-        const results = KR_STOCK_DB
-            .filter(([code, name]) => name.replace(/\s/g,'').includes(norm) || code.startsWith(norm))
-            .slice(0, 8)
-            .map(([code, name, exch]) => ({
-                symbol:         code + (exch === 'KOE' ? '.KQ' : '.KS'),
-                longname:       name,
-                exchange:       exch,
-                quoteType:      'EQUITY',
-                isYahooFinance: true,
-            }));
-        renderSearchDropdown(results);
-    }
-
-    function renderSearchDropdown(items) {
-        const dd = document.getElementById('sc-dropdown');
-        if (!items.length) {
-            dd.innerHTML = '<div class="sc-searching">결과 없음</div>';
-            dd.classList.add('open');
-            return;
-        }
-        dd.innerHTML = items.map(it => {
-            const name = (it.longname || it.shortname || it.symbol).replace(/'/g, '&#39;');
-            const sym  = it.symbol.replace(/'/g, '&#39;');
-            const exch = (it.exchange || '').replace(/['\"]/g, '');
-            return `<div class="sc-item" onclick="selectSearchResult('${sym}','${name}','${exch}')">
-                <span class="sc-item-name">${name}</span>
-                <span class="sc-item-sym">${it.symbol}</span>
-            </div>`;
-        }).join('');
-        dd.classList.add('open');
-    }
-
-    async function selectSearchResult(symbol, name, exchange) {
-        document.getElementById('sc-dropdown').classList.remove('open');
-        scSymbol = symbol;
-        scExchange = exchange || '';
-        document.getElementById('sc-phase-search').style.display  = 'none';
-        document.getElementById('sc-phase-result').style.display  = 'block';
-        document.getElementById('sc-result-name').textContent  = '불러오는 중...';
-        document.getElementById('sc-result-price').textContent = '—';
-        document.getElementById('sc-result-change').textContent = '';
-
-        try {
-            const d      = await withRetry(() => fetchStock({ ticker: symbol, currency: SEARCH_MARKETS[scMarket].currency }));
-            const cur    = d.currency || SEARCH_MARKETS[scMarket].currency;
-            const change = d.price - d.prev;
-            const pct    = d.prev ? (change / d.prev) * 100 : 0;
-            const dir    = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
-            const arrow  = change > 0 ? '▲' : change < 0 ? '▼' : '—';
-
-            document.getElementById('card-search').className = `ticker-card ${dir}`;
-            document.getElementById('sc-result-name').textContent  = `${name} · ${symbol}`;
-            document.getElementById('sc-result-price').textContent = fmtPrice(d.price, cur);
-            document.getElementById('sc-result-change').innerHTML  =
-                `<span class="${dir}-text">${arrow} ${fmtChange(change, pct)}</span>`;
-        } catch {
-            document.getElementById('sc-result-name').textContent   = `${name} · ${symbol}`;
-            document.getElementById('sc-result-price').textContent  = '—';
-            document.getElementById('sc-result-change').textContent = '가격 조회 실패';
-        }
-    }
-
-    // 거래소 코드 → TradingView 프리픽스 매핑
-    const EXCHANGE_TV = {
-        KSC: 'KRX', KOE: 'KRX', KOQ: 'KRX',
-        NYQ: 'NYSE', NMS: 'NASDAQ', NGM: 'NASDAQ',
-        NasdaqGS: 'NASDAQ', NasdaqGM: 'NASDAQ', NasdaqCM: 'NASDAQ', NCM: 'NASDAQ',
-        PCX: 'ARCA', BATS: 'BATS', ASE: 'AMEX',
-        TYO: 'TSE', OSA: 'OSE',
-        HKG: 'HKEX',
-    };
-
-    function buildSearchTvSymbol(market, symbol, exchange) {
-        if (market === 'KR') return 'KRX:' + symbol.replace(/\.(KS|KQ)$/, '');
-        if (market === 'JP') return 'TSE:' + symbol.replace(/\.T$/, '');
-        if (market === 'HK') return 'HKEX:' + symbol.replace(/\.HK$/, '').padStart(4, '0');
-        const tvEx = EXCHANGE_TV[exchange];
-        return tvEx ? `${tvEx}:${symbol}` : symbol;
-    }
-
-    function buildSearchReportLinks(market, symbol, name) {
-        if (market === 'KR') {
-            const code = symbol.replace(/\.(KS|KQ)$/, '');
-            return [
-                { icon: '📋', name: '네이버 리서치', desc: '국내 증권사 리포트 모음', url: `https://finance.naver.com/research/company_list.naver?searchType=itemCode&itemCode=${code}` },
-                { icon: '📊', name: '에프앤가이드',  desc: '컨센서스 · 목표주가 · 재무', url: `https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A${code}` },
-                { icon: '📢', name: 'DART 공시',     desc: '분기·사업보고서 원문', url: `https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=${encodeURIComponent(name)}&finalReport=recent` },
-                { icon: '🏠', name: '네이버 금융',   desc: '종목 종합 정보', url: `https://finance.naver.com/item/main.naver?code=${code}` },
-            ];
-        }
-        if (market === 'US') {
-            return [
-                { icon: '📋', name: 'Seeking Alpha', desc: '애널리스트 리포트 · 평가', url: `https://seekingalpha.com/symbol/${symbol}/research` },
-                { icon: '📊', name: 'Yahoo Finance', desc: '애널리스트 전망 · 목표가', url: `https://finance.yahoo.com/quote/${symbol}/analysis` },
-                { icon: '📈', name: 'MarketBeat',    desc: '컨센서스 · 등급 · 목표가', url: `https://www.marketbeat.com/stocks/NASDAQ/${symbol}/forecast/` },
-                { icon: '📢', name: 'SEC Filings',   desc: '10-K · 10-Q 원문 공시', url: `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&type=10-K&dateb=&owner=include&count=10` },
-            ];
-        }
-        if (market === 'JP') {
-            const code = symbol.replace(/\.T$/, '');
-            return [
-                { icon: '📋', name: 'Yahoo Japan 株', desc: '증권사 분석 · 재무', url: `https://finance.yahoo.co.jp/quote/${symbol}` },
-                { icon: '📊', name: 'Kabutan',        desc: '기업 정보 · 재무', url: `https://kabutan.jp/stock/?code=${code}` },
-                { icon: '📢', name: 'TDnet',          desc: 'IR · 공시 원문', url: `https://www.release.tdnet.info/inbs/I_list_001_${code}.html` },
-            ];
-        }
-        if (market === 'HK') {
-            const code = symbol.replace(/\.HK$/, '');
-            return [
-                { icon: '📋', name: 'AASTOCKS',      desc: '분석 리포트', url: `https://www.aastocks.com/en/stocks/analysis/analyst.aspx?symbol=${code.padStart(6, '0')}` },
-                { icon: '📊', name: 'Yahoo Finance', desc: '시세 · 애널리스트', url: `https://finance.yahoo.com/quote/${symbol}/analysis` },
-                { icon: '📢', name: 'HKExnews',      desc: '공시 원문', url: 'https://www.hkexnews.hk/listedco/listconews/advancedsearch/search_active_main.aspx' },
-            ];
-        }
-        return [];
-    }
-
-    function showSearchedChart() {
-        if (!scSymbol) return;
-        const market   = scMarket;
-        const symbol   = scSymbol;
-        const exchange = scExchange || '';
-        const rawName  = document.getElementById('sc-result-name').textContent;
-        const name     = rawName.includes(' · ') ? rawName.split(' · ')[0] : rawName;
-        const tvSym    = buildSearchTvSymbol(market, symbol, exchange);
-        const isKR     = market === 'KR';
-        const krCode   = isKR ? symbol.replace(/\.(KS|KQ)$/, '') : null;
-
-        CHART_INFO['_search'] = {
-            name,
-            subtitle: `${SEARCH_MARKETS[market]?.label || ''} · ${symbol}`,
-            ...(isKR ? {
-                chart_type: 'naver',
-                naver_fchart: `https://finance.naver.com/item/fchart.naver?code=${krCode}`,
-                naver_url: `https://m.stock.naver.com/domestic/stock/${krCode}/total`,
-            } : {
-                symbol: tvSym,
-            }),
-            tv_url:     `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`,
-            quote_url:  `https://finance.yahoo.com/quote/${encodeURIComponent(symbol)}`,
-            data_kind:  'market',
-            data_ticker: symbol,
-            from:       'stocks',
-            report_links: buildSearchReportLinks(market, symbol, name),
-        };
-        showChart('_search');
-    }
-
-    function applyRoute() {
-        const hash = (location.hash || '#home').replace('#', '');
-        document.body.classList.toggle('memory-study-mode', hash === 'memory-study');
-
-        if (hash === 'home') {
-            showOnly('page-home', false);
-            return;
-        }
-
-        if (hash === 'stock') {
-            showOnly('page-stock-sub', false);
-            return;
-        }
-
-        if (hash === 'index') {
-            showOnly('page-index', false);
-            loadGroup(INDEX_STOCKS, 'updated-index');
-            return;
-        }
-
-        if (hash === 'stocks') {
-            showOnly('page-stocks', false);
-            loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
-            return;
-        }
-
-        if (hash === 'coin') {
-            showOnly('page-coin', false);
-            loadCoins();
-            return;
-        }
-
-        if (hash === 'knowledge') {
-            showOnly('page-knowledge', false);
-            return;
-        }
-
-        if (hash === 'semiconductor') {
-            showOnly('page-semiconductor', false);
-            return;
-        }
-
-        if (hash === 'memory-study') {
-            showOnly('page-memory-study', false);
-            renderMemoryStudyPage();
-            return;
-        }
-
-        if (hash === 'nonmemory-study') {
-            showOnly('page-nonmemory-study', false);
-            return;
-        }
-
-        if (hash === 'tools') {
-            showOnly('page-tools', false);
-            initToolsPage();
-            return;
-        }
-
-        if (hash.startsWith('chart:')) {
-            const chartId = hash.split(':')[1];
-            if (CHART_INFO[chartId]) {
-                showChart(chartId, false);
-                return;
-            }
-        }
-
-        showOnly('page-home', false);
-    }
-
-    // 1분 자동갱신
-    setInterval(() => {
-        if (document.getElementById('page-index').classList.contains('active')) loadGroup(INDEX_STOCKS, 'updated-index');
-        if (document.getElementById('page-stocks').classList.contains('active')) loadGroup(INDIVIDUAL_STOCKS, 'updated-stocks');
-        if (document.getElementById('page-coin').classList.contains('active')) loadCoins();
-    }, 60000);
-
-    // 거시지표 자동갱신 및 라우팅 초기화
-    window.addEventListener('hashchange', applyRoute);
-
-    if (!location.hash) {
-        history.replaceState(null, '', '#home');
-    }
-
-    applyRoute();
-    loadMacro();
-    setInterval(loadMacro, 600000);
-    </script>
-
+    document.getElementById('refresh-quotes').addEventListener('click', loadQuotes);
+    document.getElementById('save-note').addEventListener('click', saveNote);
+    renderTabs();
+    selectNote(activeNote);
+    loadQuotes();
+  </script>
 </body>
 </html>
