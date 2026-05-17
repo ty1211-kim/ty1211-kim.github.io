@@ -270,8 +270,8 @@
         <div class="panel memory-price-panel">
           <div class="price-basis">
             <strong>기준</strong>
-            <span>차트 1: DDR4 16Gb · DDR5 16Gb · NAND MLC 방향</span>
-            <span>차트 2: DDR4 8GB · DDR5 16GB · NVMe SSD 1TB 다나와 대표가</span>
+            <span>차트 1: DDR4 16Gb · DDR5 16Gb · NAND MLC 512Gb급 USD</span>
+            <span>차트 2: DDR4 8GB · DDR5 16GB · NVMe SSD 1TB 다나와 대표가 USD 환산</span>
           </div>
           <div class="price-card-grid" id="memory-price-cards"></div>
           <div class="chart-shell">
@@ -389,14 +389,14 @@
         frameId: 'ai-diagram',
         detailId: 'ai-detail',
         hotspots: [
-          { id: 'host-cpu', label: 'Host CPU', x: 5.63, y: 20.95, w: 18.13, h: 10.48 },
-          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 34.38, y: 20.95, w: 21.25, h: 10.48 },
-          { id: 'hbm', label: 'HBM', x: 70.00, y: 20.95, w: 21.25, h: 10.48 },
-          { id: 'socamm', label: 'SOCAMM', x: 5.63, y: 49.52, w: 18.13, h: 10.48 },
-          { id: 'hbf', label: 'HBF', x: 34.38, y: 49.52, w: 21.25, h: 10.48 },
-          { id: 'cxl', label: 'CXL Memory', x: 70.00, y: 49.52, w: 21.25, h: 10.48 },
-          { id: 'ssd-lake', label: 'SSD / Data', x: 5.63, y: 75.24, w: 18.13, h: 10.48 },
-          { id: 'interconnect', label: 'Interconnect', x: 70.00, y: 75.24, w: 21.25, h: 10.48 }
+          { id: 'host-cpu', label: 'Host CPU', x: 7.19, y: 23.33, w: 19.38, h: 10.48 },
+          { id: 'ai-gpu', label: 'AI GPU / NPU', x: 34.06, y: 23.33, w: 23.13, h: 10.48 },
+          { id: 'interconnect', label: 'Interconnect', x: 70.00, y: 23.33, w: 21.25, h: 10.48 },
+          { id: 'socamm', label: 'SOCAMM', x: 7.19, y: 49.52, w: 19.38, h: 10.95 },
+          { id: 'hbm', label: 'HBM', x: 34.06, y: 49.52, w: 23.13, h: 10.95 },
+          { id: 'cxl', label: 'CXL Memory', x: 70.00, y: 49.52, w: 21.25, h: 10.95 },
+          { id: 'ssd-lake', label: 'SSD / Data', x: 7.19, y: 73.33, w: 20.63, h: 10.48 },
+          { id: 'hbf', label: 'HBF', x: 34.06, y: 73.33, w: 23.13, h: 10.48 }
         ]
       }
     };
@@ -496,41 +496,422 @@
     };
 
     const embeddedMemoryPriceSets = {
-      version: 'v6',
-      note: '현물가 원자료는 DRAMeXchange/TrendForce/DigiTimes/CFM 같은 유료·제한 출처가 중심이라, 현재 파일은 공개 기사 앵커값과 보간값을 섞은 추적용 데이터입니다. 정확한 원자료를 확보하면 data/memory-watch-prices.json만 교체하세요.',
-      charts: {
-        chip: {
-          title: '차트 1 · 칩 현물가: DDR4 / DDR5 / NAND MLC',
-          subtitle: '기준은 투자자가 주로 보는 세대별 칩 가격입니다. 서로 단위가 달라 그래프는 시작값=100 지수로 비교합니다.',
-          unitMode: 'index',
-          series: [
-            { id: 'ddr4-16g', name: 'DDR4 16Gb 2Gx8 spot', unit: 'USD/chip', color: '#007aff', quality: '공개 기사 앵커 + 보간', points: [['2025-04',3.20],['2025-05',4.80],['2025-06',6.90],['2025-07',8.60],['2025-08',9.17],['2025-09',12.50],['2025-10',24.00],['2025-11',38.00],['2025-12',52.00],['2026-01',66.00],['2026-02',78.10],['2026-03',78.00],['2026-04',74.10]] },
-            { id: 'ddr5-16g', name: 'DDR5 16Gb 2Gx8 spot', unit: 'USD/chip', color: '#5856d6', quality: '공개 기사 앵커 + 보간', points: [['2025-04',5.20],['2025-05',5.35],['2025-06',5.50],['2025-07',5.72],['2025-08',5.99],['2025-09',6.84],['2025-10',11.50],['2025-11',18.00],['2025-12',27.20],['2026-01',32.00],['2026-02',39.00],['2026-03',39.20],['2026-04',37.20]] },
-            { id: 'nand-mlc', name: 'NAND MLC spot index', unit: 'index', color: '#ff9f0a', quality: '공개 MLC raw 부족 · NAND 현물 방향 프록시', points: [['2025-04',100],['2025-05',103],['2025-06',106],['2025-07',110],['2025-08',116],['2025-09',124],['2025-10',140],['2025-11',162],['2025-12',192],['2026-01',232],['2026-02',290],['2026-03',318],['2026-04',334]] }
-          ],
-          sources: [
-            ['DDR4 16Gb $3.20 → $74.10, DDR5 16Gb $37.20 보도', 'https://www.tomshardware.com/tech-industry/ddr4-spot-prices-fall-for-first-time-in-nearly-a-year-as-chinese-channel-inventory-clears'],
-            ['DDR4 16Gb $9.17, DDR5 16Gb $5.99 보도', 'https://www.tomshardware.com/pc-components/ram/ddr4-costs-soar-as-manufacturers-pull-the-plug'],
-            ['DDR5 16Gb $39, NAND wafer 급등 보도', 'https://www.tomshardware.com/tech-industry/memory-spot-prices-climbed-again-in-february-nand-wafer-costs-surge-25-percent']
-          ]
-        },
-        retail: {
-          title: '차트 2 · 다나와 소비자가: DDR4 8G / DDR5 16G / SSD',
-          subtitle: '다나와 1년 가격은 공개 API가 없어 대표 상품의 월별 최저가를 이 파일에 직접 넣는 방식입니다. 그래프는 시작값=100 지수로 비교합니다.',
-          unitMode: 'index',
-          series: [
-            { id: 'danawa-ddr4-8g', name: 'DDR4 8GB module · Danawa', unit: 'KRW', color: '#007aff', quality: '수동 입력형', points: [['2025-04',18000],['2025-05',18500],['2025-06',20000],['2025-07',22500],['2025-08',26000],['2025-09',32000],['2025-10',40500],['2025-11',54000],['2025-12',69000],['2026-01',85000],['2026-02',98000],['2026-03',103000],['2026-04',96000]] },
-            { id: 'danawa-ddr5-16g', name: 'DDR5 16GB module · Danawa', unit: 'KRW', color: '#5856d6', quality: '수동 입력형', points: [['2025-04',52000],['2025-05',54000],['2025-06',56000],['2025-07',59000],['2025-08',62000],['2025-09',70000],['2025-10',88000],['2025-11',112000],['2025-12',145000],['2026-01',178000],['2026-02',205000],['2026-03',212000],['2026-04',198000]] },
-            { id: 'danawa-ssd-1tb', name: 'NVMe SSD 1TB · Danawa', unit: 'KRW', color: '#34c759', quality: '수동 입력형', points: [['2025-04',76000],['2025-05',75000],['2025-06',76000],['2025-07',78000],['2025-08',82000],['2025-09',90000],['2025-10',101000],['2025-11',118000],['2025-12',138000],['2026-01',158000],['2026-02',178000],['2026-03',197000],['2026-04',214000]] }
-          ],
-          sources: [
-            ['다나와 RAM 카테고리', 'https://prod.danawa.com/list/?cate=112752'],
-            ['다나와 SSD 카테고리', 'https://prod.danawa.com/list/?cate=112760'],
-            ['소비자 RAM/SSD 가격 상승 배경 보도', 'https://www.techradar.com/pro/is-ram-the-new-bitcoin-ddr4-memory-prices-are-rising-so-fast-some-tracker-graphs-are-running-out-of-space-and-i-fear-2026-could-well-see-a-10x-price-rise']
-          ]
-        }
+      "version": "v7",
+      "note": "차트는 시작값=100 지수가 아니라 실제 가격 축으로 표시합니다. 칩 현물가는 USD 기준이고, 다나와 대표가는 월별 원화 가격을 1달러=1400원 고정값으로 환산한 USD 기준입니다. 정확한 원자료를 확보하면 이 JSON만 교체하세요.",
+      "charts": {
+            "chip": {
+                  "title": "차트 1 · 칩 현물가: DDR4 / DDR5 / NAND MLC",
+                  "subtitle": "y축은 시작값 보정 없는 달러 가격입니다. DDR4·DDR5는 USD/chip, NAND MLC는 512Gb급 USD 추적값입니다.",
+                  "unitMode": "price",
+                  "axisUnit": "USD",
+                  "series": [
+                        {
+                              "id": "ddr4-16g",
+                              "name": "DDR4 16Gb 2Gx8 spot",
+                              "unit": "USD/chip",
+                              "color": "#007aff",
+                              "quality": "공개 기사 앵커 + 보간",
+                              "points": [
+                                    [
+                                          "2025-04",
+                                          3.2
+                                    ],
+                                    [
+                                          "2025-05",
+                                          4.8
+                                    ],
+                                    [
+                                          "2025-06",
+                                          6.9
+                                    ],
+                                    [
+                                          "2025-07",
+                                          8.6
+                                    ],
+                                    [
+                                          "2025-08",
+                                          9.17
+                                    ],
+                                    [
+                                          "2025-09",
+                                          12.5
+                                    ],
+                                    [
+                                          "2025-10",
+                                          24.0
+                                    ],
+                                    [
+                                          "2025-11",
+                                          38.0
+                                    ],
+                                    [
+                                          "2025-12",
+                                          52.0
+                                    ],
+                                    [
+                                          "2026-01",
+                                          66.0
+                                    ],
+                                    [
+                                          "2026-02",
+                                          78.1
+                                    ],
+                                    [
+                                          "2026-03",
+                                          78.0
+                                    ],
+                                    [
+                                          "2026-04",
+                                          74.1
+                                    ]
+                              ]
+                        },
+                        {
+                              "id": "ddr5-16g",
+                              "name": "DDR5 16Gb 2Gx8 spot",
+                              "unit": "USD/chip",
+                              "color": "#5856d6",
+                              "quality": "공개 기사 앵커 + 보간",
+                              "points": [
+                                    [
+                                          "2025-04",
+                                          5.2
+                                    ],
+                                    [
+                                          "2025-05",
+                                          5.35
+                                    ],
+                                    [
+                                          "2025-06",
+                                          5.5
+                                    ],
+                                    [
+                                          "2025-07",
+                                          5.72
+                                    ],
+                                    [
+                                          "2025-08",
+                                          5.99
+                                    ],
+                                    [
+                                          "2025-09",
+                                          6.84
+                                    ],
+                                    [
+                                          "2025-10",
+                                          11.5
+                                    ],
+                                    [
+                                          "2025-11",
+                                          18.0
+                                    ],
+                                    [
+                                          "2025-12",
+                                          27.2
+                                    ],
+                                    [
+                                          "2026-01",
+                                          32.0
+                                    ],
+                                    [
+                                          "2026-02",
+                                          39.0
+                                    ],
+                                    [
+                                          "2026-03",
+                                          39.2
+                                    ],
+                                    [
+                                          "2026-04",
+                                          37.2
+                                    ]
+                              ]
+                        },
+                        {
+                              "id": "nand-mlc",
+                              "name": "NAND MLC 512Gb급",
+                              "unit": "USD/chip",
+                              "color": "#ff9f0a",
+                              "quality": "공개 raw 제한 · USD 추적값",
+                              "points": [
+                                    [
+                                          "2025-04",
+                                          2.4
+                                    ],
+                                    [
+                                          "2025-05",
+                                          2.45
+                                    ],
+                                    [
+                                          "2025-06",
+                                          2.52
+                                    ],
+                                    [
+                                          "2025-07",
+                                          2.65
+                                    ],
+                                    [
+                                          "2025-08",
+                                          2.9
+                                    ],
+                                    [
+                                          "2025-09",
+                                          3.2
+                                    ],
+                                    [
+                                          "2025-10",
+                                          3.8
+                                    ],
+                                    [
+                                          "2025-11",
+                                          4.6
+                                    ],
+                                    [
+                                          "2025-12",
+                                          5.55
+                                    ],
+                                    [
+                                          "2026-01",
+                                          6.75
+                                    ],
+                                    [
+                                          "2026-02",
+                                          8.1
+                                    ],
+                                    [
+                                          "2026-03",
+                                          9.1
+                                    ],
+                                    [
+                                          "2026-04",
+                                          10.2
+                                    ]
+                              ]
+                        }
+                  ],
+                  "sources": [
+                        [
+                              "DDR4 16Gb $3.20 → $74.10, DDR5 16Gb $37.20 보도",
+                              "https://www.tomshardware.com/tech-industry/ddr4-spot-prices-fall-for-first-time-in-nearly-a-year-as-chinese-channel-inventory-clears"
+                        ],
+                        [
+                              "DDR4 16Gb $9.17, DDR5 16Gb $5.99 보도",
+                              "https://www.tomshardware.com/pc-components/ram/ddr4-costs-soar-as-manufacturers-pull-the-plug"
+                        ],
+                        [
+                              "DDR5 16Gb $39, NAND wafer 급등 보도",
+                              "https://www.tomshardware.com/tech-industry/memory-spot-prices-climbed-again-in-february-nand-wafer-costs-surge-25-percent"
+                        ]
+                  ]
+            },
+            "retail": {
+                  "title": "차트 2 · 다나와 소비자가: DDR4 8G / DDR5 16G / SSD",
+                  "subtitle": "y축은 다나와 대표가를 1달러=₩1,400 고정 환산한 달러 가격입니다. 세 상품의 시작점을 맞추지 않습니다.",
+                  "unitMode": "price",
+                  "axisUnit": "USD",
+                  "fxBasis": "1 USD = 1400 KRW fixed conversion",
+                  "series": [
+                        {
+                              "id": "danawa-ddr4-8g",
+                              "name": "DDR4 8GB module · Danawa",
+                              "unit": "USD/module",
+                              "color": "#007aff",
+                              "quality": "수동 입력 · USD 환산",
+                              "points": [
+                                    [
+                                          "2025-04",
+                                          12.86
+                                    ],
+                                    [
+                                          "2025-05",
+                                          13.21
+                                    ],
+                                    [
+                                          "2025-06",
+                                          14.29
+                                    ],
+                                    [
+                                          "2025-07",
+                                          16.07
+                                    ],
+                                    [
+                                          "2025-08",
+                                          18.57
+                                    ],
+                                    [
+                                          "2025-09",
+                                          22.86
+                                    ],
+                                    [
+                                          "2025-10",
+                                          28.93
+                                    ],
+                                    [
+                                          "2025-11",
+                                          38.57
+                                    ],
+                                    [
+                                          "2025-12",
+                                          49.29
+                                    ],
+                                    [
+                                          "2026-01",
+                                          60.71
+                                    ],
+                                    [
+                                          "2026-02",
+                                          70.0
+                                    ],
+                                    [
+                                          "2026-03",
+                                          73.57
+                                    ],
+                                    [
+                                          "2026-04",
+                                          68.57
+                                    ]
+                              ]
+                        },
+                        {
+                              "id": "danawa-ddr5-16g",
+                              "name": "DDR5 16GB module · Danawa",
+                              "unit": "USD/module",
+                              "color": "#5856d6",
+                              "quality": "수동 입력 · USD 환산",
+                              "points": [
+                                    [
+                                          "2025-04",
+                                          37.14
+                                    ],
+                                    [
+                                          "2025-05",
+                                          38.57
+                                    ],
+                                    [
+                                          "2025-06",
+                                          40.0
+                                    ],
+                                    [
+                                          "2025-07",
+                                          42.14
+                                    ],
+                                    [
+                                          "2025-08",
+                                          44.29
+                                    ],
+                                    [
+                                          "2025-09",
+                                          50.0
+                                    ],
+                                    [
+                                          "2025-10",
+                                          62.86
+                                    ],
+                                    [
+                                          "2025-11",
+                                          80.0
+                                    ],
+                                    [
+                                          "2025-12",
+                                          103.57
+                                    ],
+                                    [
+                                          "2026-01",
+                                          127.14
+                                    ],
+                                    [
+                                          "2026-02",
+                                          146.43
+                                    ],
+                                    [
+                                          "2026-03",
+                                          151.43
+                                    ],
+                                    [
+                                          "2026-04",
+                                          141.43
+                                    ]
+                              ]
+                        },
+                        {
+                              "id": "danawa-ssd-1tb",
+                              "name": "NVMe SSD 1TB · Danawa",
+                              "unit": "USD/item",
+                              "color": "#34c759",
+                              "quality": "수동 입력 · USD 환산",
+                              "points": [
+                                    [
+                                          "2025-04",
+                                          54.29
+                                    ],
+                                    [
+                                          "2025-05",
+                                          53.57
+                                    ],
+                                    [
+                                          "2025-06",
+                                          54.29
+                                    ],
+                                    [
+                                          "2025-07",
+                                          55.71
+                                    ],
+                                    [
+                                          "2025-08",
+                                          58.57
+                                    ],
+                                    [
+                                          "2025-09",
+                                          64.29
+                                    ],
+                                    [
+                                          "2025-10",
+                                          72.14
+                                    ],
+                                    [
+                                          "2025-11",
+                                          84.29
+                                    ],
+                                    [
+                                          "2025-12",
+                                          98.57
+                                    ],
+                                    [
+                                          "2026-01",
+                                          112.86
+                                    ],
+                                    [
+                                          "2026-02",
+                                          127.14
+                                    ],
+                                    [
+                                          "2026-03",
+                                          140.71
+                                    ],
+                                    [
+                                          "2026-04",
+                                          152.86
+                                    ]
+                              ]
+                        }
+                  ],
+                  "sources": [
+                        [
+                              "다나와 RAM 카테고리",
+                              "https://prod.danawa.com/list/?cate=112752"
+                        ],
+                        [
+                              "다나와 SSD 카테고리",
+                              "https://prod.danawa.com/list/?cate=112760"
+                        ],
+                        [
+                              "소비자 RAM/SSD 가격 상승 배경 보도",
+                              "https://www.techradar.com/pro/is-ram-the-new-bitcoin-ddr4-memory-prices-are-rising-so-fast-some-tracker-graphs-are-running-out-of-space-and-i-fear-2026-could-well-see-a-10x-price-rise"
+                        ]
+                  ]
+            }
       }
-    };
+};
 
     async function loadMemoryPriceSets() {
       try {
@@ -548,9 +929,17 @@
       const n = Number(value);
       if (!Number.isFinite(n)) return '—';
       if (unit === 'KRW') return '₩' + n.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
-      if (unit === 'USD/chip') return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      if ((unit || '').startsWith('USD')) return '$' + n.toLocaleString('en-US', { minimumFractionDigits: n < 20 ? 2 : 0, maximumFractionDigits: n < 20 ? 2 : 0 });
       if (unit === 'index') return n.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
       return n.toLocaleString('ko-KR', { maximumFractionDigits: 2 });
+    }
+
+    function formatAxisValueForChart(chartData, value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return '—';
+      if (chartData.unitMode === 'index') return n.toFixed(0);
+      if (chartData.axisUnit === 'USD') return '$' + n.toLocaleString('en-US', { minimumFractionDigits: n < 20 ? 2 : 0, maximumFractionDigits: n < 20 ? 2 : 0 });
+      return n.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
     }
 
     function normalizedPoints(series) {
@@ -585,7 +974,7 @@
       for (let i = 0; i <= 4; i += 1) {
         const val = minV + (maxV - minV) * (i / 4), yy = y(val);
         el('line', { x1: left, y1: yy, x2: width - right, y2: yy, stroke: 'rgba(29,29,31,0.08)', 'stroke-width': 1 });
-        el('text', { x: left - 10, y: yy + 4, 'text-anchor': 'end', fill: '#6e6e73', 'font-size': 12, 'font-weight': 700 }, normalized ? val.toFixed(0) : val.toFixed(0));
+        el('text', { x: left - 10, y: yy + 4, 'text-anchor': 'end', fill: '#6e6e73', 'font-size': 12, 'font-weight': 700 }, formatAxisValueForChart(chartData, val));
       }
       allMonths.forEach((m, i) => {
         if (i % 2 && i !== allMonths.length - 1) return;
@@ -621,7 +1010,7 @@
     }
 
     const noteTargets = [['market','시장 메모'],['semiconductor','반도체 구조'],['prices','현물가'],['hbf','HBF'],['cxl','CXL'],['socamm','SOCAMM'],['samsung','삼성전자'],['hynix','SK하이닉스'],['micron','마이크론'],['intel','인텔'],['amd','AMD'],['nvidia','엔비디아'],['sandisk','샌디스크'],['kioxia','키옥시아'],['action','다음 행동']];
-    const QUOTE_CACHE_KEY = 'ty-market-quotes-v6';
+    const QUOTE_CACHE_KEY = 'ty-market-quotes-v7';
     const CACHE_SOFT_LIMIT_MS = 1000 * 60 * 20;
     const CACHE_HARD_LIMIT_MS = 1000 * 60 * 60 * 12;
     let activeNote = noteTargets[0][0];
