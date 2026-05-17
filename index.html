@@ -7,775 +7,152 @@
   <meta name="description" content="반도체 중심 투자 공부를 위한 개인 대시보드. 매크로, 지수, 반도체 종목, 리포트, 공시, 매매일지를 한곳에 정리합니다.">
   <style>
     :root {
-      --bg: #fbfbfd;
-      --surface: rgba(255, 255, 255, 0.90);
-      --panel: #ffffff;
-      --panel-2: #ffffff;
-      --line: rgba(60, 60, 67, 0.11);
+      --bg: #f5f5f7;
+      --paper: #ffffff;
+      --paper-soft: #fbfbfd;
+      --surface: rgba(255,255,255,0.78);
+      --line: rgba(29,29,31,0.11);
       --text: #1d1d1f;
-      --muted: #747480;
-      --muted-2: #424245;
+      --muted: #6e6e73;
+      --muted-strong: #3d3d42;
       --blue: #007aff;
-      --blue-soft: rgba(0, 122, 255, 0.08);
       --green: #34c759;
-      --green-soft: rgba(52, 199, 89, 0.10);
-      --amber: #ff9f0a;
       --red: #ff3b30;
+      --amber: #ff9f0a;
       --radius: 28px;
-      --shadow: 0 24px 70px rgba(29, 29, 31, 0.075);
-      --shadow-soft: 0 12px 34px rgba(29, 29, 31, 0.052);
+      --shadow: 0 24px 70px rgba(0,0,0,0.08);
+      --shadow-soft: 0 12px 34px rgba(0,0,0,0.06);
     }
 
     * { box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
-
     body {
       margin: 0;
       background:
-        radial-gradient(circle at 12% -8%, rgba(0, 122, 255, 0.13), transparent 34%),
-        radial-gradient(circle at 88% 2%, rgba(52, 199, 89, 0.10), transparent 30%),
-        radial-gradient(circle at 50% 100%, rgba(255, 159, 10, 0.07), transparent 32%),
-        linear-gradient(180deg, #ffffff 0%, #fbfbfd 42%, #f5f7fb 100%);
+        radial-gradient(circle at 15% -8%, rgba(0,122,255,0.15), transparent 36%),
+        radial-gradient(circle at 90% 3%, rgba(52,199,89,0.12), transparent 32%),
+        linear-gradient(180deg, #ffffff 0%, #f5f5f7 46%, #fbfbfd 100%);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Noto Sans KR", "Noto Sans CJK KR", "Segoe UI", sans-serif;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      text-rendering: geometricPrecision;
+      text-rendering: optimizeLegibility;
     }
 
     a { color: inherit; }
-
-    .wrap {
-      width: min(1180px, calc(100% - 36px));
-      margin: 0 auto;
-    }
+    .wrap { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
 
     .topbar {
       position: sticky;
       top: 0;
       z-index: 20;
-      border-bottom: 1px solid rgba(29, 29, 31, 0.08);
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(29,29,31,0.08);
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
     }
 
-    .topbar-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      padding: 14px 0;
-    }
+    .topbar-inner { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 14px 0; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 900; letter-spacing: -0.035em; }
+    .brand-mark { width: 14px; height: 14px; border-radius: 999px; background: linear-gradient(135deg, var(--blue), var(--green)); box-shadow: 0 8px 22px rgba(0,122,255,0.22); }
 
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      font-weight: 850;
-      letter-spacing: -0.035em;
-      color: #111113;
-    }
-
-    .brand-mark {
-      width: 13px;
-      height: 13px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--blue), #7dd3fc 55%, var(--green));
-      box-shadow: 0 0 0 5px rgba(0, 113, 227, 0.08), 0 10px 22px rgba(0, 113, 227, 0.16);
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
+    .nav { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
     .nav a, .ghost-btn, .primary-btn {
       border: 1px solid transparent;
       border-radius: 999px;
       padding: 9px 14px;
-      color: var(--muted-2);
+      color: var(--muted-strong);
       text-decoration: none;
       font-size: 14px;
-      font-weight: 760;
+      font-weight: 800;
       background: transparent;
       cursor: pointer;
-      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
     }
+    .nav a:hover, .ghost-btn:hover { transform: translateY(-1px); border-color: rgba(29,29,31,0.12); background: rgba(255,255,255,0.82); box-shadow: var(--shadow-soft); }
+    .primary-btn { background: linear-gradient(180deg,#0a84ff,#0071e3); color: #fff; border-color: rgba(0,113,227,0.32); box-shadow: 0 14px 30px rgba(0,122,255,0.22); }
+    .primary-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 38px rgba(0,122,255,0.28); }
 
-    .nav a:hover, .ghost-btn:hover, .primary-btn:hover {
-      transform: translateY(-1px);
-      border-color: rgba(0, 122, 255, 0.20);
-      background: rgba(255, 255, 255, 0.74);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.045);
-    }
+    .hero { padding: 78px 0 40px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(320px,.75fr); gap: 22px; align-items: stretch; }
+    .hero-card, .panel, .mini-panel { border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px) saturate(145%); -webkit-backdrop-filter: blur(18px) saturate(145%); }
+    .hero-card { position: relative; isolation: isolate; overflow: hidden; min-height: 430px; padding: 42px; display: flex; flex-direction: column; justify-content: space-between; }
+    .hero-card::before { content: ""; position: absolute; inset: 1px; border-radius: calc(var(--radius) - 1px); background: radial-gradient(circle at 84% 74%, rgba(52,199,89,0.18), transparent 34%), radial-gradient(circle at 70% 12%, rgba(0,122,255,0.12), transparent 32%); z-index: -1; }
+    .eyebrow { display: inline-flex; width: fit-content; align-items: center; gap: 8px; color: #0057b8; background: rgba(0,122,255,0.08); border: 1px solid rgba(0,122,255,0.16); border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 900; }
+    h1,h2,h3,p { margin-top: 0; }
+    h1 { margin: 20px 0 16px; font-size: clamp(42px,6vw,72px); line-height: 1.02; letter-spacing: -0.075em; }
+    .hero-copy { max-width: 720px; color: var(--muted-strong); font-size: 20px; letter-spacing: -0.025em; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
 
-    .primary-btn {
-      background: var(--blue);
-      border-color: var(--blue);
-      color: #ffffff;
-      box-shadow: 0 12px 28px rgba(0, 122, 255, 0.22);
-    }
-
-    .primary-btn:hover {
-      background: #0a84ff;
-      border-color: #0a84ff;
-    }
-
-    .hero {
-      padding: 74px 0 38px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
-      gap: 22px;
-      align-items: stretch;
-    }
-
-    .hero-card, .panel, .mini-panel {
-      border: 1px solid rgba(60, 60, 67, 0.11);
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px) saturate(140%);
-      -webkit-backdrop-filter: blur(18px) saturate(140%);
-    }
-
-    .hero-card {
-      padding: 42px;
-      min-height: 430px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
-      position: relative;
-      background:
-        radial-gradient(circle at 88% 78%, rgba(0, 122, 255, 0.10), transparent 34%),
-        radial-gradient(circle at 72% 14%, rgba(52, 199, 89, 0.08), transparent 28%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.86));
-    }
-
-    .hero-card::after {
-      content: "";
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      right: -130px;
-      bottom: -150px;
-      background: radial-gradient(circle, rgba(0, 113, 227, 0.095), transparent 68%);
-      pointer-events: none;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      width: fit-content;
-      align-items: center;
-      gap: 8px;
-      color: #0066cc;
-      background: rgba(0, 122, 255, 0.08);
-      border: 1px solid rgba(0, 122, 255, 0.16);
-      border-radius: 999px;
-      padding: 7px 12px;
-      font-size: 13px;
-      font-weight: 850;
-    }
-
-    h1, h2, h3, p { margin-top: 0; }
-
-    h1 {
-      margin: 20px 0 16px;
-      font-size: clamp(42px, 6vw, 72px);
-      line-height: 1.02;
-      letter-spacing: -0.075em;
-      color: #111113;
-    }
-
-    .hero-copy {
-      max-width: 720px;
-      color: var(--muted-2);
-      font-size: 20px;
-      letter-spacing: -0.025em;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 28px;
-    }
-
-    .flow-card {
-      padding: 26px;
-      background: rgba(255, 255, 255, 0.94);
-    }
-
-    .flow-title {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    .flow-list {
-      display: grid;
-      gap: 12px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .flow-list li {
-      display: grid;
-      grid-template-columns: 34px minmax(0, 1fr);
-      gap: 12px;
-      padding: 14px;
-      border: 1px solid rgba(60, 60, 67, 0.10);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 8px 18px rgba(30, 64, 120, 0.045);
-    }
-
-    .flow-no {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      background: rgba(0, 122, 255, 0.10);
-      color: var(--blue);
-      font-weight: 900;
-    }
-
-    .flow-list strong {
-      display: block;
-      margin-bottom: 2px;
-      font-size: 15px;
-      color: #1d1d1f;
-    }
-
-    .flow-list span {
-      display: block;
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .flow-card { padding: 26px; background: rgba(255,255,255,0.73); }
+    .flow-title { color: var(--muted); font-size: 13px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
+    .flow-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .flow-list li { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 12px; padding: 14px; border: 1px solid rgba(29,29,31,0.08); border-radius: 18px; background: rgba(255,255,255,0.72); }
+    .flow-no { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 12px; background: rgba(0,122,255,0.10); color: var(--blue); font-weight: 900; }
+    .flow-list strong { display: block; margin-bottom: 2px; font-size: 15px; }
+    .flow-list span { display: block; color: var(--muted); font-size: 13px; }
 
     section { padding: 34px 0; }
-
-    .section-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-
-    .section-head h2 {
-      margin: 0;
-      font-size: clamp(28px, 4vw, 44px);
-      letter-spacing: -0.06em;
-      line-height: 1.1;
-      color: #111113;
-    }
-
-    .section-head p {
-      margin: 8px 0 0;
-      color: var(--muted);
-      max-width: 620px;
-    }
-
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+    .section-head h2 { margin: 0; font-size: clamp(28px,4vw,44px); letter-spacing: -0.06em; line-height: 1.1; }
+    .section-head p { margin: 8px 0 0; color: var(--muted); max-width: 650px; }
     .panel { padding: 24px; }
 
-    .market-panel {
-      padding: 0;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.96);
-    }
+    .quote-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+    .quote-card { min-height: 150px; border: 1px solid rgba(29,29,31,0.09); border-radius: 22px; padding: 18px; background: linear-gradient(180deg,#fff,#f9fbff); box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+    .quote-card:hover { transform: translateY(-2px); border-color: rgba(0,122,255,0.22); box-shadow: 0 18px 42px rgba(0,0,0,0.075); }
+    .quote-kicker { color: var(--muted); font-size: 12px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+    .quote-name { margin-top: 2px; font-weight: 850; letter-spacing: -0.025em; }
+    .quote-price { margin-top: 12px; font-size: 25px; font-weight: 900; letter-spacing: -0.04em; }
+    .quote-change { margin-top: 2px; font-size: 13px; color: var(--muted); }
+    .quote-source { margin-top: 8px; color: var(--muted); font-size: 11px; min-height: 16px; }
+    .data-status { margin-top: 14px; color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .data-status::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--blue); box-shadow: 0 0 0 4px rgba(0,122,255,0.10); }
+    .up { color: #1f9d4d; } .down { color: #d92d20; } .flat { color: var(--muted); }
 
-    .market-hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.9fr);
-      gap: 18px;
-      align-items: stretch;
-      padding: 24px;
-      border-bottom: 1px solid var(--line);
-      background:
-        radial-gradient(circle at 7% 0%, rgba(0, 113, 227, 0.10), transparent 30%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.94));
-    }
+    .stock-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+    .stock-card, .diagram-card, .resource-card { border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,0.82); box-shadow: var(--shadow-soft); }
+    .stock-card { padding: 22px; }
+    .stock-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+    .stock-top h3 { margin: 0; font-size: 23px; letter-spacing: -0.045em; }
+    .ticker { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .tag { flex: 0 0 auto; border-radius: 999px; background: rgba(52,199,89,0.10); color: #087c38; border: 1px solid rgba(52,199,89,0.18); padding: 6px 10px; font-size: 12px; font-weight: 850; }
+    .stock-thesis { min-height: 78px; color: var(--muted-strong); margin-bottom: 16px; }
+    .link-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .link-row a { text-decoration: none; border: 1px solid rgba(0,122,255,0.18); background: rgba(0,122,255,0.07); color: #0057b8; border-radius: 999px; padding: 7px 11px; font-size: 13px; font-weight: 800; }
 
-    .market-copy {
-      min-width: 0;
-    }
+    .diagram-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    .diagram-card { overflow: hidden; background: #fff; }
+    .diagram-card img { display: block; width: 100%; height: auto; background: #fff; }
+    .diagram-copy { display: grid; grid-template-columns: 260px minmax(0,1fr); gap: 16px; padding: 20px 24px 24px; border-top: 1px solid var(--line); }
+    .diagram-copy h3 { margin: 0; font-size: 22px; letter-spacing: -0.045em; }
+    .diagram-copy p { margin: 0; color: var(--muted-strong); }
 
-    .market-label {
-      display: inline-flex;
-      align-items: center;
-      width: fit-content;
-      border-radius: 999px;
-      padding: 6px 10px;
-      background: rgba(0, 113, 227, 0.08);
-      color: #0066cc;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
+    .note-layout { display: grid; grid-template-columns: 240px minmax(0,1fr); gap: 16px; }
+    .note-tabs { display: grid; gap: 8px; align-content: start; }
+    .note-tab { border: 1px solid rgba(29,29,31,0.10); background: #fff; border-radius: 16px; padding: 12px 14px; text-align: left; cursor: pointer; color: var(--muted-strong); font-weight: 850; }
+    .note-tab.active { color: #0057b8; border-color: rgba(0,122,255,0.26); background: rgba(0,122,255,0.08); }
+    .note-box { display: grid; gap: 10px; }
+    .note-meta { display: flex; justify-content: space-between; gap: 12px; align-items: center; color: var(--muted); font-size: 13px; }
+    .note-meta strong { color: var(--text); font-size: 16px; }
+    textarea { width: 100%; min-height: 260px; resize: vertical; border: 1px solid rgba(29,29,31,0.12); border-radius: 20px; background: #fff; color: var(--text); padding: 18px; font: inherit; line-height: 1.7; outline: none; }
+    textarea:focus { border-color: rgba(0,122,255,0.48); box-shadow: 0 0 0 4px rgba(0,122,255,0.10); }
 
-    .market-copy strong {
-      display: block;
-      margin-top: 12px;
-      color: #111113;
-      font-size: clamp(22px, 3vw, 34px);
-      line-height: 1.16;
-      letter-spacing: -0.055em;
-    }
-
-    .market-copy p {
-      margin: 8px 0 0;
-      color: var(--muted);
-    }
-
-    .rate-card {
-      border: 1px solid rgba(29, 29, 31, 0.08);
-      border-radius: 22px;
-      padding: 18px;
-      background: linear-gradient(180deg, #ffffff, #f7faff);
-      box-shadow: var(--shadow-soft);
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 148px;
-    }
-
-    .rate-card .quote-kicker,
-    .market-link .quote-kicker {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .rate-card .rate-name {
-      margin-top: 2px;
-      color: #1d1d1f;
-      font-weight: 850;
-      letter-spacing: -0.025em;
-    }
-
-    .rate-card .rate-value {
-      margin-top: 12px;
-      color: #111113;
-      font-size: 31px;
-      font-weight: 950;
-      letter-spacing: -0.055em;
-    }
-
-    .rate-card .rate-note {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .market-widget-shell {
-      padding: 18px 24px 22px;
-      background: #ffffff;
-    }
-
-    .tradingview-widget-container {
-      width: 100%;
-      min-height: 74px;
-    }
-
-    .market-fallback {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      padding: 0 24px 24px;
-      background: #ffffff;
-    }
-
-    .market-link {
-      border: 1px solid rgba(29, 29, 31, 0.08);
-      border-radius: 999px;
-      padding: 8px 12px;
-      color: var(--muted-2);
-      background: rgba(247, 250, 255, 0.86);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 760;
-    }
-
-    .market-link:hover {
-      border-color: rgba(0, 113, 227, 0.20);
-      color: #0066cc;
-    }
-
-    .quote-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px;
-    }
-
-    .quote-card {
-      min-height: 142px;
-      border: 1px solid rgba(60, 60, 67, 0.10);
-      border-radius: 22px;
-      padding: 18px;
-      background: linear-gradient(180deg, #ffffff, #f7faff);
-      box-shadow: var(--shadow-soft);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      text-decoration: none;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-    }
-
-    .quote-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0, 122, 255, 0.22);
-      box-shadow: 0 18px 42px rgba(30, 64, 120, 0.09);
-    }
-
-    .quote-kicker {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .quote-name {
-      margin-top: 2px;
-      font-weight: 850;
-      letter-spacing: -0.025em;
-      color: #1d1d1f;
-    }
-
-    .quote-price {
-      margin-top: 12px;
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      color: #111113;
-    }
-
-    .quote-change {
-      margin-top: 2px;
-      font-size: 13px;
-      font-weight: 760;
-      color: var(--muted);
-    }
-
-    .quote-meta {
-      margin-top: 5px;
-      color: #8a8a92;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .quote-card.loading .quote-price,
-    .quote-card.loading .quote-change {
-      color: #9b9ba3;
-    }
-
-    .quote-card.stale {
-      border-color: rgba(255, 159, 10, 0.20);
-      background: linear-gradient(180deg, #ffffff 0%, #fffdf8 100%);
-    }
-
-    .up { color: #1f9d4d; }
-    .down { color: #d92d20; }
-    .flat { color: var(--muted); }
-
-
-    .market-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .market-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.78);
-      border: 1px solid rgba(29, 29, 31, 0.08);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .market-status::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--green);
-      box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.12);
-    }
-
-    .market-status.loading::before { background: var(--amber); box-shadow: 0 0 0 4px rgba(255, 159, 10, 0.12); }
-    .market-status.error::before { background: var(--red); box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.10); }
-
-    .quote-card.cached .quote-kicker::after {
-      content: "CACHE";
-      margin-left: 7px;
-      color: #8e8e93;
-      font-size: 10px;
-      letter-spacing: 0.08em;
-    }
-
-    .stock-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .stock-card {
-      border: 1px solid rgba(60, 60, 67, 0.10);
-      border-radius: 24px;
-      padding: 24px;
-      background: linear-gradient(180deg, #ffffff, #f7faff);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .stock-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .stock-card h3 {
-      margin: 0;
-      font-size: 24px;
-      letter-spacing: -0.045em;
-      color: #111113;
-    }
-
-    .ticker {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .tag {
-      border: 1px solid rgba(52, 199, 89, 0.20);
-      background: rgba(52, 199, 89, 0.10);
-      color: #178a3b;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 12px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .stock-thesis {
-      color: var(--muted-2);
-      min-height: 78px;
-      margin-bottom: 18px;
-    }
-
-    .link-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .link-row a {
-      border: 1px solid rgba(0, 122, 255, 0.16);
-      border-radius: 999px;
-      padding: 8px 11px;
-      color: #0066cc;
-      background: rgba(0, 122, 255, 0.07);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 850;
-    }
-
-    .diagram-grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .diagram-card {
-      border: 1px solid rgba(60, 60, 67, 0.10);
-      border-radius: 26px;
-      background: #ffffff;
-      box-shadow: var(--shadow-soft);
-      overflow: hidden;
-    }
-
-    .diagram-card img {
-      display: block;
-      width: 100%;
-      height: auto;
-      background: #fbfbfd;
-    }
-
-    .diagram-copy {
-      padding: 22px;
-      border-top: 1px solid rgba(60, 60, 67, 0.10);
-      display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: 18px;
-      background: #ffffff;
-    }
-
-    .diagram-copy h3 {
-      margin: 0;
-      font-size: 24px;
-      letter-spacing: -0.045em;
-      color: #111113;
-    }
-
-    .diagram-copy p {
-      margin: 0;
-      color: var(--muted-2);
-    }
-
-    .note-layout {
-      display: grid;
-      grid-template-columns: 260px minmax(0, 1fr);
-      gap: 16px;
-    }
-
-    .note-tabs {
-      display: grid;
-      gap: 8px;
-    }
-
-    .note-tab {
-      width: 100%;
-      border: 1px solid rgba(60, 60, 67, 0.10);
-      border-radius: 16px;
-      padding: 13px 14px;
-      color: var(--muted-2);
-      background: rgba(255, 255, 255, 0.94);
-      text-align: left;
-      cursor: pointer;
-      font: inherit;
-      font-weight: 850;
-      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-    }
-
-    .note-tab:hover {
-      transform: translateY(-1px);
-      background: #ffffff;
-      border-color: rgba(0, 122, 255, 0.18);
-    }
-
-    .note-tab.active {
-      color: #0066cc;
-      background: rgba(0, 122, 255, 0.08);
-      border-color: rgba(0, 122, 255, 0.24);
-    }
-
-    .note-box {
-      min-height: 300px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .note-meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 13px;
-      flex-wrap: wrap;
-    }
-
-    .note-meta strong { color: #1d1d1f; }
-
-    textarea {
-      flex: 1;
-      width: 100%;
-      min-height: 220px;
-      border: 1px solid rgba(60, 60, 67, 0.13);
-      border-radius: 20px;
-      padding: 17px;
-      background: #ffffff;
-      color: var(--text);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.035);
-      font: inherit;
-      resize: vertical;
-      outline: none;
-    }
-
-    textarea:focus {
-      border-color: rgba(0, 122, 255, 0.48);
-      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.11), inset 0 1px 2px rgba(0, 0, 0, 0.035);
-    }
-
-    .resource-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px;
-    }
-
-    .resource-card {
-      border: 1px solid rgba(60, 60, 67, 0.10);
-      border-radius: 22px;
-      padding: 19px;
-      background: linear-gradient(180deg, #ffffff, #f7faff);
-      box-shadow: var(--shadow-soft);
-      text-decoration: none;
-      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .resource-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0, 122, 255, 0.24);
-      box-shadow: 0 18px 42px rgba(30, 64, 120, 0.09);
-    }
-
-    .resource-card strong {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 17px;
-      letter-spacing: -0.035em;
-      color: #111113;
-    }
-
-    .resource-card span {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    footer {
-      padding: 44px 0 60px;
-      color: var(--muted);
-      border-top: 1px solid rgba(60, 60, 67, 0.10);
-      margin-top: 40px;
-    }
+    .resource-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+    .resource-card { display: block; text-decoration: none; padding: 20px; transition: transform .18s ease, border-color .18s ease; }
+    .resource-card:hover { transform: translateY(-2px); border-color: rgba(0,122,255,0.24); }
+    .resource-card strong { display: block; margin-bottom: 6px; font-size: 17px; letter-spacing: -0.035em; }
+    .resource-card span { color: var(--muted); font-size: 13px; }
+    footer { padding: 44px 0 60px; color: var(--muted); border-top: 1px solid rgba(29,29,31,0.09); margin-top: 40px; }
 
     @media (max-width: 980px) {
-      .hero-grid, .note-layout, .diagram-copy, .market-hero { grid-template-columns: 1fr; }
-      .quote-grid, .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-grid, .note-layout, .diagram-copy { grid-template-columns: 1fr; }
+      .quote-grid, .resource-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
       .stock-grid { grid-template-columns: 1fr; }
       .hero-card { min-height: auto; }
     }
-
     @media (max-width: 620px) {
-      .wrap { width: min(100% - 24px, 1180px); }
+      .wrap { width: min(100% - 24px,1180px); }
       .topbar-inner { align-items: flex-start; flex-direction: column; }
       .nav { justify-content: flex-start; }
       .hero { padding-top: 42px; }
@@ -788,16 +165,9 @@
 <body>
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <a class="brand" href="#top" aria-label="TY의 주식공부 홈">
-        <span class="brand-mark"></span>
-        <span>TY의 주식공부</span>
-      </a>
+      <a class="brand" href="#top" aria-label="TY의 주식공부 홈"><span class="brand-mark"></span><span>TY의 주식공부</span></a>
       <nav class="nav" aria-label="주요 메뉴">
-        <a href="#market">시장</a>
-        <a href="#stocks">종목</a>
-        <a href="#semiconductor">반도체</a>
-        <a href="#journal">기록</a>
-        <a href="#resources">자료</a>
+        <a href="#market">시장</a><a href="#stocks">종목</a><a href="#semiconductor">반도체</a><a href="#journal">기록</a><a href="#resources">자료</a>
       </nav>
     </div>
   </header>
@@ -810,17 +180,13 @@
             <div class="eyebrow">반도체 중심 투자 판단 시스템</div>
             <h1>시장, 산업, 종목, 기록을 하나로 묶는다.</h1>
             <p class="hero-copy">매크로를 먼저 보고, 반도체 구조를 이해하고, 삼성전자·SK하이닉스·마이크론 판단을 기록하는 개인 대시보드입니다.</p>
-            <div class="hero-actions">
-              <a class="primary-btn" href="#market">오늘 시장 보기</a>
-              <a class="ghost-btn" href="#journal">판단 기록하기</a>
-            </div>
+            <div class="hero-actions"><a class="primary-btn" href="#market">오늘 시장 보기</a><a class="ghost-btn" href="#journal">판단 기록하기</a></div>
           </div>
         </div>
-
         <aside class="flow-card mini-panel" aria-label="일일 판단 흐름">
           <div class="flow-title">Daily Operating Flow</div>
           <ol class="flow-list">
-            <li><span class="flow-no">1</span><div><strong>매크로</strong><span>환율·금리·유가·지수로 시장 온도를 확인</span></div></li>
+            <li><span class="flow-no">1</span><div><strong>매크로</strong><span>환율·금·유가·지수·비트코인으로 시장 온도를 확인</span></div></li>
             <li><span class="flow-no">2</span><div><strong>산업</strong><span>메모리 병목과 AI 수요를 기준으로 해석</span></div></li>
             <li><span class="flow-no">3</span><div><strong>종목</strong><span>삼성전자·SK하이닉스·마이크론만 먼저 비교</span></div></li>
             <li><span class="flow-no">4</span><div><strong>자료</strong><span>리포트·공시·실적 캘린더로 확인</span></div></li>
@@ -832,462 +198,133 @@
 
     <section id="market">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <h2>오늘의 시장 온도</h2>
-            <p>개별 종목은 빼고, 매크로·지수·금·비트코인만 빠르게 봅니다.</p>
-          </div>
-        </div>
-        <div class="panel market-panel">
-          <div class="market-hero">
-            <div class="market-copy">
-              <span class="market-label">Live Market Strip</span>
-              <strong>원/달러, 금, 유가, 지수, 비트코인을 한 번에 확인합니다.</strong>
-              <p>느린 CORS 프록시 호출을 제거하고, 시세 표시는 TradingView 위젯 하나로 통합했습니다.</p>
-            </div>
-            <a class="rate-card" href="https://www.bok.or.kr/portal/main/contents.do?menuNo=200643" target="_blank" rel="noopener noreferrer" aria-label="한국은행 기준금리 열기">
-              <div>
-                <div class="quote-kicker">Rate</div>
-                <div class="rate-name">한국 기준금리</div>
-              </div>
-              <div>
-                <div class="rate-value" id="kr-rate-value">—</div>
-                <div class="rate-note" id="kr-rate-note">로컬 금리 파일 확인 중</div>
-              </div>
-            </a>
-          </div>
-          <div class="market-widget-shell">
-            <div class="tradingview-widget-container" aria-label="실시간 시장 가격 위젯">
-              <div class="tradingview-widget-container__widget"></div>
-              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-              {
-                "symbols": [
-                  { "proName": "FX_IDC:USDKRW", "title": "원/달러" },
-                  { "proName": "TVC:GOLD", "title": "금" },
-                  { "proName": "NYMEX:CL1!", "title": "WTI 유가" },
-                  { "proName": "NASDAQ:IXIC", "title": "나스닥" },
-                  { "proName": "SP:SPX", "title": "S&P 500" },
-                  { "proName": "KRX:KOSPI", "title": "코스피" },
-                  { "proName": "BITSTAMP:BTCUSD", "title": "비트코인" }
-                ],
-                "showSymbolLogo": true,
-                "isTransparent": true,
-                "displayMode": "regular",
-                "colorTheme": "light",
-                "locale": "kr"
-              }
-              </script>
-            </div>
-          </div>
-          <div class="market-fallback" aria-label="시장 원문 링크">
-            <a class="market-link" href="https://www.tradingview.com/symbols/FX_IDC-USDKRW/" target="_blank" rel="noopener noreferrer">원/달러</a>
-            <a class="market-link" href="https://www.tradingview.com/symbols/TVC-GOLD/" target="_blank" rel="noopener noreferrer">금</a>
-            <a class="market-link" href="https://www.tradingview.com/symbols/NYMEX-CL1!/" target="_blank" rel="noopener noreferrer">WTI</a>
-            <a class="market-link" href="https://www.tradingview.com/symbols/NASDAQ-IXIC/" target="_blank" rel="noopener noreferrer">나스닥</a>
-            <a class="market-link" href="https://www.tradingview.com/symbols/SP-SPX/" target="_blank" rel="noopener noreferrer">S&P 500</a>
-            <a class="market-link" href="https://www.tradingview.com/symbols/KRX-KOSPI/" target="_blank" rel="noopener noreferrer">코스피</a>
-            <a class="market-link" href="https://www.tradingview.com/symbols/BITSTAMP-BTCUSD/" target="_blank" rel="noopener noreferrer">비트코인</a>
-          </div>
-        </div>
+        <div class="section-head"><div><h2>오늘의 시장 온도</h2><p>환율·금·유가·지수·비트코인·대표 반도체주만 빠르게 확인합니다.</p></div><button class="ghost-btn" id="refresh-quotes" type="button">새로고침</button></div>
+        <div class="panel"><div class="quote-grid" id="quote-grid"></div><div class="data-status" id="market-status">캐시를 먼저 표시하고 최신 가격을 갱신합니다.</div></div>
       </div>
     </section>
 
     <section id="stocks">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <h2>핵심 종목</h2>
-            <p>반도체 사이클을 보기 위한 최소 종목군입니다.</p>
-          </div>
-        </div>
+        <div class="section-head"><div><h2>핵심 종목</h2><p>반도체 사이클을 보기 위한 최소 종목군입니다.</p></div></div>
         <div class="stock-grid">
-          <article class="stock-card">
-            <div class="stock-top"><div><h3>삼성전자</h3><div class="ticker">005930 · KRX</div></div><span class="tag">메모리+세트</span></div>
-            <p class="stock-thesis">DRAM·NAND 사이클, 파운드리 개선, 모바일·서버 수요를 함께 확인합니다.</p>
-            <div class="link-row">
-              <a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer">네이버</a>
-              <a href="https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A005930" target="_blank" rel="noopener noreferrer">FnGuide</a>
-              <a href="https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&finalReport=recent" target="_blank" rel="noopener noreferrer">DART</a>
-            </div>
-          </article>
-
-          <article class="stock-card">
-            <div class="stock-top"><div><h3>SK하이닉스</h3><div class="ticker">000660 · KRX</div></div><span class="tag">HBM 중심</span></div>
-            <p class="stock-thesis">HBM, 서버 DRAM, AI 가속기 수요가 실적과 밸류에이션을 어떻게 바꾸는지 추적합니다.</p>
-            <div class="link-row">
-              <a href="https://finance.naver.com/item/main.naver?code=000660" target="_blank" rel="noopener noreferrer">네이버</a>
-              <a href="https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A000660" target="_blank" rel="noopener noreferrer">FnGuide</a>
-              <a href="https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&finalReport=recent" target="_blank" rel="noopener noreferrer">DART</a>
-            </div>
-          </article>
-
-          <article class="stock-card">
-            <div class="stock-top"><div><h3>마이크론</h3><div class="ticker">MU · NASDAQ</div></div><span class="tag">글로벌 비교</span></div>
-            <p class="stock-thesis">미국 메모리 대표주로 가격 사이클, HBM 경쟁력, 글로벌 투자심리를 비교합니다.</p>
-            <div class="link-row">
-              <a href="https://finance.yahoo.com/quote/MU" target="_blank" rel="noopener noreferrer">Yahoo</a>
-              <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&owner=include&count=10" target="_blank" rel="noopener noreferrer">SEC</a>
-              <a href="https://www.tradingview.com/chart/?symbol=NASDAQ%3AMU" target="_blank" rel="noopener noreferrer">Chart</a>
-            </div>
-          </article>
+          <article class="stock-card"><div class="stock-top"><div><h3>삼성전자</h3><div class="ticker">005930 · KRX</div></div><span class="tag">메모리+세트</span></div><p class="stock-thesis">DRAM·NAND 사이클, 파운드리 개선, 모바일·서버 수요를 함께 확인합니다.</p><div class="link-row"><a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer">네이버</a><a href="https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A005930" target="_blank" rel="noopener noreferrer">FnGuide</a><a href="https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&finalReport=recent" target="_blank" rel="noopener noreferrer">DART</a></div></article>
+          <article class="stock-card"><div class="stock-top"><div><h3>SK하이닉스</h3><div class="ticker">000660 · KRX</div></div><span class="tag">HBM 중심</span></div><p class="stock-thesis">HBM, 서버 DRAM, AI 가속기 수요가 실적과 밸류에이션을 어떻게 바꾸는지 추적합니다.</p><div class="link-row"><a href="https://finance.naver.com/item/main.naver?code=000660" target="_blank" rel="noopener noreferrer">네이버</a><a href="https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A000660" target="_blank" rel="noopener noreferrer">FnGuide</a><a href="https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&finalReport=recent" target="_blank" rel="noopener noreferrer">DART</a></div></article>
+          <article class="stock-card"><div class="stock-top"><div><h3>마이크론</h3><div class="ticker">MU · NASDAQ</div></div><span class="tag">글로벌 비교</span></div><p class="stock-thesis">미국 메모리 대표주로 가격 사이클, HBM 경쟁력, 글로벌 투자심리를 비교합니다.</p><div class="link-row"><a href="https://finance.yahoo.com/quote/MU" target="_blank" rel="noopener noreferrer">Yahoo</a><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&owner=include&count=10" target="_blank" rel="noopener noreferrer">SEC</a><a href="https://www.tradingview.com/chart/?symbol=NASDAQ%3AMU" target="_blank" rel="noopener noreferrer">Chart</a></div></article>
         </div>
       </div>
     </section>
 
     <section id="semiconductor">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <h2>반도체 구조</h2>
-            <p>가격을 보기 전에 병목이 어디서 생기는지 먼저 봅니다.</p>
-          </div>
-        </div>
+        <div class="section-head"><div><h2>반도체 구조</h2><p>가격을 보기 전에 병목이 어디서 생기는지 먼저 봅니다.</p></div></div>
         <div class="diagram-grid">
-          <article class="diagram-card">
-            <img src="assets/diagrams/pc-memory-structure.png" alt="일반 PC에서 CPU, DRAM, GPU, VRAM, NAND SSD가 연결되는 메모리 구조도">
-            <div class="diagram-copy">
-              <h3>일반 PC: 저장 위치의 차이</h3>
-              <p>DRAM은 CPU의 즉시 작업공간이고, NAND/SSD는 장기 저장소입니다. GPU는 VRAM을 전용 버퍼로 사용합니다.</p>
-            </div>
-          </article>
-
-          <article class="diagram-card">
-            <img src="assets/diagrams/ai-memory-structure.png" alt="AI 시스템에서 Host CPU, SSD, HBF, HBM, AI GPU, Fabric이 연결되는 메모리 구조도">
-            <div class="diagram-copy">
-              <h3>AI 시스템: 데이터 공급 병목</h3>
-              <p>AI 학습·추론에서는 SSD, 확장 메모리, HBM, GPU로 갈수록 데이터가 가까워지고 빠르며 비싸집니다.</p>
-            </div>
-          </article>
+          <article class="diagram-card"><img src="assets/diagrams/pc-memory-structure.png" alt="일반 PC에서 CPU, DRAM, GPU, VRAM, NAND SSD가 연결되는 메모리 구조도"><div class="diagram-copy"><h3>일반 PC: 저장 위치의 차이</h3><p>DRAM은 CPU의 즉시 작업공간이고, NAND/SSD는 장기 저장소입니다. GPU는 VRAM을 전용 버퍼로 사용합니다.</p></div></article>
+          <article class="diagram-card"><img src="assets/diagrams/ai-memory-structure.png" alt="AI 시스템에서 Host CPU, SSD, HBF, HBM, AI GPU, Fabric이 연결되는 메모리 구조도"><div class="diagram-copy"><h3>AI 시스템: 데이터 공급 병목</h3><p>AI 학습·추론에서는 SSD, 확장 메모리, HBM, GPU로 갈수록 데이터가 가까워지고 빠르며 비싸집니다.</p></div></article>
         </div>
       </div>
     </section>
 
     <section id="journal">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <h2>판단 기록</h2>
-            <p>맞혔는지가 아니라 어떤 근거로 판단했는지를 남깁니다.</p>
-          </div>
-          <button class="primary-btn" id="save-note" type="button">저장</button>
-        </div>
-        <div class="panel note-layout">
-          <div class="note-tabs" id="note-tabs"></div>
-          <div class="note-box">
-            <div class="note-meta"><strong id="note-title">시장 메모</strong><span id="note-status">저장 기록 없음</span></div>
-            <textarea id="note-area" spellcheck="false"></textarea>
-          </div>
-        </div>
+        <div class="section-head"><div><h2>판단 기록</h2><p>맞혔는지가 아니라 어떤 근거로 판단했는지를 남깁니다.</p></div><button class="primary-btn" id="save-note" type="button">저장</button></div>
+        <div class="panel note-layout"><div class="note-tabs" id="note-tabs"></div><div class="note-box"><div class="note-meta"><strong id="note-title">시장 메모</strong><span id="note-status">저장 기록 없음</span></div><textarea id="note-area" spellcheck="false"></textarea></div></div>
       </div>
     </section>
 
     <section id="resources">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <h2>확인 자료</h2>
-            <p>매일 확인할 출처만 남겼습니다.</p>
-          </div>
-        </div>
-        <div class="resource-grid">
-          <a class="resource-card" href="https://finance.naver.com/news/mainnews.naver" target="_blank" rel="noopener noreferrer"><strong>시장 뉴스</strong><span>네이버 금융 주요 뉴스</span></a>
-          <a class="resource-card" href="https://dart.fss.or.kr/dsab002/search.ax" target="_blank" rel="noopener noreferrer"><strong>DART 공시</strong><span>국내 기업 공시 원문</span></a>
-          <a class="resource-card" href="https://finance.yahoo.com/calendar/earnings" target="_blank" rel="noopener noreferrer"><strong>실적 캘린더</strong><span>미국 기업 실적 일정</span></a>
-          <a class="resource-card" href="https://www.tradingview.com/markets/" target="_blank" rel="noopener noreferrer"><strong>TradingView</strong><span>차트와 시장 맵</span></a>
-        </div>
+        <div class="section-head"><div><h2>확인 자료</h2><p>매일 확인할 출처만 남겼습니다.</p></div></div>
+        <div class="resource-grid"><a class="resource-card" href="https://finance.naver.com/news/mainnews.naver" target="_blank" rel="noopener noreferrer"><strong>시장 뉴스</strong><span>네이버 금융 주요 뉴스</span></a><a class="resource-card" href="https://dart.fss.or.kr/dsab002/search.ax" target="_blank" rel="noopener noreferrer"><strong>DART 공시</strong><span>국내 기업 공시 원문</span></a><a class="resource-card" href="https://finance.yahoo.com/calendar/earnings" target="_blank" rel="noopener noreferrer"><strong>실적 캘린더</strong><span>미국 기업 실적 일정</span></a><a class="resource-card" href="https://www.tradingview.com/markets/" target="_blank" rel="noopener noreferrer"><strong>TradingView</strong><span>차트와 시장 맵</span></a></div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="wrap">핵심 원칙: 투자 판단은 가격만 보지 않는다. 매크로 → 산업 병목 → 종목 근거 → 기록 순서로 본다.</div>
-  </footer>
+  <footer><div class="wrap">핵심 원칙: 투자 판단은 가격만 보지 않는다. 매크로 → 산업 병목 → 종목 근거 → 기록 순서로 본다.</div></footer>
 
   <script>
     const quotes = [
-      { id: 'usdkrw', group: 'Macro', name: '원/달러', ticker: 'USDKRW=X', format: 'fx', url: 'https://finance.yahoo.com/quote/USDKRW=X' },
-      { id: 'gold', group: 'Macro', name: '금 가격', ticker: 'GC=F', format: 'usd', url: 'https://finance.yahoo.com/quote/GC=F' },
+      { id: 'usdkrw', group: 'FX', name: '원/달러', ticker: 'USDKRW=X', format: 'krwFx', url: 'https://finance.yahoo.com/quote/USDKRW=X' },
+      { id: 'gold', group: 'Macro', name: '국제 금', ticker: 'GC=F', format: 'gold', url: 'https://finance.yahoo.com/quote/GC=F' },
       { id: 'oil', group: 'Macro', name: 'WTI 유가', ticker: 'CL=F', format: 'usd', url: 'https://finance.yahoo.com/quote/CL=F' },
       { id: 'nasdaq', group: 'Index', name: '나스닥', ticker: '^IXIC', format: 'index', url: 'https://finance.yahoo.com/quote/%5EIXIC' },
       { id: 'kospi', group: 'Index', name: '코스피', ticker: '^KS11', format: 'index', url: 'https://finance.yahoo.com/quote/%5EKS11' },
-      { id: 'bitcoin', group: 'Crypto', name: '비트코인', ticker: 'BTC-USD', format: 'btc', url: 'https://finance.yahoo.com/quote/BTC-USD' },
+      { id: 'btc', group: 'Crypto', name: '비트코인', ticker: 'BTC-USD', format: 'btc', url: 'https://www.coingecko.com/en/coins/bitcoin' },
       { id: 'micron', group: 'Stock', name: '마이크론', ticker: 'MU', format: 'usd', url: 'https://finance.yahoo.com/quote/MU' },
       { id: 'kr-rate', group: 'Rate', name: '한국 기준금리', localRate: true, format: 'rate', url: 'https://www.bok.or.kr/portal/main/contents.do?menuNo=200643' }
     ];
 
-    const noteTargets = [
-      ['market', '시장 메모'],
-      ['semiconductor', '반도체 구조'],
-      ['samsung', '삼성전자'],
-      ['hynix', 'SK하이닉스'],
-      ['micron', '마이크론'],
-      ['action', '다음 행동']
-    ];
-
-    const QUOTE_CACHE_KEY = 'ty-market-quotes-v2';
+    const noteTargets = [['market','시장 메모'],['semiconductor','반도체 구조'],['samsung','삼성전자'],['hynix','SK하이닉스'],['micron','마이크론'],['action','다음 행동']];
+    const QUOTE_CACHE_KEY = 'ty-market-quotes-v3';
+    const CACHE_SOFT_LIMIT_MS = 1000 * 60 * 20;
+    const CACHE_HARD_LIMIT_MS = 1000 * 60 * 60 * 12;
     let activeNote = noteTargets[0][0];
 
+    function setMarketStatus(text) { const el = document.getElementById('market-status'); if (el) el.textContent = text; }
     function fmtPrice(value, type) {
-      if (value == null || Number.isNaN(value)) return '—';
-      if (type === 'fx') return Number(value).toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원';
-      if (type === 'krw') return Math.round(value).toLocaleString('ko-KR') + '원';
-      if (type === 'usd') return '$' + Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      if (type === 'btc') return '$' + Number(value).toLocaleString('en-US', { maximumFractionDigits: 0 });
-      if (type === 'rate') return Number(value).toFixed(2) + '%';
-      return Number(value).toLocaleString('en-US', { maximumFractionDigits: 2 });
+      if (value == null || Number.isNaN(Number(value))) return '—';
+      const n = Number(value);
+      if (type === 'krw') return Math.round(n).toLocaleString('ko-KR') + '원';
+      if (type === 'krwFx') return n.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원';
+      if (type === 'usd') return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (type === 'gold') return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '/oz';
+      if (type === 'btc') return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+      if (type === 'rate') return n.toFixed(2) + '%';
+      return n.toLocaleString('en-US', { maximumFractionDigits: 2 });
     }
-
     function fmtChange(change, pct, type) {
-      if (change == null || pct == null || Number.isNaN(change) || Number.isNaN(pct)) return '변동률 없음';
-      const sign = change > 0 ? '+' : '';
-      const value = type === 'krw'
-        ? Math.round(change).toLocaleString('ko-KR')
-        : Number(change).toLocaleString('en-US', { maximumFractionDigits: type === 'btc' ? 0 : 2 });
-      return `${sign}${value} · ${sign}${Number(pct).toFixed(2)}%`;
+      if (change == null || pct == null || Number.isNaN(Number(change)) || Number.isNaN(Number(pct))) return '변동률 없음';
+      const c = Number(change), p = Number(pct), sign = c > 0 ? '+' : '';
+      const value = type === 'krw' || type === 'krwFx' ? (Math.abs(c) >= 10 ? Math.round(c).toLocaleString('ko-KR') : c.toLocaleString('ko-KR', { maximumFractionDigits: 2 })) : c.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      return `${sign}${value} · ${sign}${p.toFixed(2)}%`;
     }
-
-    function timeLabel(epochSeconds) {
-      if (!epochSeconds) return '';
-      const date = new Date(epochSeconds * 1000);
-      if (Number.isNaN(date.getTime())) return '';
-      return date.toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+    function ageLabel(ms) { if (!ms || ms < 0) return ''; const min = Math.round(ms / 60000); if (min < 1) return '방금 전'; if (min < 60) return `${min}분 전`; return `${Math.round(min / 60)}시간 전`; }
+    function cardSkeleton(item) { return `<a class="quote-card" href="${item.url}" target="_blank" rel="noopener noreferrer" id="quote-${item.id}"><div><div class="quote-kicker">${item.group}</div><div class="quote-name">${item.name}</div></div><div><div class="quote-price">—</div><div class="quote-change flat">불러오는 중</div><div class="quote-source"></div></div></a>`; }
+    function renderQuoteCards() { document.getElementById('quote-grid').innerHTML = quotes.map(cardSkeleton).join(''); }
+    function readQuoteCache() { try { const parsed = JSON.parse(localStorage.getItem(QUOTE_CACHE_KEY) || '{}'); return parsed && parsed.items ? parsed : { updatedAt: 0, items: {} }; } catch { return { updatedAt: 0, items: {} }; } }
+    function writeQuoteCache(nextItems) { const prev = readQuoteCache().items || {}; localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify({ updatedAt: Date.now(), items: { ...prev, ...nextItems } })); }
+    function hydrateCachedQuotes() {
+      const cache = readQuoteCache(); const age = Date.now() - Number(cache.updatedAt || 0);
+      if (!cache.items || age > CACHE_HARD_LIMIT_MS) return false;
+      let count = 0; quotes.forEach(item => { const cached = cache.items[item.id]; if (cached) { applyQuote(item, cached, { cached: true, age }); count += 1; } });
+      if (count > 0) setMarketStatus(`저장된 가격을 먼저 표시했습니다. ${ageLabel(age)} 데이터이며 최신 가격을 갱신 중입니다.`);
+      return count > 0;
     }
-
-    function cardSkeleton(item) {
-      return `<a class="quote-card loading" href="${item.url}" target="_blank" rel="noopener noreferrer" id="quote-${item.id}">
-        <div><div class="quote-kicker">${item.group}</div><div class="quote-name">${item.name}</div></div>
-        <div><div class="quote-price">—</div><div class="quote-change flat">불러오는 중</div><div class="quote-meta">실시간 데이터 준비</div></div>
-      </a>`;
+    function fetchWithTimeout(url, timeoutMs) { const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), timeoutMs); return fetch(url, { cache: 'no-store', signal: controller.signal }).finally(() => clearTimeout(timer)); }
+    function proxiedUrls(raw) { const encoded = encodeURIComponent(raw); return [{ url: raw, timeout: 4200 }, { url: `https://api.allorigins.win/raw?url=${encoded}`, timeout: 8500 }, { url: `https://api.codetabs.com/v1/proxy/?quest=${encoded}`, timeout: 8500 }, { url: `https://corsproxy.io/?url=${encoded}`, timeout: 8500 }]; }
+    async function fastJson(raw) { return Promise.any(proxiedUrls(raw).map(({ url, timeout }) => fetchWithTimeout(url, timeout).then(async response => { if (!response.ok) throw new Error('network'); return response.json(); }))); }
+    async function loadYahooBulk(items) {
+      const symbols = items.map(item => item.ticker).join(',');
+      const json = await fastJson(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols)}`);
+      const rows = json?.quoteResponse?.result || []; if (!rows.length) throw new Error('empty quote response');
+      const bySymbol = new Map(rows.map(row => [row.symbol, row])); const result = {};
+      items.forEach(item => { const row = bySymbol.get(item.ticker); if (!row || row.regularMarketPrice == null) return; const price = Number(row.regularMarketPrice); const change = row.regularMarketChange != null ? Number(row.regularMarketChange) : price - Number(row.regularMarketPreviousClose ?? price); const pct = row.regularMarketChangePercent != null ? Number(row.regularMarketChangePercent) : (price ? (change / (price - change)) * 100 : 0); result[item.id] = { price, change, pct, source: 'Yahoo Finance' }; });
+      return result;
     }
-
-    function renderQuoteCards() {
-      document.getElementById('quote-grid').innerHTML = quotes.map(cardSkeleton).join('');
+    async function loadYahooChart(item) { const data = await fastJson(`https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(item.ticker)}?interval=1d&range=1d`); const meta = data?.chart?.result?.[0]?.meta; if (!meta || meta.regularMarketPrice == null) throw new Error('missing quote'); const price = Number(meta.regularMarketPrice); const prev = Number(meta.chartPreviousClose ?? meta.previousClose ?? price); return { price, change: price - prev, pct: prev ? ((price - prev) / prev) * 100 : 0, source: 'Yahoo Finance' }; }
+    async function loadBtcFallback() { const json = await fastJson('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true'); const coin = json?.bitcoin; if (!coin || coin.usd == null) throw new Error('missing btc'); const price = Number(coin.usd); const pct = Number(coin.usd_24h_change ?? 0); return { price, change: price * (pct / 100), pct, source: 'CoinGecko' }; }
+    async function loadYahooIndividually(items) { const settled = await Promise.allSettled(items.map(async item => [item.id, await loadYahooChart(item)])); const result = {}; settled.forEach(entry => { if (entry.status === 'fulfilled') result[entry.value[0]] = entry.value[1]; }); if (!result.btc && items.some(item => item.id === 'btc')) { try { result.btc = await loadBtcFallback(); } catch {} } return result; }
+    async function loadYahooQuotes() { const items = quotes.filter(item => item.ticker); try { const bulk = await loadYahooBulk(items); const missing = items.filter(item => !bulk[item.id]); if (missing.length) return { ...bulk, ...(await loadYahooIndividually(missing)) }; return bulk; } catch { return loadYahooIndividually(items); } }
+    async function loadLocalRate() { const res = await fetch('./rates.json', { cache: 'no-store' }); if (!res.ok) throw new Error('missing rates'); const data = await res.json(); const price = Number(data.kr_base_rate); const prev = Number(data.kr_base_prev ?? data.kr_base_rate); return { price, change: price - prev, pct: 0, updated: data.kr_base_updated, source: 'rates.json' }; }
+    function applyQuote(item, data, options = {}) { const card = document.getElementById(`quote-${item.id}`); if (!card || !data) return; const price = card.querySelector('.quote-price'), change = card.querySelector('.quote-change'), source = card.querySelector('.quote-source'); const dir = Number(data.change) > 0 ? 'up' : Number(data.change) < 0 ? 'down' : 'flat'; price.textContent = fmtPrice(data.price, item.format); change.className = `quote-change ${dir}`; change.textContent = item.localRate && data.updated ? `수동 관리 · ${data.updated}` : fmtChange(data.change, data.pct, item.format); source.textContent = options.cached ? `캐시 · ${ageLabel(options.age)}` : (data.source || '업데이트 완료'); }
+    function failQuote(item) { const card = document.getElementById(`quote-${item.id}`); if (!card) return; card.querySelector('.quote-change').className = 'quote-change flat'; card.querySelector('.quote-change').textContent = '원문 열기'; const source = card.querySelector('.quote-source'); if (source) source.textContent = '데이터 로딩 실패'; }
+    async function loadQuotes(force = false) {
+      renderQuoteCards(); const hadCache = hydrateCachedQuotes(); if (!hadCache) setMarketStatus('최신 가격을 불러오는 중입니다.');
+      const cache = readQuoteCache(); const age = Date.now() - Number(cache.updatedAt || 0);
+      if (!force && hadCache && age < CACHE_SOFT_LIMIT_MS) { setMarketStatus(`저장된 가격을 표시했습니다. ${ageLabel(age)} 데이터입니다. 새로고침 버튼으로 강제 갱신할 수 있습니다.`); return; }
+      const [yahooData, rateData] = await Promise.all([loadYahooQuotes().catch(() => ({})), loadLocalRate().catch(() => null)]); const nextCache = {};
+      quotes.forEach(item => { const data = item.localRate ? rateData : yahooData[item.id]; if (data) { applyQuote(item, data); nextCache[item.id] = data; } else if (!hadCache) failQuote(item); });
+      if (Object.keys(nextCache).length) { writeQuoteCache(nextCache); setMarketStatus(`가격 ${Object.keys(nextCache).length}개를 갱신했습니다. ${new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`); } else setMarketStatus('데이터를 불러오지 못했습니다. 각 카드를 누르면 원문 페이지가 열립니다.');
     }
-
-    function readQuoteCache() {
-      try {
-        return JSON.parse(localStorage.getItem(QUOTE_CACHE_KEY) || '{}');
-      } catch {
-        return {};
-      }
-    }
-
-    function writeQuoteCache(cache) {
-      try {
-        localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify(cache));
-      } catch {}
-    }
-
-    function proxyUrls(raw) {
-      const encoded = encodeURIComponent(raw);
-      return [
-        raw,
-        `https://api.allorigins.win/raw?url=${encoded}`,
-        `https://api.codetabs.com/v1/proxy/?quest=${encoded}`,
-        `https://corsproxy.io/?url=${encoded}`
-      ];
-    }
-
-    async function fetchJson(url, timeoutMs = 8500) {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), timeoutMs);
-      try {
-        const res = await fetch(url, { cache: 'no-store', signal: controller.signal });
-        if (!res.ok) throw new Error('network');
-        return await res.json();
-      } finally {
-        clearTimeout(timer);
-      }
-    }
-
-    async function firstJson(raw) {
-      const attempts = proxyUrls(raw).map(url => fetchJson(url));
-      if (Promise.any) return Promise.any(attempts);
-      const results = await Promise.allSettled(attempts);
-      const success = results.find(item => item.status === 'fulfilled');
-      if (success) return success.value;
-      throw new Error('fetch failed');
-    }
-
-    function normalizeYahooQuote(row) {
-      const price = Number(row.regularMarketPrice ?? row.postMarketPrice ?? row.preMarketPrice);
-      if (!Number.isFinite(price)) return null;
-      const previous = Number(row.regularMarketPreviousClose ?? row.regularMarketPreviousCloseRaw ?? row.previousClose ?? price);
-      let change = Number(row.regularMarketChange);
-      let pct = Number(row.regularMarketChangePercent);
-      if (!Number.isFinite(change)) change = price - previous;
-      if (!Number.isFinite(pct)) pct = previous ? (change / previous) * 100 : 0;
-      return {
-        price,
-        change,
-        pct,
-        updated: row.regularMarketTime || row.postMarketTime || row.preMarketTime || 0,
-        source: 'Yahoo'
-      };
-    }
-
-    async function loadYahooBatch() {
-      const liveItems = quotes.filter(item => !item.localRate);
-      const symbols = [...new Set(liveItems.map(item => item.ticker))];
-      const symbolQuery = symbols.map(encodeURIComponent).join(',');
-      const raw = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbolQuery}`;
-      const data = await firstJson(raw);
-      const rows = data?.quoteResponse?.result || [];
-      const bySymbol = new Map(rows.map(row => [row.symbol, row]));
-      const output = {};
-      for (const item of liveItems) {
-        const row = bySymbol.get(item.ticker);
-        const normalized = row ? normalizeYahooQuote(row) : null;
-        if (normalized) output[item.id] = normalized;
-      }
-      return output;
-    }
-
-    async function loadYahooChartFallback(item) {
-      const raw = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(item.ticker)}?interval=1d&range=1d`;
-      const data = await firstJson(raw);
-      const meta = data?.chart?.result?.[0]?.meta;
-      if (!meta || meta.regularMarketPrice == null) throw new Error('missing quote');
-      const price = Number(meta.regularMarketPrice);
-      const prev = Number(meta.chartPreviousClose ?? meta.previousClose ?? price);
-      const change = price - prev;
-      const pct = prev ? (change / prev) * 100 : 0;
-      return { price, change, pct, updated: meta.regularMarketTime || 0, source: 'Yahoo' };
-    }
-
-    async function loadLocalRate() {
-      const res = await fetch('./rates.json', { cache: 'no-store' });
-      if (!res.ok) throw new Error('missing rates');
-      const data = await res.json();
-      const price = Number(data.kr_base_rate);
-      const previous = Number(data.kr_base_prev ?? data.kr_base_rate);
-      return { price, change: price - previous, pct: 0, updatedText: data.kr_base_updated || '', source: 'rates.json' };
-    }
-
-    function applyQuote(item, data, mode = 'live') {
-      const card = document.getElementById(`quote-${item.id}`);
-      if (!card) return;
-      const price = card.querySelector('.quote-price');
-      const change = card.querySelector('.quote-change');
-      const meta = card.querySelector('.quote-meta');
-      const dir = data.change > 0 ? 'up' : data.change < 0 ? 'down' : 'flat';
-      price.textContent = fmtPrice(data.price, item.format);
-      change.className = `quote-change ${dir}`;
-      change.textContent = item.localRate && data.updatedText ? `수동 관리 · ${data.updatedText}` : fmtChange(data.change, data.pct, item.format);
-      const updated = data.updatedText || timeLabel(data.updated);
-      meta.textContent = `${data.source || '데이터'}${updated ? ' · ' + updated : ''}${mode === 'cache' ? ' · 캐시' : ''}`;
-      card.classList.remove('loading');
-      card.classList.toggle('stale', mode === 'cache');
-    }
-
-    function failQuote(item) {
-      const card = document.getElementById(`quote-${item.id}`);
-      if (!card) return;
-      card.classList.remove('loading');
-      card.querySelector('.quote-change').textContent = '불러오기 실패';
-      card.querySelector('.quote-meta').textContent = '클릭하면 원문 페이지가 열립니다';
-    }
-
-    function applyCachedQuotes() {
-      const cache = readQuoteCache();
-      for (const item of quotes) {
-        if (cache[item.id]) applyQuote(item, cache[item.id], 'cache');
-      }
-    }
-
-    async function loadQuotes() {
-      renderQuoteCards();
-      applyCachedQuotes();
-      const nextCache = readQuoteCache();
-
-      const liveItems = quotes.filter(item => !item.localRate);
-      try {
-        const batch = await loadYahooBatch();
-        for (const item of liveItems) {
-          if (batch[item.id]) {
-            applyQuote(item, batch[item.id], 'live');
-            nextCache[item.id] = batch[item.id];
-          }
-        }
-      } catch {}
-
-      const missingLive = liveItems.filter(item => !nextCache[item.id] || document.getElementById(`quote-${item.id}`)?.classList.contains('loading'));
-      await Promise.all(missingLive.map(async item => {
-        try {
-          const data = await loadYahooChartFallback(item);
-          applyQuote(item, data, 'live');
-          nextCache[item.id] = data;
-        } catch {
-          failQuote(item);
-        }
-      }));
-
-      const rateItem = quotes.find(item => item.localRate);
-      if (rateItem) {
-        try {
-          const rate = await loadLocalRate();
-          applyQuote(rateItem, rate, 'live');
-          nextCache[rateItem.id] = rate;
-        } catch {
-          failQuote(rateItem);
-        }
-      }
-
-      writeQuoteCache(nextCache);
-    }
-
-    function today() {
-      const d = new Date();
-      return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function noteKey(id) {
-      return `ty-stock-study:${id}`;
-    }
-
-    function noteTemplate() {
-      return `[${today()}]
-관찰:
-근거:
-다음 행동:`;
-    }
-
-    function readNote(id) {
-      try {
-        const data = JSON.parse(localStorage.getItem(noteKey(id)) || '{}');
-        return { text: data.text || '', updatedAt: data.updatedAt || '' };
-      } catch {
-        return { text: '', updatedAt: '' };
-      }
-    }
-
-    function renderTabs() {
-      document.getElementById('note-tabs').innerHTML = noteTargets.map(([id, label]) => `<button class="note-tab${id === activeNote ? ' active' : ''}" type="button" data-note="${id}">${label}</button>`).join('');
-      document.querySelectorAll('[data-note]').forEach(btn => btn.addEventListener('click', () => selectNote(btn.dataset.note)));
-    }
-
-    function selectNote(id) {
-      activeNote = id;
-      const label = noteTargets.find(item => item[0] === id)?.[1] || '메모';
-      const saved = readNote(id);
-      document.getElementById('note-title').textContent = label;
-      document.getElementById('note-area').value = saved.text || noteTemplate();
-      document.getElementById('note-status').textContent = saved.updatedAt ? `마지막 저장 ${saved.updatedAt}` : '저장 기록 없음';
-      renderTabs();
-    }
-
-    function saveNote() {
-      const value = document.getElementById('note-area').value.trim() || noteTemplate();
-      const updatedAt = new Date().toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-      localStorage.setItem(noteKey(activeNote), JSON.stringify({ text: value, updatedAt }));
-      document.getElementById('note-status').textContent = `마지막 저장 ${updatedAt}`;
-    }
-
-    document.getElementById('refresh-quotes').addEventListener('click', loadQuotes);
+    function today() { const d = new Date(); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
+    function noteKey(id) { return `ty-stock-study:${id}`; }
+    function noteTemplate(label) { return `[${today()}]\n관찰:\n근거:\n다음 행동:`; }
+    function readNote(id) { try { const data = JSON.parse(localStorage.getItem(noteKey(id)) || '{}'); return { text: data.text || '', updatedAt: data.updatedAt || '' }; } catch { return { text: '', updatedAt: '' }; } }
+    function renderTabs() { document.getElementById('note-tabs').innerHTML = noteTargets.map(([id,label]) => `<button class="note-tab${id === activeNote ? ' active' : ''}" type="button" data-note="${id}">${label}</button>`).join(''); document.querySelectorAll('[data-note]').forEach(btn => btn.addEventListener('click', () => selectNote(btn.dataset.note))); }
+    function selectNote(id) { activeNote = id; const label = noteTargets.find(item => item[0] === id)?.[1] || '메모'; const saved = readNote(id); document.getElementById('note-title').textContent = label; document.getElementById('note-area').value = saved.text || noteTemplate(label); document.getElementById('note-status').textContent = saved.updatedAt ? `마지막 저장 ${saved.updatedAt}` : '저장 기록 없음'; renderTabs(); }
+    function saveNote() { const value = document.getElementById('note-area').value.trim() || noteTemplate('메모'); const updatedAt = new Date().toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); localStorage.setItem(noteKey(activeNote), JSON.stringify({ text: value, updatedAt })); document.getElementById('note-status').textContent = `마지막 저장 ${updatedAt}`; }
+    document.getElementById('refresh-quotes').addEventListener('click', () => loadQuotes(true));
     document.getElementById('save-note').addEventListener('click', saveNote);
-    renderTabs();
-    selectNote(activeNote);
-    loadQuotes();
+    renderTabs(); selectNote(activeNote); loadQuotes();
   </script>
 </body>
 </html>
