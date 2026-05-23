@@ -1,0 +1,423 @@
+{
+  "version": "v11",
+  "generatedAt": "2026-05-24",
+  "note": "재무 숫자는 공식 IR/공시 원자료 입력 전 placeholder입니다.",
+  "companies": {
+    "samsung": {
+      "name": "삼성전자",
+      "ticker": "005930.KS",
+      "kind": "종합 반도체 · 메모리 · 파운드리",
+      "heading": "DRAM, NAND, HBM, 파운드리까지 가진 한국 최대 반도체 기업입니다.",
+      "intro": "메모리 사이클과 AI 메모리 전환, 파운드리 경쟁력을 동시에 봐야 하는 기업입니다. 메모리 업황 개선이 실적에 크게 작용하지만, HBM·선단공정·스마트폰/가전 변동성도 함께 확인해야 합니다.",
+      "aiRole": "HBM, DRAM, NAND, SOCAMM 계층에서 AI 인프라 공급망과 연결됩니다.",
+      "segments": [
+        "Memory",
+        "Foundry",
+        "System LSI",
+        "DX 세트 사업"
+      ],
+      "financials": [
+        {
+          "label": "매출",
+          "value": "공식 IR 입력 필요",
+          "note": "연도별 연결 매출"
+        },
+        {
+          "label": "영업이익",
+          "value": "공식 IR 입력 필요",
+          "note": "메모리 사이클 영향 큼"
+        },
+        {
+          "label": "순이익",
+          "value": "공식 IR 입력 필요",
+          "note": "환율/세금 영향 확인"
+        },
+        {
+          "label": "CAPEX",
+          "value": "공식 IR 입력 필요",
+          "note": "HBM/선단공정 투자"
+        }
+      ],
+      "checks": [
+        "HBM 공급·고객 인증 진행",
+        "DRAM/NAND ASP 방향",
+        "파운드리 가동률과 선단공정 수율",
+        "원/달러 환율과 메모리 재고"
+      ],
+      "sources": [
+        [
+          "IR",
+          "https://www.samsung.com/global/ir/"
+        ],
+        [
+          "DART",
+          "https://dart.fss.or.kr/dsab002/search.ax"
+        ]
+      ]
+    },
+    "skhynix": {
+      "name": "SK hynix",
+      "ticker": "000660.KS",
+      "kind": "메모리 · HBM",
+      "heading": "HBM과 DRAM 업황 민감도가 큰 글로벌 메모리 전문 기업입니다.",
+      "intro": "AI 서버용 HBM에서 핵심 위치를 차지하며 DRAM 가격 사이클과 투자심리에 민감합니다. NAND와 Solidigm도 함께 봐야 하지만 핵심 관찰축은 HBM, DRAM ASP, capex입니다.",
+      "aiRole": "HBM 핵심 공급망, HBF 표준화 흐름에서 Sandisk와 함께 관찰합니다.",
+      "segments": [
+        "DRAM",
+        "HBM",
+        "NAND",
+        "Solidigm SSD"
+      ],
+      "financials": [
+        {
+          "label": "매출",
+          "value": "공식 IR 입력 필요",
+          "note": "메모리 ASP 민감"
+        },
+        {
+          "label": "영업이익",
+          "value": "공식 IR 입력 필요",
+          "note": "HBM mix 중요"
+        },
+        {
+          "label": "순이익",
+          "value": "공식 IR 입력 필요",
+          "note": "차입/환율 확인"
+        },
+        {
+          "label": "CAPEX",
+          "value": "공식 IR 입력 필요",
+          "note": "HBM 후공정 포함"
+        }
+      ],
+      "checks": [
+        "HBM 세대 전환과 고객 배정",
+        "DRAM spot/contract 가격",
+        "NAND 회복 속도",
+        "CAPEX 증가가 공급과잉으로 이어지는지"
+      ],
+      "sources": [
+        [
+          "IR",
+          "https://www.skhynix.com/ir/UI-FR-IR01"
+        ],
+        [
+          "DART",
+          "https://dart.fss.or.kr/dsab002/search.ax"
+        ]
+      ]
+    },
+    "micron-stock": {
+      "name": "Micron",
+      "ticker": "MU",
+      "kind": "미국 메모리 · DRAM/NAND/HBM",
+      "heading": "미국 대표 메모리 기업으로 DRAM, NAND, HBM 사이클을 직접 반영합니다.",
+      "intro": "메모리 업황을 미국 주식시장 관점에서 가장 직접적으로 추적할 수 있는 종목입니다. HBM 경쟁력, DRAM ASP, NAND 수익성, 데이터센터 mix를 함께 확인해야 합니다.",
+      "aiRole": "HBM과 데이터센터 DRAM 공급망에서 AI 인프라 투자와 연결됩니다.",
+      "segments": [
+        "DRAM",
+        "NAND",
+        "HBM",
+        "Data Center Memory"
+      ],
+      "financials": [
+        {
+          "label": "Revenue",
+          "value": "SEC/IR 입력 필요",
+          "note": "FY 기준"
+        },
+        {
+          "label": "Operating income",
+          "value": "SEC/IR 입력 필요",
+          "note": "cycle 민감"
+        },
+        {
+          "label": "Net income",
+          "value": "SEC/IR 입력 필요",
+          "note": "재고평가 영향 확인"
+        },
+        {
+          "label": "CAPEX",
+          "value": "SEC/IR 입력 필요",
+          "note": "HBM/DRAM 전환"
+        }
+      ],
+      "checks": [
+        "HBM 매출 비중과 수익성",
+        "DRAM/NAND ASP 가이던스",
+        "재고일수 변화",
+        "데이터센터 vs PC/모바일 mix"
+      ],
+      "sources": [
+        [
+          "IR",
+          "https://investors.micron.com/"
+        ],
+        [
+          "SEC",
+          "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&owner=include&count=10"
+        ]
+      ]
+    },
+    "intel": {
+      "name": "Intel",
+      "ticker": "INTC",
+      "kind": "CPU · 파운드리 재건",
+      "heading": "서버/PC CPU와 파운드리 전환이 동시에 걸린 미국 IDM입니다.",
+      "intro": "전통적 CPU 강자지만 공정 전환, 파운드리 사업, 서버 점유율 방어가 핵심입니다. AI 가속기보다 CPU 플랫폼과 제조 재건의 실행력을 더 엄격히 봐야 합니다.",
+      "aiRole": "Host CPU, 서버 플랫폼, 파운드리 재건을 통해 AI 인프라의 기반 계층과 연결됩니다.",
+      "segments": [
+        "Client Computing",
+        "Data Center & AI",
+        "Foundry",
+        "Network/Edge"
+      ],
+      "financials": [
+        {
+          "label": "Revenue",
+          "value": "SEC/IR 입력 필요",
+          "note": "사업부별 확인"
+        },
+        {
+          "label": "Operating income",
+          "value": "SEC/IR 입력 필요",
+          "note": "foundry 손실 주의"
+        },
+        {
+          "label": "Net income",
+          "value": "SEC/IR 입력 필요",
+          "note": "구조조정 영향"
+        },
+        {
+          "label": "CAPEX",
+          "value": "SEC/IR 입력 필요",
+          "note": "공정 투자 부담"
+        }
+      ],
+      "checks": [
+        "서버 CPU 점유율 회복 여부",
+        "파운드리 고객 확보",
+        "공정 로드맵 지연 여부",
+        "현금흐름과 부채 부담"
+      ],
+      "sources": [
+        [
+          "IR",
+          "https://www.intc.com/"
+        ],
+        [
+          "SEC",
+          "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=INTC&type=10-K&owner=include&count=10"
+        ]
+      ]
+    },
+    "amd": {
+      "name": "AMD",
+      "ticker": "AMD",
+      "kind": "CPU · GPU · AI 가속기",
+      "heading": "EPYC CPU와 Instinct GPU로 AI 서버 경쟁에 참여하는 팹리스 기업입니다.",
+      "intro": "CPU에서는 서버 점유율, GPU에서는 AI 가속기 채택이 핵심입니다. TSMC 선단공정 의존과 엔비디아 대비 생태계 격차를 함께 봐야 합니다.",
+      "aiRole": "AI GPU/NPU와 Host CPU 양쪽에 걸쳐 AI 서버 플랫폼 경쟁에 참여합니다.",
+      "segments": [
+        "Data Center",
+        "Client",
+        "Gaming",
+        "Embedded"
+      ],
+      "financials": [
+        {
+          "label": "Revenue",
+          "value": "SEC/IR 입력 필요",
+          "note": "Data Center 비중"
+        },
+        {
+          "label": "Operating income",
+          "value": "SEC/IR 입력 필요",
+          "note": "mix 영향"
+        },
+        {
+          "label": "Net income",
+          "value": "SEC/IR 입력 필요",
+          "note": "인수/상각 확인"
+        },
+        {
+          "label": "CAPEX",
+          "value": "SEC/IR 입력 필요",
+          "note": "팹리스라 제조 CAPEX 낮음"
+        }
+      ],
+      "checks": [
+        "Instinct GPU 출하와 고객 확대",
+        "EPYC 서버 점유율",
+        "소프트웨어 생태계",
+        "TSMC capacity와 CoWoS 배정"
+      ],
+      "sources": [
+        [
+          "IR",
+          "https://ir.amd.com/"
+        ],
+        [
+          "SEC",
+          "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=AMD&type=10-K&owner=include&count=10"
+        ]
+      ]
+    },
+    "nvidia": {
+      "name": "NVIDIA",
+      "ticker": "NVDA",
+      "kind": "AI GPU · 네트워킹 · CUDA",
+      "heading": "AI GPU와 CUDA 생태계, 네트워킹을 묶어 AI 인프라 병목을 장악한 기업입니다.",
+      "intro": "GPU뿐 아니라 소프트웨어 생태계, NVLink/네트워킹, 시스템 판매가 핵심입니다. 높은 기대가 이미 주가에 반영되므로 공급, 전력, 고객 capex 지속성을 함께 봐야 합니다.",
+      "aiRole": "AI GPU/NPU, HBM 수요, interconnect 병목의 중심입니다.",
+      "segments": [
+        "Data Center",
+        "Gaming",
+        "Professional Visualization",
+        "Automotive"
+      ],
+      "financials": [
+        {
+          "label": "Revenue",
+          "value": "SEC/IR 입력 필요",
+          "note": "Data Center 중심"
+        },
+        {
+          "label": "Operating income",
+          "value": "SEC/IR 입력 필요",
+          "note": "마진 지속성"
+        },
+        {
+          "label": "Net income",
+          "value": "SEC/IR 입력 필요",
+          "note": "고성장 반영"
+        },
+        {
+          "label": "CAPEX",
+          "value": "SEC/IR 입력 필요",
+          "note": "팹리스/시스템 투자"
+        }
+      ],
+      "checks": [
+        "신제품 전환과 공급",
+        "HBM/CoWoS 병목",
+        "클라우드 고객 capex",
+        "경쟁 GPU/ASIC 확산"
+      ],
+      "sources": [
+        [
+          "IR",
+          "https://investor.nvidia.com/"
+        ],
+        [
+          "SEC",
+          "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=NVDA&type=10-K&owner=include&count=10"
+        ]
+      ]
+    },
+    "sandisk": {
+      "name": "Sandisk",
+      "ticker": "SNDK",
+      "kind": "NAND · SSD · HBF 후보",
+      "heading": "NAND 저장장치 기업이면서 HBF를 통해 AI 보조 메모리 계층으로 올라갈 수 있는 후보입니다.",
+      "intro": "순수 NAND/SSD 사이클과 HBF 기대를 분리해서 봐야 합니다. HBF는 흥미로운 방향이지만 표준화와 상용화 초기 단계이므로 실적 기여를 과대해석하면 위험합니다.",
+      "aiRole": "HBF와 SSD/Data 계층에서 AI 추론 보조 저장 계층과 연결됩니다.",
+      "segments": [
+        "NAND",
+        "SSD",
+        "Client/Enterprise Storage",
+        "HBF 표준화 후보"
+      ],
+      "financials": [
+        {
+          "label": "Revenue",
+          "value": "공식 자료 입력 필요",
+          "note": "분사/상장 이후 기준"
+        },
+        {
+          "label": "Operating income",
+          "value": "공식 자료 입력 필요",
+          "note": "NAND 가격 민감"
+        },
+        {
+          "label": "Net income",
+          "value": "공식 자료 입력 필요",
+          "note": "초기 비교 주의"
+        },
+        {
+          "label": "CAPEX",
+          "value": "공식 자료 입력 필요",
+          "note": "JV/공급 구조 확인"
+        }
+      ],
+      "checks": [
+        "HBF가 실제 주문/표준으로 이어지는지",
+        "NAND ASP와 SSD 가격",
+        "키옥시아/JV 관계",
+        "분사 이후 재무 구조"
+      ],
+      "sources": [
+        [
+          "IR",
+          "https://www.sandisk.com/company/investor-relations"
+        ],
+        [
+          "HBF",
+          "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-02-25-sandisk-and-sk-hynix-begin-global-standardization-of-next-generation-memory-solution-high-bandwidth-flash-hbf"
+        ]
+      ]
+    },
+    "kioxia": {
+      "name": "Kioxia",
+      "ticker": "285A.T",
+      "kind": "NAND · SSD",
+      "heading": "일본 NAND 핵심 업체로 저장장치 사이클을 보는 비교축입니다.",
+      "intro": "NAND 가격과 SSD 수요, 생산 조정, 파트너십을 중심으로 봐야 합니다. HBF 기대보다는 순수 NAND/SSD 업황 비교축으로 쓰는 편이 더 정확합니다.",
+      "aiRole": "SSD/Data Lake와 NAND 공급 계층에서 AI 저장 인프라와 연결됩니다.",
+      "segments": [
+        "NAND",
+        "SSD",
+        "Enterprise Storage",
+        "Client Storage"
+      ],
+      "financials": [
+        {
+          "label": "Revenue",
+          "value": "IR 입력 필요",
+          "note": "JPY 기준"
+        },
+        {
+          "label": "Operating income",
+          "value": "IR 입력 필요",
+          "note": "NAND 사이클 민감"
+        },
+        {
+          "label": "Net income",
+          "value": "IR 입력 필요",
+          "note": "환율/차입 확인"
+        },
+        {
+          "label": "CAPEX",
+          "value": "IR 입력 필요",
+          "note": "NAND fab 투자"
+        }
+      ],
+      "checks": [
+        "NAND ASP와 가동률",
+        "SSD 수요 회복",
+        "Sandisk와 생산/JV 관계",
+        "엔화와 재무구조"
+      ],
+      "sources": [
+        [
+          "IR",
+          "https://www.kioxia-holdings.com/en-jp/ir.html"
+        ],
+        [
+          "Yahoo",
+          "https://finance.yahoo.com/quote/285A.T"
+        ]
+      ]
+    }
+  }
+}

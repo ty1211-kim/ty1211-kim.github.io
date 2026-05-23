@@ -167,6 +167,29 @@
     .glossary-card small { color: var(--muted); line-height: 1.55; }
     .stock-risk { margin: 0 0 14px; border: 1px solid rgba(255,59,48,0.14); background: rgba(255,59,48,0.045); border-radius: 16px; padding: 10px 12px; color: #7a271a; font-size: 12px; }
     .stock-risk strong { display:block; margin-bottom: 2px; color: #b42318; }
+    .stock-card.selectable { cursor: pointer; }
+    .stock-card.active { border-color: rgba(0,122,255,0.32); box-shadow: 0 18px 46px rgba(0,122,255,0.12); transform: translateY(-2px); }
+    .company-panel { margin-top: 18px; }
+    .company-layout { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,0.95fr); gap: 18px; align-items: stretch; }
+    .company-copy, .company-chart-shell { border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,0.72); padding: 18px; }
+    .company-kicker { color: var(--accent); font-weight: 800; font-size: 12px; letter-spacing: .02em; text-transform: uppercase; margin-bottom: 8px; }
+    .company-one-liner { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 800; letter-spacing: -0.04em; color: var(--ink); }
+    .company-intro { color: var(--muted-strong); line-height: 1.72; margin: 14px 0; }
+    .company-header-inline { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .company-warning { border: 1px solid rgba(255,149,0,0.22); background: rgba(255,149,0,0.075); border-radius: 18px; padding: 12px 14px; color: #7a4a00; font-size: 13px; line-height: 1.55; margin: 12px 0; }
+    .company-summary-grid, .company-fin-grid { display: grid; gap: 10px; margin-top: 12px; }
+    .company-summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .company-fin-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    .company-summary-card, .company-fin-card, .company-note-card { border: 1px solid var(--line); background: rgba(255,255,255,0.72); border-radius: 18px; padding: 12px; }
+    .company-summary-card b, .company-fin-card b { display:block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .company-summary-card span, .company-fin-card span { display:block; color: var(--ink); font-weight: 750; font-size: 14px; line-height: 1.35; }
+    .company-summary-card small, .company-fin-card small { display:block; margin-top: 5px; color: var(--muted); line-height: 1.4; }
+    .company-note-card { margin-top: 12px; }
+    .company-note-card h4 { margin: 0 0 8px; font-size: 15px; }
+    .company-note-card ul { margin: 0; padding-left: 18px; color: var(--muted-strong); line-height: 1.65; }
+    .company-chart-shell svg { width: 100%; min-height: 320px; }
+    .company-empty { color: var(--muted); font-size: 14px; }
+
     .playbook-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
     .playbook-card { border: 1px solid rgba(29,29,31,0.09); border-radius: 24px; background: rgba(255,255,255,0.86); box-shadow: var(--shadow-soft); padding: 20px; }
     .playbook-card h3 { margin: 0 0 10px; font-size: 21px; letter-spacing: -0.045em; }
@@ -253,9 +276,9 @@
     .resource-card span { color: var(--muted); font-size: 13px; }
     footer { padding: 44px 0 60px; color: var(--muted); border-top: 1px solid rgba(29,29,31,0.09); margin-top: 40px; }
 
-    @media (max-width: 1120px) { .audit-grid, .glossary-grid, .quality-grid, .method-grid, .onboarding-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .playbook-grid, .evidence-grid { grid-template-columns: 1fr; } .stock-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .diagram-layout { grid-template-columns: 1fr; } .diagram-visual { border-right: 0; border-bottom: 1px solid var(--line); } }
+    @media (max-width: 1120px) { .audit-grid, .glossary-grid, .quality-grid, .method-grid, .onboarding-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .playbook-grid, .evidence-grid, .company-layout { grid-template-columns: 1fr; } .company-fin-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .stock-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .diagram-layout { grid-template-columns: 1fr; } .diagram-visual { border-right: 0; border-bottom: 1px solid var(--line); } }
     @media (max-width: 980px) { .hero-grid, .note-layout { grid-template-columns: 1fr; } .quote-grid, .resource-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .hero-card { min-height: auto; } }
-    @media (max-width: 620px) { .audit-grid, .glossary-grid, .quality-grid, .method-grid, .onboarding-grid { grid-template-columns: 1fr; } .truth-row { grid-template-columns: 1fr; } .price-card-grid { grid-template-columns: 1fr; } .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .music-player { right: 12px; bottom: 12px; max-width: calc(100% - 24px); } }
+    @media (max-width: 620px) { .audit-grid, .glossary-grid, .quality-grid, .method-grid, .onboarding-grid, .company-summary-grid, .company-fin-grid { grid-template-columns: 1fr; } .truth-row { grid-template-columns: 1fr; } .price-card-grid { grid-template-columns: 1fr; } .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .music-player { right: 12px; bottom: 12px; max-width: calc(100% - 24px); } }
   </style>
 </head>
 <body>
@@ -334,6 +357,44 @@
       <div class="wrap">
         <div class="section-head"><div><h2>핵심 기업</h2><p>메모리·CPU·GPU·NAND 밸류체인의 대표 기업을 같은 카드 구조로 봅니다. 주가와 시가총액은 외부 시세 API와 보강 로직을 사용합니다.</p></div></div>
         <div class="stock-grid" id="stock-grid"></div>
+        <div class="panel company-panel" id="company-detail-panel">
+          <div class="section-head">
+            <div>
+              <h2 style="font-size:32px">선택 기업 상세</h2>
+              <p>기업 카드를 클릭하면 회사 소개, 사업 구조, AI 밸류체인 위치, 재무 확인 항목, 최근 주가 흐름을 같은 패널에서 봅니다.</p>
+            </div>
+          </div>
+          <div class="company-layout">
+            <div class="company-copy">
+              <div class="company-header-inline">
+                <div>
+                  <div class="company-kicker" id="company-detail-kicker">기업 개요</div>
+                  <p class="company-one-liner" id="company-detail-heading">카드를 누르면 상세가 열립니다.</p>
+                </div>
+                <div class="link-row" id="company-detail-cta"></div>
+              </div>
+              <p class="company-intro" id="company-detail-intro">핵심 기업 카드 중 하나를 선택하세요.</p>
+              <div class="company-warning" id="company-detail-warning">재무 숫자는 공식 IR/공시 원자료로 교체해야 합니다. 검증 전 placeholder 수치는 투자 근거로 쓰지 않습니다.</div>
+              <div class="company-summary-grid" id="company-detail-summary"></div>
+              <div class="company-fin-grid" id="company-detail-financials"></div>
+              <div class="company-note-card">
+                <h4>오늘 확인할 것</h4>
+                <ul id="company-detail-checks"><li>기업 카드를 선택하세요.</li></ul>
+              </div>
+            </div>
+            <div class="company-chart-shell">
+              <div class="chart-head">
+                <div>
+                  <h3 id="company-chart-title">최근 주가 흐름</h3>
+                  <p id="company-chart-subtitle">6개월 · Yahoo Finance chart fallback</p>
+                </div>
+              </div>
+              <svg class="memory-chart" id="company-price-chart" viewBox="0 0 760 360" preserveAspectRatio="none"></svg>
+              <div class="source-list" id="company-price-sources"><span>기업을 선택하면 차트를 불러옵니다.</span></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -1226,8 +1287,100 @@
       document.getElementById('quote-grid').innerHTML = marketQuotes.map(item => `<a class="quote-card" id="quote-${item.id}" href="${item.url}" target="_blank" rel="noopener noreferrer"><div><div class="quote-kicker">${item.group}</div><div class="quote-name">${item.name}</div></div><div><div class="quote-price">—</div><div class="quote-change flat">대기 중</div><div class="quote-source">—</div></div></a>`).join('');
     }
 
+
+    function attachStockCardEvents() {
+      document.querySelectorAll('.stock-card.selectable').forEach(card => {
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `${card.querySelector('h3')?.textContent || '기업'} 상세 보기`);
+        card.querySelectorAll('a').forEach(a => a.addEventListener('click', ev => ev.stopPropagation()));
+        card.addEventListener('click', ev => { if (!ev.target.closest('a')) renderCompanyDetail(card.dataset.companyId); });
+        card.addEventListener('keydown', ev => {
+          if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); renderCompanyDetail(card.dataset.companyId); }
+        });
+      });
+    }
+
+    async function loadCompanyDetails() {
+      if (companyDetailsDb) return companyDetailsDb;
+      try {
+        const res = await fetch('./data/company-details.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('company details fetch failed');
+        companyDetailsDb = await res.json();
+      } catch (err) {
+        companyDetailsDb = { companies: {} };
+      }
+      return companyDetailsDb;
+    }
+
+    function renderCompanyDetailSkeleton(message) {
+      document.getElementById('company-detail-heading').textContent = message;
+      document.getElementById('company-detail-intro').textContent = '';
+      document.getElementById('company-detail-summary').innerHTML = '';
+      document.getElementById('company-detail-financials').innerHTML = '';
+      document.getElementById('company-detail-checks').innerHTML = '<li>데이터를 불러오고 있습니다.</li>';
+    }
+
+    async function renderCompanyDetail(companyId = selectedCompanyId) {
+      selectedCompanyId = companyId;
+      document.querySelectorAll('.stock-card').forEach(card => card.classList.toggle('active', card.dataset.companyId === companyId));
+      const db = await loadCompanyDetails();
+      const data = db.companies?.[companyId];
+      if (!data) { renderCompanyDetailSkeleton('회사 상세 데이터를 찾지 못했습니다.'); return; }
+      document.getElementById('company-detail-kicker').textContent = `${data.name} · ${data.kind}`;
+      document.getElementById('company-detail-heading').textContent = data.heading;
+      document.getElementById('company-detail-intro').textContent = data.intro;
+      document.getElementById('company-detail-warning').textContent = `${data.aiRole} · 재무 숫자는 공식 IR/공시 원자료로 교체해야 합니다.`;
+      document.getElementById('company-detail-summary').innerHTML = [
+        { label: '사업 구조', value: (data.segments || []).join(' · '), note: '주요 매출/기술 축' },
+        { label: 'AI 밸류체인 위치', value: data.aiRole, note: '기술 다이어그램과 연결' }
+      ].map(item => `<div class="company-summary-card"><b>${item.label}</b><span>${item.value}</span><small>${item.note}</small></div>`).join('');
+      document.getElementById('company-detail-financials').innerHTML = (data.financials || []).map(item => `<div class="company-fin-card"><b>${item.label}</b><span>${item.value}</span><small>${item.note || ''}</small></div>`).join('');
+      document.getElementById('company-detail-checks').innerHTML = (data.checks || []).map(item => `<li>${item}</li>`).join('');
+      document.getElementById('company-detail-cta').innerHTML = (data.sources || []).slice(0,4).map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('');
+      document.getElementById('company-chart-title').textContent = `${data.name} 최근 주가 흐름`;
+      document.getElementById('company-chart-subtitle').textContent = `${data.ticker} · 6개월 · 주간 종가`;
+      drawCompanyPriceChart(data).catch(() => {
+        const svg = document.getElementById('company-price-chart');
+        svg.innerHTML = `<text x="380" y="180" text-anchor="middle" fill="#667085" font-size="16">주가 차트를 불러오지 못했습니다. 원문 링크를 확인하세요.</text>`;
+        document.getElementById('company-price-sources').innerHTML = '<span>Yahoo chart 로딩 실패</span>';
+      });
+    }
+
+    async function drawCompanyPriceChart(company) {
+      const json = await fastJson(`https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(company.ticker)}?interval=1wk&range=6mo`);
+      const result = json?.chart?.result?.[0];
+      const ts = result?.timestamp || [];
+      const close = result?.indicators?.quote?.[0]?.close || [];
+      const points = ts.map((t,i)=>({ t, y: Number(close[i]) })).filter(p => Number.isFinite(p.y));
+      if (points.length < 2) throw new Error('not enough chart points');
+      const svg = document.getElementById('company-price-chart');
+      const W = 760, H = 360, pad = { l: 56, r: 22, t: 24, b: 42 };
+      const xs = points.map((_,i)=>pad.l + (i/(points.length-1))*(W-pad.l-pad.r));
+      const min = Math.min(...points.map(p=>p.y)), max = Math.max(...points.map(p=>p.y));
+      const span = max-min || 1;
+      const ys = points.map(p => pad.t + (max - p.y)/span*(H-pad.t-pad.b));
+      const d = points.map((p,i)=>`${i?'L':'M'}${xs[i].toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
+      const area = `${d} L${xs[xs.length-1].toFixed(1)},${H-pad.b} L${xs[0].toFixed(1)},${H-pad.b} Z`;
+      const fmt = v => (company.ticker.endsWith('.KS') || company.ticker.endsWith('.T')) ? Math.round(v).toLocaleString() : `$${v.toFixed(2)}`;
+      svg.innerHTML = `
+        <defs><linearGradient id="companyArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#007aff" stop-opacity="0.16"/><stop offset="1" stop-color="#007aff" stop-opacity="0.01"/></linearGradient></defs>
+        <rect x="0" y="0" width="760" height="360" rx="20" fill="rgba(255,255,255,0.45)"/>
+        <line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${H-pad.b}" stroke="#e5e7eb"/>
+        <line x1="${pad.l}" y1="${H-pad.b}" x2="${W-pad.r}" y2="${H-pad.b}" stroke="#e5e7eb"/>
+        <text x="${pad.l-10}" y="${pad.t+6}" text-anchor="end" fill="#667085" font-size="12">${fmt(max)}</text>
+        <text x="${pad.l-10}" y="${H-pad.b}" text-anchor="end" fill="#667085" font-size="12">${fmt(min)}</text>
+        <path d="${area}" fill="url(#companyArea)"/>
+        <path d="${d}" fill="none" stroke="#007aff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="${xs[xs.length-1].toFixed(1)}" cy="${ys[ys.length-1].toFixed(1)}" r="5" fill="#007aff"/>
+        <text x="${W-pad.r}" y="${H-14}" text-anchor="end" fill="#667085" font-size="12">6개월 주간 종가</text>`;
+      document.getElementById('company-price-sources').innerHTML = `<span>Yahoo Finance chart · 최신값 ${fmt(points[points.length-1].y)}</span>`;
+    }
+
+
     function renderStockCards() {
-      document.getElementById('stock-grid').innerHTML = coreStocks.map(stock => `<article class="stock-card" id="stock-${stock.id}"><div><div class="stock-top"><div><h3>${stock.name}</h3><div class="ticker">${stock.displayTicker}</div></div><span class="tag">${stock.tag}</span></div><p class="stock-thesis">${stock.thesis}</p><div class="stock-risk"><strong>확인 질문</strong>${stockRiskMap[stock.id]?.risk || '가정과 리스크를 따로 기록해야 합니다.'}<br><strong>봐야 할 것</strong>${stockRiskMap[stock.id]?.watch || '실적, 공시, 가격 추이'}</div><div class="stock-metrics"><div class="metric"><div class="metric-label">주가</div><div class="metric-value stock-price">—</div><div class="stock-change flat">대기 중</div></div><div class="metric"><div class="metric-label">시가총액</div><div class="metric-value stock-cap">시총 확인 중</div><div class="quote-source stock-source">—</div></div></div></div><div class="link-row">${stock.links.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></article>`).join('');
+      document.getElementById('stock-grid').innerHTML = coreStocks.map(stock => `<article class="stock-card selectable" id="stock-${stock.id}" data-company-id="${stock.id}"><div><div class="stock-top"><div><h3>${stock.name}</h3><div class="ticker">${stock.displayTicker}</div></div><span class="tag">${stock.tag}</span></div><p class="stock-thesis">${stock.thesis}</p><div class="stock-risk"><strong>확인 질문</strong>${stockRiskMap[stock.id]?.risk || '가정과 리스크를 따로 기록해야 합니다.'}<br><strong>봐야 할 것</strong>${stockRiskMap[stock.id]?.watch || '실적, 공시, 가격 추이'}</div><div class="stock-metrics"><div class="metric"><div class="metric-label">주가</div><div class="metric-value stock-price">—</div><div class="stock-change flat">대기 중</div></div><div class="metric"><div class="metric-label">시가총액</div><div class="metric-value stock-cap">시총 확인 중</div><div class="quote-source stock-source">—</div></div></div></div><div class="link-row">${stock.links.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></article>`).join('');
+      attachStockCardEvents();
     }
 
     function hydrateCachedQuotes() {

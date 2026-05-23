@@ -1,0 +1,8 @@
+{
+  "name": "ty-homepage",
+  "version": "11.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/marketcap.test.mjs"
+  }
+}

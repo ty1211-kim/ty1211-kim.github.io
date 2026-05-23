@@ -1,6 +1,5 @@
 {
-  "kr_base_rate": 2.5,
+  "kr_base_rate": 2.50,
   "kr_base_prev": 2.75,
-  "kr_base_updated": "2025-05-29",
-  "source": "Bank of Korea base rate history"
+  "kr_base_updated": "2025-05-29"
 }
