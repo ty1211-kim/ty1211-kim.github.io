@@ -2,58 +2,38 @@
 
 반도체 중심 투자 판단을 위한 개인 대시보드입니다.
 
-## 핵심 흐름
+## 핵심 목적
 
-1. 환율, 금, 유가, 지수, 비트코인으로 시장 온도를 확인합니다.
-2. 삼성전자, SK하이닉스, 마이크론, 인텔, AMD, 엔비디아, 샌디스크, 키옥시아의 주가와 시가총액을 비교합니다.
-3. DRAM과 NAND 현물가 추이를 참고용 그래프로 봅니다.
-4. PC와 AI 시스템의 메모리 구조를 클릭형 블록다이어그램으로 공부합니다.
-5. HBF, CXL Memory, SOCAMM을 하나로 묶지 않고 별도 부품·투자 테마로 분리해서 봅니다.
-6. 판단 근거와 다음 행동을 기록합니다.
+시장, 반도체 구조, 핵심 종목, 메모리 가격, 판단 기록을 한 흐름으로 묶습니다.
+보기 좋은 링크 모음이 아니라, 투자 판단에서 틀리기 쉬운 지점을 먼저 드러내는 운영체제를 목표로 합니다.
 
-## 이번 버전의 수정점
+## 이번 버전의 변화
 
-- AI 블록다이어그램에서 `HBF / CXL Memory`를 분리했습니다.
-- `HBF`, `CXL Memory`, `SOCAMM`을 각각 별도 클릭 블록과 설명으로 만들었습니다.
-- 샌디스크는 `HBF+NAND` 관점으로, 키옥시아는 `NAND/SSD` 관점으로 분리했습니다.
-- 핵심 종목의 시가총액이 `—`로 남는 문제를 줄이기 위해 Yahoo quoteSummary fallback을 추가했습니다.
-- DRAM·NAND 현물가 추이 섹션을 추가했습니다.
-- 현물가 그래프는 공개 기사 가격점과 보간값을 섞은 참고용 프록시입니다. 정식 원자료가 있으면 `data/memory-spot-prices.json`만 교체하면 됩니다.
+- 관점별 비판을 반영한 **검증 보드** 추가
+- HBM / HBF / CXL Memory / SOCAMM을 역할별로 분리
+- AI 시스템 블록다이어그램 재정렬 및 클릭 영역 재조정
+- 메모리 가격 차트의 데이터 신뢰도 문구 강화
+- 핵심 종목 카드에 공격적 체크와 봐야 할 지표 추가
+- 트레이더용 체크리스트 추가
+- CXL, DRAMeXchange, TrendForce, Danawa 등 확인 자료 링크 추가
 
-## 데이터 로딩 구조
+## 데이터 원칙
 
-- Yahoo Finance quote API를 먼저 묶어서 요청합니다.
-- 시가총액이 빠진 종목은 Yahoo Finance quoteSummary에서 `marketCap` 또는 `sharesOutstanding × price`로 보강합니다.
-- 브라우저 CORS 실패에 대비해 direct fetch, AllOrigins, CodeTabs, corsproxy를 병렬로 시도합니다.
-- 첫 화면은 localStorage 캐시를 먼저 표시하고, 이후 최신 가격으로 갱신합니다.
-- 비트코인은 Yahoo Finance 실패 시 CoinGecko로 한 번 더 시도합니다.
-- 한국 기준금리는 `rates.json`에서 수동 관리합니다.
+실시간 시세는 Yahoo Finance, CoinGecko, rates.json을 사용합니다.
+외부 API는 브라우저·CORS·프록시 상태에 따라 실패할 수 있으므로 카드에는 원문 링크와 캐시 표시를 함께 둡니다.
 
-## 파일 구조
+메모리 가격 차트는 `data/memory-watch-prices.json`에서 읽습니다.
+현재 값은 공개 기사 앵커와 수동 입력 기반의 참고용 데이터입니다.
+정확한 DRAMeXchange, TrendForce, ChinaFlashMarket, Danawa 월별 원자료를 확보하면 이 JSON만 교체하세요.
 
-```text
-index.html
-README.md
-README.txt
-rates.json
-single.html
-data/memory-spot-prices.json
-assets/diagrams/pc-memory-structure.png
-assets/diagrams/ai-memory-structure.png
+## 배포
+
+GitHub Pages 저장소 루트에 그대로 덮어씁니다.
+
+```bash
+rsync -av --delete --exclude='.git' --exclude='CNAME' ./ty_homepage_v8_critique_refined/ ./ty1211-kim.github.io/
+cd ./ty1211-kim.github.io
+git add -A
+git commit -m "Refine dashboard with critical review"
+git push origin main
 ```
-
-
-## v6 변경 사항
-
-- AI 블록다이어그램에서 HBF, CXL Memory, SOCAMM을 서로 다른 블록으로 명확히 분리했습니다.
-- 메모리 가격 추이를 두 개의 차트로 나눴습니다.
-  - 차트 1: DDR4 16Gb, DDR5 16Gb, NAND MLC 방향성
-  - 차트 2: 다나와 DDR4 8GB, DDR5 16GB, NVMe SSD 1TB 대표가
-- 가격 데이터는 `data/memory-watch-prices.json`에서 관리합니다. 실데이터를 확보하면 이 파일만 교체하면 됩니다.
-- 시가총액 캐시 키를 v6로 바꿔 이전 버전의 빈 캐시가 남는 문제를 줄였습니다.
-
-
-## v7 변경
-- AI 블록다이어그램 상단 블록을 내려 제목/라벨 겹침을 줄였습니다.
-- 메모리 가격 차트는 시작값=100 지수가 아니라 달러 가격축으로 표시합니다.
-- 다나와 대표가는 1달러=1400원 고정값으로 환산한 USD 기준입니다.

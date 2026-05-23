@@ -1,5 +1,6 @@
 {
-  "kr_base_rate": 2.5,
+  "kr_base_rate": 2.50,
   "kr_base_prev": 2.75,
-  "kr_base_updated": "2025-11-28"
+  "kr_base_updated": "2025-11-28",
+  "note": "한국 기준금리는 자동 API 대신 수동 관리합니다. 금리 결정 후 이 파일만 갱신하세요."
 }
