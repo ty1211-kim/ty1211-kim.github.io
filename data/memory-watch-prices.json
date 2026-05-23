@@ -1,6 +1,6 @@
 {
-  "version": "v10",
-  "note": "차트는 시작값을 맞추지 않은 USD 실가격 축입니다. 현재 값은 공개 앵커와 수동 입력이 섞인 대체 데이터이므로, 전문 원자료를 확보하면 JSON만 교체합니다.",
+  "version": "v12",
+  "note": "Spot/chip and retail/product prices are intentionally separated. Current values are manual/public-anchor placeholders until paid/original series are inserted.",
   "charts": {
     "chip": {
       "title": "차트 1 · 칩 현물가: DDR4 / DDR5 / NAND MLC",
@@ -415,5 +415,11 @@
       ],
       "qualityNote": "수동 입력/보간 데이터입니다. 투자 판단 전 원자료 확인이 필요합니다."
     }
+  },
+  "generatedAt": "2026-05-23",
+  "fx": {
+    "mode": "fixed",
+    "defaultKrwPerUsd": 1400,
+    "note": "Danawa retail series are expressed in USD using a fixed 1 USD = 1,400 KRW assumption until monthly FX is added."
   }
 }

@@ -1,15 +1,26 @@
-# TY의 주식공부
+# TY의 반도체 노트 v12
 
-반도체 중심 투자 관찰 대시보드입니다. 핵심 기업 카드를 클릭하면 회사 소개, 사업 구조, AI 밸류체인 위치, 재무 확인 항목, 최근 주가 흐름을 볼 수 있습니다.
+반도체 중심 투자 공부를 위한 개인 대시보드입니다.
 
-## 적용
+## 구성
+
+- 시장 배경: 환율, 금, 유가, 지수, 비트코인, 기준금리
+- 핵심 기업: 삼성전자, SK hynix, Micron, Intel, AMD, NVIDIA, Sandisk, Kioxia
+- 기업 상세: 사업 구조, AI 스택 위치, 촉매, 반증 조건, 주가 흐름, 재무 확인 항목
+- 메모리 가격: 칩 spot과 소비자 가격을 분리
+- 반도체 구조: PC / AI 메모리 계층 개념도
+- 판단 기록: 관찰, 근거, 위험, 다음 행동
+
+## 검증
 
 ```bash
-rsync -av --delete --exclude='.git' --exclude='CNAME' ./ty_homepage_v11_company_panels/ ./ty1211-kim.github.io/
+npm test
 ```
 
-## 데이터
+## 데이터 교체
 
-- `data/company-details.json`: 기업 상세 패널 데이터
-- `data/memory-watch-prices.json`: 메모리 가격 차트 데이터
-- 실시간 주가/시총은 브라우저에서 Yahoo Finance fallback 로직으로 불러옵니다.
+- `data/company-details.json`: 기업 상세 패널
+- `data/memory-watch-prices.json`: 메모리 가격 차트
+- `rates.json`: 한국 기준금리 수동 파일
+
+공식 원자료를 확보하면 HTML이 아니라 JSON을 교체하세요.

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MemoryWatchPrices",
+  "type": "object",
+  "required": [
+    "version",
+    "generatedAt",
+    "charts"
+  ],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "fx": {
+      "type": "object"
+    },
+    "charts": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TY Company Detail Data",
+  "type": "object",
+  "required": [
+    "version",
+    "generatedAt",
+    "companies"
+  ],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "companies": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "name",
+          "ticker",
+          "kind",
+          "heading",
+          "intro",
+          "aiRole",
+          "segments",
+          "financials",
+          "checks",
+          "sources"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "ticker": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "heading": {
+            "type": "string"
+          },
+          "intro": {
+            "type": "string"
+          },
+          "aiRole": {
+            "type": "string"
+          },
+          "segments": {
+            "type": "string"
+          },
+          "valueChain": {
+            "type": "string"
+          },
+          "stackNote": {
+            "type": "string"
+          },
+          "catalyst": {
+            "type": "string"
+          },
+          "invalidation": {
+            "type": "string"
+          },
+          "nextEvent": {
+            "type": "string"
+          },
+          "sourceQuality": {
+            "type": "string"
+          },
+          "reportCurrency": {
+            "type": "string"
+          },
+          "dataPolicy": {
+            "type": "string"
+          },
+          "separationRule": {
+            "type": "string"
+          },
+          "lastUpdated": {
+            "type": "string"
+          },
+          "financials": {
+            "type": "array"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sources": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  }
+}

@@ -21,6 +21,8 @@
       --red: #ff3b30;
       --amber: #ff9f0a;
       --purple: #5856d6;
+      --accent: #007aff;
+      --ink: #1d1d1f;
       --radius: 28px;
       --shadow: 0 24px 70px rgba(0,0,0,0.08);
       --shadow-soft: 0 12px 34px rgba(0,0,0,0.06);
@@ -190,6 +192,68 @@
     .company-chart-shell svg { width: 100%; min-height: 320px; }
     .company-empty { color: var(--muted); font-size: 14px; }
 
+    .company-source-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 12px; }
+    .company-data-badge { display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(29,29,31,0.10); background: #fff; border-radius: 999px; padding: 7px 10px; color: var(--muted-strong); font-size: 12px; }
+    .company-data-badge b { color: var(--text); }
+    .role-grid, .thesis-grid, .event-grid, .company-table-grid { display: grid; gap: 10px; margin-top: 12px; }
+    .role-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .thesis-grid, .event-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .role-card, .thesis-card { border: 1px solid rgba(29,29,31,0.09); background: rgba(255,255,255,0.78); border-radius: 16px; padding: 12px; }
+    .role-card b, .thesis-card b { display:block; color: var(--muted); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+    .role-card span, .thesis-card span { display:block; font-size: 13px; color: var(--text); line-height: 1.45; font-weight: 740; }
+    .statement-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .statement-table th, .statement-table td { border-bottom: 1px solid rgba(29,29,31,0.08); padding: 8px 6px; text-align: right; }
+    .statement-table th:first-child, .statement-table td:first-child { text-align: left; color: var(--muted-strong); }
+    .bottleneck-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin-bottom: 18px; }
+    .bottleneck-card { border: 1px solid rgba(29,29,31,0.09); border-radius: 22px; background: rgba(255,255,255,0.86); box-shadow: var(--shadow-soft); padding: 18px; }
+    .bottleneck-card h3 { margin: 0 0 8px; font-size: 20px; letter-spacing: -0.04em; }
+    .bottleneck-card p { margin: 0; color: var(--muted-strong); font-size: 13px; line-height: 1.6; }
+
+
+
+
+    .music-player { position: static !important; right: auto !important; bottom: auto !important; z-index: auto !important; box-shadow: none !important; padding: 8px 12px !important; gap: 7px !important; background: rgba(255,255,255,0.62) !important; }
+    .music-player .music-icon { width: 18px; height: 18px; font-size: 10px; }
+    .music-player .music-copy strong { font-size: 13px; }
+    .music-player .music-copy small { font-size: 10px; }
+    .music-player .music-bars { height: 12px; }
+
+    .tech-matrix { margin-top: 16px; display: grid; gap: 10px; }
+    .tech-row { display: grid; grid-template-columns: 130px repeat(4, minmax(0,1fr)); gap: 8px; align-items: stretch; }
+    .tech-row > * { border: 1px solid rgba(29,29,31,0.09); background: #fff; border-radius: 16px; padding: 11px 12px; font-size: 13px; }
+    .tech-row.header > * { background: rgba(0,122,255,0.07); color: #0057b8; font-weight: 900; }
+    .tech-row b { display:block; margin-bottom: 3px; letter-spacing: -0.02em; }
+    .tech-row span { display:block; color: var(--muted); line-height: 1.45; }
+    .comparison-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin-top: 16px; }
+    .comparison-card { border: 1px solid rgba(29,29,31,0.09); border-radius: 18px; padding: 14px; background: #fff; }
+    .comparison-card strong { display:block; margin-bottom: 6px; font-size: 15px; letter-spacing: -0.03em; }
+    .comparison-card span { display:block; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .unit-warning { border: 1px solid rgba(255,149,0,0.24); background: rgba(255,149,0,0.075); color: #7a4a00; border-radius: 18px; padding: 13px 15px; font-size: 13px; line-height: 1.6; }
+    .company-source-row { display:flex; flex-wrap:wrap; gap:8px; margin: 10px 0 12px; }
+    .company-data-badge { display:inline-flex; gap:6px; align-items:center; border:1px solid rgba(29,29,31,0.10); background:#fff; border-radius:999px; padding:6px 10px; color:var(--muted-strong); font-size:11px; font-weight:850; }
+    .role-grid, .thesis-grid, .event-grid, .company-table-grid { display:grid; gap:10px; margin-top:12px; }
+    .role-grid, .thesis-grid, .event-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .role-card, .thesis-card { border:1px solid rgba(29,29,31,0.09); background:rgba(255,255,255,0.82); border-radius:16px; padding:11px; }
+    .role-card b, .thesis-card b { display:block; color:var(--muted); font-size:11px; letter-spacing:.06em; text-transform:uppercase; margin-bottom:5px; }
+    .role-card span, .thesis-card span { display:block; font-size:13px; font-weight:760; color:var(--text); line-height:1.42; }
+    .statement-table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--line); border-radius:16px; font-size:12px; }
+    .statement-table th, .statement-table td { padding:9px 10px; border-bottom:1px solid rgba(29,29,31,0.07); text-align:right; background:rgba(255,255,255,0.80); }
+    .statement-table th:first-child, .statement-table td:first-child { text-align:left; color:var(--muted-strong); font-weight:850; }
+    .statement-table tr:last-child td { border-bottom:0; }
+    .statement-table th { color:var(--muted); font-weight:900; background:rgba(245,245,247,0.92); }
+
+    .event-strip { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin: 12px 0; }
+    .event-card { border: 1px solid rgba(29,29,31,0.09); background: rgba(255,255,255,0.8); border-radius: 16px; padding: 11px; }
+    .event-card b { display:block; color: var(--muted); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 5px; }
+    .event-card span { display:block; font-size: 13px; font-weight: 760; color: var(--text); line-height: 1.4; }
+    .company-source-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-top: 12px; }
+    .company-source-card { border: 1px solid rgba(0,122,255,0.13); background: rgba(0,122,255,0.045); color: #0057b8; border-radius: 16px; padding: 11px; font-size: 12px; }
+    .company-source-card b { display:block; font-size: 12px; margin-bottom: 4px; }
+    .company-source-card span { color: var(--muted-strong); line-height: 1.45; }
+    .company-financial-chart { margin-top: 12px; border: 1px solid rgba(29,29,31,0.08); border-radius: 18px; background: #fff; padding: 12px; }
+    .company-financial-chart svg { width: 100%; min-height: 260px; }
+    .company-mode-note { display: inline-flex; width: fit-content; margin-top: 10px; border: 1px solid rgba(29,29,31,0.10); border-radius: 999px; padding: 7px 11px; color: var(--muted); font-size: 12px; font-weight: 800; }
+
     .playbook-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
     .playbook-card { border: 1px solid rgba(29,29,31,0.09); border-radius: 24px; background: rgba(255,255,255,0.86); box-shadow: var(--shadow-soft); padding: 20px; }
     .playbook-card h3 { margin: 0 0 10px; font-size: 21px; letter-spacing: -0.045em; }
@@ -274,25 +338,33 @@
     .resource-card:hover { transform: translateY(-2px); border-color: rgba(0,122,255,0.24); }
     .resource-card strong { display: block; margin-bottom: 6px; font-size: 17px; letter-spacing: -0.035em; }
     .resource-card span { color: var(--muted); font-size: 13px; }
+
+    .nav .music-player { position: static; right: auto; bottom: auto; z-index: auto; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 8px 12px; background: rgba(255,255,255,0.72); }
+    .nav .music-player .music-icon { width: 26px; height: 26px; font-size: 11px; }
+    .component-axis { display:grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:7px; margin-top:8px; }
+    .component-axis span { border:1px solid rgba(29,29,31,.09); background:#fff; border-radius:12px; padding:7px 8px; font-size:11px; color:var(--muted-strong); }
+    .detail-note { border:1px solid rgba(0,122,255,.15); background:rgba(0,122,255,.055); border-radius:14px; padding:9px 10px; color:#0057b8; font-size:12px; line-height:1.5; margin-top:8px; }
+    .read-order { margin-top: 20px; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px; }
+    .read-order a { text-decoration: none; border: 1px solid rgba(29,29,31,0.09); background: rgba(255,255,255,.82); border-radius: 17px; padding: 12px; display: block; color: var(--muted-strong); box-shadow: var(--shadow-soft); }
+    .read-order b { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; letter-spacing: -0.02em; }
+    .read-order small { color: var(--muted); line-height: 1.4; display: block; }
+    @media (max-width: 1120px) { .read-order { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 620px) { .read-order { grid-template-columns: 1fr; } }
+
     footer { padding: 44px 0 60px; color: var(--muted); border-top: 1px solid rgba(29,29,31,0.09); margin-top: 40px; }
 
-    @media (max-width: 1120px) { .audit-grid, .glossary-grid, .quality-grid, .method-grid, .onboarding-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .playbook-grid, .evidence-grid, .company-layout { grid-template-columns: 1fr; } .company-fin-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .stock-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .diagram-layout { grid-template-columns: 1fr; } .diagram-visual { border-right: 0; border-bottom: 1px solid var(--line); } }
+    @media (max-width: 1120px) { .audit-grid, .glossary-grid, .quality-grid, .method-grid, .onboarding-grid, .comparison-grid, .company-source-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .tech-row { grid-template-columns: 1fr; } .playbook-grid, .evidence-grid, .company-layout { grid-template-columns: 1fr; } .company-fin-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .stock-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .diagram-layout { grid-template-columns: 1fr; } .diagram-visual { border-right: 0; border-bottom: 1px solid var(--line); } }
     @media (max-width: 980px) { .hero-grid, .note-layout { grid-template-columns: 1fr; } .quote-grid, .resource-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .hero-card { min-height: auto; } }
-    @media (max-width: 620px) { .audit-grid, .glossary-grid, .quality-grid, .method-grid, .onboarding-grid, .company-summary-grid, .company-fin-grid { grid-template-columns: 1fr; } .truth-row { grid-template-columns: 1fr; } .price-card-grid { grid-template-columns: 1fr; } .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .music-player { right: 12px; bottom: 12px; max-width: calc(100% - 24px); } }
+    @media (max-width: 620px) { .audit-grid, .glossary-grid, .quality-grid, .method-grid, .onboarding-grid, .company-summary-grid, .company-fin-grid, .comparison-grid, .company-source-grid, .event-strip, .role-grid, .thesis-grid, .event-grid, .role-grid, .thesis-grid, .bottleneck-grid { grid-template-columns: 1fr; } .tech-row { grid-template-columns: 1fr; } .truth-row { grid-template-columns: 1fr; } .price-card-grid { grid-template-columns: 1fr; } .wrap { width: min(100% - 24px,1180px); } .topbar-inner { align-items: flex-start; flex-direction: column; } .nav { justify-content: flex-start; } .hero { padding-top: 42px; } .hero-card, .panel, .flow-card, .component-detail { padding: 20px; } .quote-grid, .resource-grid, .stock-grid { grid-template-columns: 1fr; } .section-head { align-items: start; flex-direction: column; } .diagram-visual { padding: 10px; } .hotspot { border-radius: 10px; } .music-player { right: 12px; bottom: 12px; max-width: calc(100% - 24px); } }
   </style>
 </head>
 <body>
   <div id="yt-player" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:0;height:0;overflow:hidden"></div>
-  <button class="music-player" id="music-player" type="button" aria-label="배경음악 재생 또는 일시정지">
-    <span class="music-icon" id="music-icon">♪</span>
-    <span class="music-copy"><strong>Study BGM</strong><small id="music-status">클릭하여 재생</small></span>
-    <span class="music-bars" id="music-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-  </button>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <a class="brand" href="#top" aria-label="TY의 반도체 노트 홈"><span class="brand-mark"></span><span>TY의 반도체 노트</span></a>
       <nav class="nav" aria-label="주요 메뉴">
-        <a href="#audit">기준</a><a href="#market">시장</a><a href="#stocks">기업</a><a href="#prices">가격</a><a href="#semiconductor">구조</a><a href="#playbook">체크</a><a href="#journal">기록</a><a href="#resources">자료</a>
+        <a href="#audit">기준</a><a href="#market">시장</a><a href="#stocks">기업</a><a href="#prices">가격</a><a href="#semiconductor">구조</a><a href="#playbook">체크</a><a href="#journal">기록</a><a href="#resources">자료</a><button class="music-player ghost-btn" id="music-player" type="button" aria-label="배경음악 재생 또는 일시정지"><span class="music-icon" id="music-icon" aria-hidden="true">♪</span><span class="music-copy"><strong>배경음악</strong><small id="music-status">끔</small></span><span class="music-bars" id="music-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
       </nav>
     </div>
   </header>
@@ -306,6 +378,13 @@
             <h1>반도체 사이클을 구조와 데이터로 분리해 본다.</h1>
             <p class="hero-copy">시세, 메모리 가격, 기업 자료, 기술 개념을 한 화면에 모아두되 서로 다른 성격의 데이터를 섞지 않습니다. 이 페이지는 추천 목록이 아니라 매일 확인하고 기록하는 개인 관찰 노트입니다.</p>
             <div class="hero-actions"><a class="primary-btn" href="#audit">읽는 기준 보기</a><a class="ghost-btn" href="#market">시장 배경 보기</a><a class="ghost-btn" href="#semiconductor">개념도 보기</a></div>
+            <div class="read-order" aria-label="빠른 읽기 순서">
+              <a href="#audit"><b>1. 기준</b><small>용어와 데이터 계층</small></a>
+              <a href="#market"><b>2. 배경</b><small>환율·금리·원자재</small></a>
+              <a href="#stocks"><b>3. 기업</b><small>8개 핵심 기업 비교</small></a>
+              <a href="#prices"><b>4. 가격</b><small>칩 가격과 소비자가</small></a>
+              <a href="#journal"><b>5. 기록</b><small>가정과 반증 조건</small></a>
+            </div>
           </div>
         </div>
         <aside class="flow-card mini-panel" aria-label="일일 확인 흐름">
@@ -342,6 +421,18 @@
             <div class="glossary-card"><b>CXL Memory</b><small>메모리 제품명이 아니라 CPU·장치·메모리 사이의 캐시 일관성 확장 인터페이스/풀입니다.</small></div>
             <div class="glossary-card"><b>SOCAMM</b><small>SoC 가까이에 붙는 LPDRAM 모듈. HBF도 CXL도 아닙니다.</small></div>
           </div>
+          <div class="tech-matrix" aria-label="AI 메모리 계층 비교">
+            <div class="tech-row header"><div>구분</div><div>HBM</div><div>HBF</div><div>CXL</div><div>SOCAMM</div></div>
+            <div class="tech-row"><div><b>매체</b><span>무엇으로 되어 있나</span></div><div>DRAM 적층 패키지</div><div>NAND 기반 플래시 후보</div><div>인터페이스/프로토콜</div><div>LPDRAM 모듈</div></div>
+            <div class="tech-row"><div><b>위치</b><span>시스템 안의 자리</span></div><div>GPU 바로 옆</div><div>HBM과 SSD 사이 보조계층 후보</div><div>CPU·장치·메모리 연결</div><div>SoC 인접 모듈</div></div>
+            <div class="tech-row"><div><b>핵심 질문</b><span>투자 전에 볼 것</span></div><div>공급·수율·패키징</div><div>표준화·고객 채택</div><div>지연시간·소프트웨어 지원</div><div>전력·열·폼팩터 채택</div></div>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-card"><strong>PCIe</strong><span>CPU와 장치 사이의 기본 고속 연결. GPU·SSD·NIC의 공통 바닥입니다.</span></div>
+            <div class="comparison-card"><strong>NVLink / Fabric</strong><span>GPU 간 대역폭과 클러스터 확장을 좌우합니다. 학습 병목에 직접 영향을 줍니다.</span></div>
+            <div class="comparison-card"><strong>CXL</strong><span>PCIe 위에서 메모리 확장과 일관성 의미를 더합니다. 제품별 지연시간 검증이 필수입니다.</span></div>
+            <div class="comparison-card"><strong>Storage</strong><span>SSD/Data Lake는 장기 저장과 체크포인트·검색 보조 계층입니다. HBM과 역할이 다릅니다.</span></div>
+          </div>
         </div>
       </div>
     </section>
@@ -355,13 +446,13 @@
 
     <section id="stocks">
       <div class="wrap">
-        <div class="section-head"><div><h2>핵심 기업</h2><p>메모리·CPU·GPU·NAND 밸류체인의 대표 기업을 같은 카드 구조로 봅니다. 주가와 시가총액은 외부 시세 API와 보강 로직을 사용합니다.</p></div></div>
+        <div class="section-head"><div><h2>오늘 추적할 핵심 기업</h2><p>메모리·CPU·GPU·NAND 밸류체인의 대표 기업입니다. 카드를 누르면 회사 개요, AI 스택 내 위치, 재무제표 확인 항목, 주가 흐름, 촉매와 반증 조건을 한 패널에서 봅니다.</p></div></div>
         <div class="stock-grid" id="stock-grid"></div>
         <div class="panel company-panel" id="company-detail-panel">
           <div class="section-head">
             <div>
               <h2 style="font-size:32px">선택 기업 상세</h2>
-              <p>기업 카드를 클릭하면 회사 소개, 사업 구조, AI 밸류체인 위치, 재무 확인 항목, 최근 주가 흐름을 같은 패널에서 봅니다.</p>
+              <p>공식 공시와 IR을 우선하고, 실시간 시세와 Yahoo 요약 데이터는 보조 자료로만 사용합니다.</p>
             </div>
           </div>
           <div class="company-layout">
@@ -374,9 +465,16 @@
                 <div class="link-row" id="company-detail-cta"></div>
               </div>
               <p class="company-intro" id="company-detail-intro">핵심 기업 카드 중 하나를 선택하세요.</p>
-              <div class="company-warning" id="company-detail-warning">재무 숫자는 공식 IR/공시 원자료로 교체해야 합니다. 검증 전 placeholder 수치는 투자 근거로 쓰지 않습니다.</div>
+              <div class="company-warning" id="company-detail-warning">공식 원문과 보조 데이터의 성격을 분리해서 봅니다.</div>
+              <div class="company-source-row" id="company-detail-provenance"></div>
+              <div class="role-grid" id="company-detail-role-grid"></div>
               <div class="company-summary-grid" id="company-detail-summary"></div>
+              <div class="thesis-grid" id="company-detail-thesis"></div>
+              <div class="event-grid" id="company-detail-events"></div>
               <div class="company-fin-grid" id="company-detail-financials"></div>
+              <div class="company-table-grid" id="company-detail-tables"></div>
+              <div class="company-financial-chart"><div class="chart-head"><div><h3 id="company-financial-title">재무제표 요약</h3><p id="company-financial-subtitle">공식 원문 우선 · Yahoo quoteSummary 보조</p></div></div><svg id="company-financial-chart" viewBox="0 0 760 280" preserveAspectRatio="none"></svg><div class="source-list" id="company-financial-sources"><span>기업을 선택하면 재무 요약을 불러옵니다.</span></div></div>
+              <div class="company-source-grid" id="company-detail-sources"></div>
               <div class="company-note-card">
                 <h4>오늘 확인할 것</h4>
                 <ul id="company-detail-checks"><li>기업 카드를 선택하세요.</li></ul>
@@ -414,6 +512,8 @@
             <span>차트 1: DDR4 16Gb · DDR5 16Gb · NAND MLC 512Gb급 USD</span>
             <span>차트 2: DDR4 8GB · DDR5 16GB · NVMe SSD 1TB 다나와 대표가 USD 환산</span>
           </div>
+          <div class="unit-warning"><strong>단위 경고:</strong> 16Gb는 칩 용량 단위이고 8GB/16GB는 소비자용 모듈 용량 단위입니다. 칩 spot과 완제품 소비자가는 같은 신호가 아니며, 현재 JSON은 원자료 교체 전까지 질문 생성용 보조 데이터로만 사용합니다.</div>
+          <div class="unit-warning"><b>단위 경고:</b> DDR4 16Gb는 칩 단위, DDR4 8GB는 완제품 모듈 단위입니다. Gb와 GB를 섞으면 가격 해석이 틀어집니다.</div>
           <details class="method-box">
             <summary>데이터 사용 기준</summary>
             <div class="method-grid">
@@ -446,7 +546,12 @@
 
     <section id="semiconductor">
       <div class="wrap">
-        <div class="section-head"><div><h2>반도체 구조</h2><p>블록을 누르면 역할, 대표 회사, 관련 종목, 학습 링크가 오른쪽에 표시됩니다. 그림은 실제 배치도가 아니라 계층 구분용 개념도입니다.</p></div></div>
+        <div class="section-head"><div><h2>반도체 구조</h2><p>블록을 누르면 역할, 대표 회사, 관련 종목, 학습 링크가 오른쪽에 표시됩니다. 아래 그림은 실제 보드 배치도, 패키지 단면도, 표준 원도가 아니라 역할과 계층을 구분한 학습용 개념도입니다.</p></div></div>
+        <div class="bottleneck-grid">
+          <article class="bottleneck-card"><h3>학습 병목</h3><p>대규모 학습은 GPU 연산량, HBM 대역폭, GPU 간 interconnect, 전력·냉각이 함께 병목이 됩니다.</p></article>
+          <article class="bottleneck-card"><h3>추론 병목</h3><p>긴 context와 KV cache는 용량·지연시간·비용을 밀어올립니다. HBF/CXL/SOCAMM은 여기서 각각 다른 질문을 만듭니다.</p></article>
+          <article class="bottleneck-card"><h3>서빙 병목</h3><p>사용자 요청 지연시간, batch size, 네트워크, 스토리지 prefetch가 수익성과 품질을 가릅니다.</p></article>
+        </div>
         <div class="diagram-stack">
           <article class="diagram-card">
             <div class="diagram-layout">
@@ -467,16 +572,26 @@
             </div>
           </article>
         </div>
+        <table class="compare-table" aria-label="PCIe NVLink CXL 비교">
+          <thead><tr><th>계층</th><th>주 용도</th><th>같이 보면 안 되는 이유</th><th>확인 질문</th></tr></thead>
+          <tbody>
+            <tr><td>PCIe</td><td>범용 장치 연결</td><td>GPU 간 고속 collective 전용망이 아닙니다.</td><td>대역폭, 세대, 레인 수가 충분한가?</td></tr>
+            <tr><td>NVLink / Fabric</td><td>GPU 간 고대역 연결</td><td>CXL 메모리 확장과 목적이 다릅니다.</td><td>학습 scaling에서 병목이 어디인가?</td></tr>
+            <tr><td>CXL</td><td>메모리 확장, pooling, coherency</td><td>HBM이나 HBF 같은 메모리 매체가 아닙니다.</td><td>지연시간과 소프트웨어 지원이 충분한가?</td></tr>
+          </tbody>
+        </table>
       </div>
     </section>
-
-    <section id="playbook">
+<section id="playbook">
       <div class="wrap">
-        <div class="section-head"><div><h2>오늘의 확인 질문</h2><p>매일 같은 순서로 질문합니다. 답이 없으면 관망으로 기록합니다.</p></div></div>
+        <div class="section-head"><div><h2>오늘 깨져야 할 가정</h2><p>매일 같은 순서로 반증 조건을 확인합니다. 답이 없으면 진입이 아니라 관망으로 기록합니다.</p></div></div>
         <div class="playbook-grid">
           <article class="playbook-card"><h3>기술 병목</h3><ul><li>부족한 것은 GPU인가, HBM인가, 네트워크인가, 저장 계층인가?</li><li>학습 병목과 추론 병목을 구분했는가?</li><li>CXL/HBF/SOCAMM을 같은 수혜주로 착각하지 않았는가?</li></ul></article>
           <article class="playbook-card"><h3>가격 사이클</h3><ul><li>DDR4와 DDR5 가격 방향이 갈라지는가?</li><li>NAND/SSD 소비자가가 칩 가격을 따라 올라오는가?</li><li>가격 상승이 다음 분기 ASP에 반영될 근거가 있는가?</li></ul></article>
-          <article class="playbook-card"><h3>반증 조건</h3><ul><li>시가총액은 오르는데 현물가·수요 근거가 약해지는가?</li><li>공시/실적에서 재고, ASP, capex 방향이 기존 가정과 충돌하는가?</li><li>진입 사유와 손절/관망 사유를 분리했는가?</li></ul></article>
+          <article class="playbook-card"><h3>반증 조건</h3><ul><li>시가총액은 오르는데 현물가·수요 근거가 약해지는가?</li><li>공시/실적에서 재고, ASP, capex 방향이 기존 가정과 충돌하는가?</li><li>오늘 진입 사유가 남아 있는가, 아니면 관망 사유만 남았는가?</li></ul></article>
+          <article class="playbook-card"><h3>워크로드 구분</h3><ul><li>학습 병목과 추론 병목을 같은 문장으로 처리하지 않았는가?</li><li>KV cache, 컨텍스트 길이, batch size, 지연시간 요구가 바뀌었는가?</li><li>GPU보다 전력·네트워크·스토리지가 먼저 막히는 구간인가?</li></ul></article>
+          <article class="playbook-card"><h3>기업 이벤트</h3><ul><li>다음 실적일, IR, 제품 발표, 고객 인증 이벤트가 있는가?</li><li>촉매가 이미 주가에 반영됐는가?</li><li>반증 조건이 숫자로 확인 가능한가?</li></ul></article>
+          <article class="playbook-card"><h3>데이터 신뢰도</h3><ul><li>공식 공시, 전문 가격 데이터, 소비자가 proxy를 구분했는가?</li><li>placeholder·보간 데이터로 결론을 내리지 않았는가?</li><li>API 실패와 캐시 값을 현재값으로 착각하지 않았는가?</li></ul></article>
         </div>
         <div class="panel" style="margin-top:16px">
           <div class="onboarding-grid">
@@ -1206,8 +1321,13 @@
       drawSingleMemoryChart(priceSets.charts.retail, { svg: 'retail-price-chart', legend: 'retail-price-legend', sources: 'retail-price-sources', title: 'retail-chart-title', subtitle: 'retail-chart-subtitle' });
     }
 
+    const embeddedCompanyDetails = {"version": "v12", "generatedAt": "2026-05-23", "note": "회사별 상세 패널 데이터. 공식 원문을 우선하고, 시세·재무 API는 보조로 사용합니다.", "companies": {"samsung": {"name": "삼성전자", "ticker": "005930.KS", "kind": "종합 반도체 · 메모리 · 파운드리", "heading": "메모리, 파운드리, 세트 사업이 같이 움직이는 한국 대표 반도체 복합기업입니다.", "intro": "메모리 사이클과 AI 메모리 전환, 파운드리 경쟁력을 동시에 봐야 하는 기업입니다. 메모리 업황 개선이 실적에 크게 작용하지만, HBM·선단공정·스마트폰/가전 변동성도 함께 확인해야 합니다.", "aiRole": "HBM, DRAM, NAND, SOCAMM 계층에서 AI 인프라 공급망과 연결됩니다.", "segments": ["Memory", "Foundry", "System LSI", "DX 세트 사업"], "financials": [{"label": "매출 추이", "value": "공식 원문/보조 API 확인", "note": "5년 매출 방향과 사업부 mix"}, {"label": "영업이익 추이", "value": "공식 원문/보조 API 확인", "note": "사이클과 마진 회복 확인"}, {"label": "순이익 추이", "value": "공식 원문/보조 API 확인", "note": "비경상손익과 세금 영향 확인"}, {"label": "현금·부채·CAPEX", "value": "공식 원문/보조 API 확인", "note": "투자부담과 재무안전성 확인"}], "checks": ["촉매 확인: HBM 고객 인증, DRAM/NAND ASP 반등, 파운드리 적자 축소", "반증 조건: HBM 출하 지연, 파운드리 손실 확대, 재고 회전 둔화", "다음 이벤트: 분기 실적 발표와 사업부별 conference call", "Catalyst: HBM 고객 승인, 메모리 ASP, 파운드리 수율 개선", "Invalidation: HBM 점유율/수율 회복이 지연되고 NAND/DRAM 가격이 꺾이면 재검토", "Next number: HBM 매출 비중, DS 영업이익, capex, 재고", "HBM 공급·고객 인증 진행", "DRAM/NAND ASP 방향", "파운드리 가동률과 선단공정 수율", "원/달러 환율과 메모리 재고"], "sources": [["IR", "https://www.samsung.com/global/ir/"], ["DART", "https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&finalReport=recent"], ["FnGuide", "https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A005930"], ["Naver", "https://finance.naver.com/item/main.naver?code=005930"]], "updatedAt": "2026-05 구조 업데이트", "dataStatus": "공식 원문 링크 연결 · 수치 API 보조", "nextEvent": "분기 실적 발표와 사업부별 conference call", "watchReason": "메모리 가격, HBM 경쟁력, 파운드리 개선을 한 번에 확인하는 한국 대표 기준점입니다.", "catalyst": "HBM 고객 인증, DRAM/NAND ASP 반등, 파운드리 적자 축소", "invalidation": "HBM 출하 지연, 파운드리 손실 확대, 재고 회전 둔화", "nextNumber": "HBM 매출 비중, DS 영업이익, capex, 재고", "dataCaveat": "현재 재무 필드는 placeholder입니다. 10-K/20-F/DART/IR 원문으로 연도별 수치를 채워야 합니다.", "currency": "KRW", "layer": "메모리+파운드리+세트 복합계층", "bottleneck": "HBM 인증·DRAM/NAND ASP·파운드리 수율", "eventChecks": [{"label": "촉매", "value": "HBM 고객 인증, 메모리 ASP 회복, 파운드리 수율 개선"}, {"label": "무효화", "value": "HBM 점유율 회복 지연, NAND/DRAM 가격 반락, 파운드리 손실 확대"}, {"label": "다음 이벤트", "value": "분기 실적, HBM 고객 인증 뉴스, DART 사업보고서/분기보고서"}], "statementTables": [], "valueChain": "DRAM · NAND · HBM · 파운드리 · 모바일 세트", "stackNote": "HBM/DRAM은 AI 서버 공급망, NAND는 저장장치 사이클, 파운드리는 장기 실행력입니다.", "sourceQuality": "DART·IR 우선 / Yahoo 시세 보조", "reportCurrency": "KRW", "separationRule": "메모리 회복과 파운드리 회복을 분리해서 봅니다.", "dataPolicy": "DART 사업보고서와 회사 IR을 우선하고, 주가·시총은 보조 API로 표시합니다.", "lastUpdated": "2026-05-23 · 구조/링크 기준"}, "skhynix": {"name": "SK hynix", "ticker": "000660.KS", "kind": "메모리 · HBM", "heading": "HBM과 서버 DRAM 사이클에 가장 직접적으로 노출된 한국 메모리 기업입니다.", "intro": "AI 서버용 HBM에서 핵심 위치를 차지하며 DRAM 가격 사이클과 투자심리에 민감합니다. NAND와 Solidigm도 함께 봐야 하지만 핵심 관찰축은 HBM, DRAM ASP, capex입니다.", "aiRole": "HBM 핵심 공급망, HBF 표준화 흐름에서 Sandisk와 함께 관찰합니다.", "segments": ["DRAM", "HBM", "NAND", "Solidigm SSD"], "financials": [{"label": "매출 추이", "value": "공식 원문/보조 API 확인", "note": "5년 매출 방향과 사업부 mix"}, {"label": "영업이익 추이", "value": "공식 원문/보조 API 확인", "note": "사이클과 마진 회복 확인"}, {"label": "순이익 추이", "value": "공식 원문/보조 API 확인", "note": "비경상손익과 세금 영향 확인"}, {"label": "현금·부채·CAPEX", "value": "공식 원문/보조 API 확인", "note": "투자부담과 재무안전성 확인"}], "checks": ["촉매 확인: HBM3E/HBM4 전환, 주요 고객 배정 확대, DRAM ASP 상승", "반증 조건: HBM 점유율 하락, 고객 집중 리스크 확대, capex 과열", "다음 이벤트: 분기 실적, HBM 수주/증설 코멘트, capex 가이던스", "Catalyst: HBM 수주/가격, 서버 DRAM ASP, capex discipline", "Invalidation: HBM 경쟁 심화와 범용 DRAM 가격 둔화가 동시에 오면 재검토", "Next number: HBM 매출, 영업이익률, 재고, 설비투자", "HBM 세대 전환과 고객 배정", "DRAM spot/contract 가격", "NAND 회복 속도", "CAPEX 증가가 공급과잉으로 이어지는지"], "sources": [["IR", "https://www.skhynix.com/ir/UI-FR-IR01"], ["DART", "https://dart.fss.or.kr/dsab002/search.ax?textCrpNm=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&finalReport=recent"], ["FnGuide", "https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A000660"], ["Naver", "https://finance.naver.com/item/main.naver?code=000660"]], "updatedAt": "2026-05-23", "dataStatus": "공식 원문 링크 연결 · 수치 API 보조", "nextEvent": "분기 실적, HBM 수주/증설 코멘트, capex 가이던스", "watchReason": "HBM과 서버 DRAM 수요에 가장 직접적으로 반응하는 메모리 순수도가 높은 축입니다.", "catalyst": "HBM3E/HBM4 전환, 주요 고객 배정 확대, DRAM ASP 상승", "invalidation": "HBM 점유율 하락, 고객 집중 리스크 확대, capex 과열", "nextNumber": "HBM 매출, 영업이익률, 재고, 설비투자", "dataCaveat": "현재 재무 필드는 placeholder입니다. 10-K/20-F/DART/IR 원문으로 연도별 수치를 채워야 합니다.", "eventChecks": [{"label": "촉매", "value": "HBM 수주/가격, 서버 DRAM ASP, capex discipline"}, {"label": "무효화", "value": "HBM 경쟁 심화와 범용 DRAM 가격 둔화가 동시에 오면 재검토"}, {"label": "다음 이벤트", "value": "다음 실적 발표일 수동 확인 필요"}], "statementTables": [], "valueChain": "HBM · 서버 DRAM · NAND · 고급 패키징", "stackNote": "AI GPU 공급망에서 HBM 공급·세대 전환·고객 배정이 핵심입니다.", "sourceQuality": "DART·IR 우선 / Yahoo 시세 보조", "reportCurrency": "KRW", "separationRule": "HBM 프리미엄과 범용 DRAM 사이클을 분리해서 봅니다.", "dataPolicy": "DART·회사 IR 원문을 우선하고 시세 API는 보조로만 사용합니다.", "lastUpdated": "2026-05-23 · 구조/링크 기준", "bottleneck": "HBM 공급·고객 집중·DRAM 가격", "layer": "AI 메모리 공급계층"}, "micron-stock": {"name": "Micron", "ticker": "MU", "kind": "미국 메모리 · DRAM/NAND/HBM", "heading": "미국 상장 메모리 순수주에 가까운 기업으로 DRAM/NAND 가격 사이클에 민감합니다.", "intro": "메모리 업황을 미국 주식시장 관점에서 가장 직접적으로 추적할 수 있는 종목입니다. HBM 경쟁력, DRAM ASP, NAND 수익성, 데이터센터 mix를 함께 확인해야 합니다.", "aiRole": "HBM과 데이터센터 DRAM 공급망에서 AI 인프라 투자와 연결됩니다.", "segments": ["DRAM", "NAND", "HBM", "Data Center Memory"], "financials": [{"label": "매출 추이", "value": "공식 원문/보조 API 확인", "note": "5년 매출 방향과 사업부 mix"}, {"label": "영업이익 추이", "value": "공식 원문/보조 API 확인", "note": "사이클과 마진 회복 확인"}, {"label": "순이익 추이", "value": "공식 원문/보조 API 확인", "note": "비경상손익과 세금 영향 확인"}, {"label": "현금·부채·CAPEX", "value": "공식 원문/보조 API 확인", "note": "투자부담과 재무안전성 확인"}], "checks": ["촉매 확인: HBM 매출 확대, DRAM/NAND ASP 반등, 재고 정상화", "반증 조건: ASP 둔화, HBM 고객 확대 실패, 재고 평가손 재발", "다음 이벤트: 분기 실적, HBM 매출 비중, gross margin 가이던스", "Catalyst: HBM3E/HBM4 고객, DRAM ASP, NAND 회복", "Invalidation: HBM 고객 확대가 지연되거나 범용 메모리 가격이 꺾이면 재검토", "Next number: 매출 성장, gross margin, capex, 재고", "HBM 매출 비중과 수익성", "DRAM/NAND ASP 가이던스", "재고일수 변화", "데이터센터 vs PC/모바일 mix"], "sources": [["IR", "https://investors.micron.com/"], ["SEC", "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MU&type=10-K&owner=include&count=10"], ["Yahoo", "https://finance.yahoo.com/quote/MU"], ["Chart", "https://www.tradingview.com/chart/?symbol=NASDAQ%3AMU"]], "updatedAt": "2026-05 구조 업데이트", "dataStatus": "공식 원문 링크 연결 · 수치 API 보조", "nextEvent": "분기 실적, HBM 매출 비중, gross margin 가이던스", "watchReason": "미국 상장 메모리 기준주로 글로벌 투자심리와 메모리 업황을 비교하기 좋습니다.", "catalyst": "HBM 매출 확대, DRAM/NAND ASP 반등, 재고 정상화", "invalidation": "ASP 둔화, HBM 고객 확대 실패, 재고 평가손 재발", "nextNumber": "매출 성장, gross margin, capex, 재고", "dataCaveat": "현재 재무 필드는 placeholder입니다. 10-K/20-F/DART/IR 원문으로 연도별 수치를 채워야 합니다.", "currency": "USD", "layer": "미국 메모리 비교계층", "bottleneck": "DRAM/NAND ASP·HBM mix·재고", "eventChecks": [{"label": "촉매", "value": "HBM 매출 확대, DRAM/NAND 가격 상승, 데이터센터 mix 개선"}, {"label": "무효화", "value": "HBM 후발 격차 확대, 재고 재상승, 가격 사이클 반락"}, {"label": "다음 이벤트", "value": "분기 실적, 10-Q/10-K, earnings call"}], "statementTables": [], "valueChain": "DRAM · NAND · HBM · 데이터센터 메모리", "stackNote": "미국 메모리 대표 비교축이며 HBM mix와 범용 DRAM ASP가 핵심입니다.", "sourceQuality": "SEC·IR 우선 / Yahoo 시세 보조", "reportCurrency": "USD", "separationRule": "HBM 성장과 범용 메모리 사이클을 따로 봅니다.", "dataPolicy": "SEC 10-K/10-Q와 회사 IR을 우선합니다.", "lastUpdated": "2026-05-23 · 구조/링크 기준"}, "intel": {"name": "Intel", "ticker": "INTC", "kind": "CPU · 파운드리 재건", "heading": "CPU 본업과 파운드리 재건을 동시에 검증해야 하는 미국 종합 반도체 기업입니다.", "intro": "전통적 CPU 강자지만 공정 전환, 파운드리 사업, 서버 점유율 방어가 핵심입니다. AI 가속기보다 CPU 플랫폼과 제조 재건의 실행력을 더 엄격히 봐야 합니다.", "aiRole": "Host CPU, 서버 플랫폼, 파운드리 재건을 통해 AI 인프라의 기반 계층과 연결됩니다.", "segments": ["Client Computing", "Data Center & AI", "Foundry", "Network/Edge"], "financials": [{"label": "매출 추이", "value": "공식 원문/보조 API 확인", "note": "5년 매출 방향과 사업부 mix"}, {"label": "영업이익 추이", "value": "공식 원문/보조 API 확인", "note": "사이클과 마진 회복 확인"}, {"label": "순이익 추이", "value": "공식 원문/보조 API 확인", "note": "비경상손익과 세금 영향 확인"}, {"label": "현금·부채·CAPEX", "value": "공식 원문/보조 API 확인", "note": "투자부담과 재무안전성 확인"}], "checks": ["촉매 확인: 서버 CPU 점유율 회복, 공정 로드맵 실행, Foundry 고객 확보", "반증 조건: 공정 지연, FCF 악화, 데이터센터 점유율 하락", "다음 이벤트: 분기 실적, Foundry 손익, 제품 로드맵 발표", "Catalyst: 파운드리 고객, Xeon/AI PC 회복, 구조조정 효과", "Invalidation: 파운드리 손실이 지속되고 고객 확보가 늦어지면 재검토", "Next number: Data Center 매출, Foundry 손실, gross margin, cash burn", "서버 CPU 점유율 회복 여부", "파운드리 고객 확보", "공정 로드맵 지연 여부", "현금흐름과 부채 부담"], "sources": [["IR", "https://www.intc.com/"], ["SEC", "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=INTC&type=10-K&owner=include&count=10"], ["Yahoo", "https://finance.yahoo.com/quote/INTC"], ["Chart", "https://www.tradingview.com/chart/?symbol=NASDAQ%3AINTC"]], "updatedAt": "2026-05 구조 업데이트", "dataStatus": "공식 원문 링크 연결 · 수치 API 보조", "nextEvent": "분기 실적, Foundry 손익, 제품 로드맵 발표", "watchReason": "CPU와 파운드리 재건이 AI 인프라에서 실제로 회복되는지 보는 턴어라운드 관찰 대상입니다.", "catalyst": "서버 CPU 점유율 회복, 공정 로드맵 실행, Foundry 고객 확보", "invalidation": "공정 지연, FCF 악화, 데이터센터 점유율 하락", "nextNumber": "Data Center 매출, Foundry 손실, gross margin, cash burn", "dataCaveat": "현재 재무 필드는 placeholder입니다. 10-K/20-F/DART/IR 원문으로 연도별 수치를 채워야 합니다.", "currency": "USD", "layer": "Host CPU+제조 실행계층", "bottleneck": "서버 CPU 점유율·공정 로드맵·foundry 손익", "eventChecks": [{"label": "촉매", "value": "Xeon 점유율 안정, 공정 로드맵 이행, foundry 고객 확보"}, {"label": "무효화", "value": "공정 지연, foundry 손실 확대, 서버 CPU 점유율 하락"}, {"label": "다음 이벤트", "value": "분기 실적, foundry 업데이트, 10-Q/10-K"}], "statementTables": [], "valueChain": "Client CPU · Server CPU · Foundry · AI accelerator", "stackNote": "Host CPU와 제조 실행력 회복 여부를 보는 비교축입니다.", "sourceQuality": "SEC·IR 우선 / Yahoo 시세 보조", "reportCurrency": "USD", "separationRule": "CPU 본업 회복과 Foundry 투자 부담을 분리해서 봅니다.", "dataPolicy": "SEC filings와 Intel IR 자료를 우선합니다.", "lastUpdated": "2026-05-23 · 구조/링크 기준"}, "amd": {"name": "AMD", "ticker": "AMD", "kind": "CPU · GPU · AI 가속기", "heading": "CPU와 AI 가속기를 모두 갖춘 팹리스 기업으로 데이터센터 점유율 변화를 봅니다.", "intro": "CPU에서는 서버 점유율, GPU에서는 AI 가속기 채택이 핵심입니다. TSMC 선단공정 의존과 엔비디아 대비 생태계 격차를 함께 봐야 합니다.", "aiRole": "AI GPU/NPU와 Host CPU 양쪽에 걸쳐 AI 서버 플랫폼 경쟁에 참여합니다.", "segments": ["Data Center", "Client", "Gaming", "Embedded"], "financials": [{"label": "매출 추이", "value": "공식 원문/보조 API 확인", "note": "5년 매출 방향과 사업부 mix"}, {"label": "영업이익 추이", "value": "공식 원문/보조 API 확인", "note": "사이클과 마진 회복 확인"}, {"label": "순이익 추이", "value": "공식 원문/보조 API 확인", "note": "비경상손익과 세금 영향 확인"}, {"label": "현금·부채·CAPEX", "value": "공식 원문/보조 API 확인", "note": "투자부담과 재무안전성 확인"}], "checks": ["촉매 확인: Instinct GPU 고객 확대, EPYC 점유율 상승, 데이터센터 매출 성장", "반증 조건: AI GPU 수주 둔화, 마진 희석, TSMC capacity/CoWoS 병목", "다음 이벤트: 분기 실적, data center 매출, GPU backlog 코멘트", "Catalyst: MI 시리즈 채택, EPYC 점유율, gross margin", "Invalidation: AI GPU 매출 가이던스가 둔화되고 CPU 점유율이 멈추면 재검토", "Next number: Data Center 매출, AI accelerator revenue, margin", "Instinct GPU 출하와 고객 확대", "EPYC 서버 점유율", "소프트웨어 생태계", "TSMC capacity와 CoWoS 배정"], "sources": [["IR", "https://ir.amd.com/"], ["SEC", "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=AMD&type=10-K&owner=include&count=10"], ["Yahoo", "https://finance.yahoo.com/quote/AMD"], ["Chart", "https://www.tradingview.com/chart/?symbol=NASDAQ%3AAMD"]], "updatedAt": "2026-05 구조 업데이트", "dataStatus": "공식 원문 링크 연결 · 수치 API 보조", "nextEvent": "분기 실적, data center 매출, GPU backlog 코멘트", "watchReason": "CPU 강점과 AI GPU 도전이 동시에 있는 팹리스 비교축입니다.", "catalyst": "Instinct GPU 고객 확대, EPYC 점유율 상승, 데이터센터 매출 성장", "invalidation": "AI GPU 수주 둔화, 마진 희석, TSMC capacity/CoWoS 병목", "nextNumber": "Data Center 매출, AI accelerator revenue, margin", "dataCaveat": "현재 재무 필드는 placeholder입니다. 10-K/20-F/DART/IR 원문으로 연도별 수치를 채워야 합니다.", "currency": "USD", "layer": "CPU/GPU 팹리스 경쟁계층", "bottleneck": "EPYC 점유율·Instinct GPU 수주·TSMC capacity", "eventChecks": [{"label": "촉매", "value": "MI 시리즈 수요 확대, EPYC 점유율 상승, 데이터센터 매출 성장"}, {"label": "무효화", "value": "AI GPU 채택 지연, NVIDIA 격차 확대, client 수요 둔화"}, {"label": "다음 이벤트", "value": "분기 실적, 데이터센터 매출, 제품 로드맵"}], "statementTables": [], "valueChain": "EPYC CPU · Instinct GPU · Client · Embedded", "stackNote": "AI GPU 경쟁과 서버 CPU 점유율을 동시에 확인하는 기업입니다.", "sourceQuality": "SEC·IR 우선 / Yahoo 시세 보조", "reportCurrency": "USD", "separationRule": "CPU 점유율과 AI GPU 기대를 분리해서 봅니다.", "dataPolicy": "SEC filings와 AMD IR 자료를 우선합니다.", "lastUpdated": "2026-05-23 · 구조/링크 기준"}, "nvidia": {"name": "NVIDIA", "ticker": "NVDA", "kind": "AI GPU · 네트워킹 · CUDA", "heading": "AI GPU, 네트워킹, 소프트웨어 생태계를 동시에 장악한 AI 인프라 중심 기업입니다.", "intro": "GPU뿐 아니라 소프트웨어 생태계, NVLink/네트워킹, 시스템 판매가 핵심입니다. 높은 기대가 이미 주가에 반영되므로 공급, 전력, 고객 capex 지속성을 함께 봐야 합니다.", "aiRole": "AI GPU/NPU, HBM 수요, interconnect 병목의 중심입니다.", "segments": ["Data Center", "Gaming", "Professional Visualization", "Automotive"], "financials": [{"label": "매출 추이", "value": "공식 원문/보조 API 확인", "note": "5년 매출 방향과 사업부 mix"}, {"label": "영업이익 추이", "value": "공식 원문/보조 API 확인", "note": "사이클과 마진 회복 확인"}, {"label": "순이익 추이", "value": "공식 원문/보조 API 확인", "note": "비경상손익과 세금 영향 확인"}, {"label": "현금·부채·CAPEX", "value": "공식 원문/보조 API 확인", "note": "투자부담과 재무안전성 확인"}], "checks": ["촉매 확인: 신제품 전환, 데이터센터 성장, 네트워킹 attach, HBM 공급 확보", "반증 조건: 클라우드 capex 둔화, ASIC 대체, HBM/패키징 병목, 규제", "다음 이벤트: 분기 실적, data center guide, Blackwell/Rubin 공급 코멘트", "Catalyst: GPU 수요, Blackwell/Rubin 전환, 네트워크 매출", "Invalidation: 고객 capex 둔화, 공급 병목, gross margin 하락이 겹치면 재검토", "Next number: Data Center 매출, gross margin, 재고, 고객 집중도", "신제품 전환과 공급", "HBM/CoWoS 병목", "클라우드 고객 capex", "경쟁 GPU/ASIC 확산"], "sources": [["IR", "https://investor.nvidia.com/"], ["SEC", "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=NVDA&type=10-K&owner=include&count=10"], ["Yahoo", "https://finance.yahoo.com/quote/NVDA"], ["Chart", "https://www.tradingview.com/chart/?symbol=NASDAQ%3ANVDA"]], "updatedAt": "2026-05 구조 업데이트", "dataStatus": "공식 원문 링크 연결 · 수치 API 보조", "nextEvent": "분기 실적, data center guide, Blackwell/Rubin 공급 코멘트", "watchReason": "AI 반도체 사이클의 기준점입니다. GPU뿐 아니라 HBM, 네트워크, 시스템 매출을 같이 봐야 합니다.", "catalyst": "신제품 전환, 데이터센터 성장, 네트워킹 attach, HBM 공급 확보", "invalidation": "클라우드 capex 둔화, ASIC 대체, HBM/패키징 병목, 규제", "nextNumber": "Data Center 매출, gross margin, 재고, 고객 집중도", "dataCaveat": "현재 재무 필드는 placeholder입니다. 10-K/20-F/DART/IR 원문으로 연도별 수치를 채워야 합니다.", "currency": "USD", "layer": "AI compute demand creator", "bottleneck": "AI GPU 공급·HBM/패키징·클라우드 capex", "eventChecks": [{"label": "촉매", "value": "차세대 GPU 출하, 네트워킹 성장, hyperscaler capex 유지"}, {"label": "무효화", "value": "고객 capex 둔화, 경쟁 가속기 확대, 전력/공급 병목"}, {"label": "다음 이벤트", "value": "분기 실적, gross margin, 데이터센터 매출, 로드맵"}], "statementTables": [], "valueChain": "AI GPU · Networking · Systems · CUDA ecosystem", "stackNote": "AI 학습/추론 병목의 상위 수요를 만들고 HBM·패키징·전력 수요를 끌고 갑니다.", "sourceQuality": "SEC·IR 우선 / Yahoo 시세 보조", "reportCurrency": "USD", "separationRule": "최고 기업과 좋은 진입 가격을 분리해서 봅니다.", "dataPolicy": "SEC filings와 NVIDIA IR 자료를 우선합니다.", "lastUpdated": "2026-05-23 · 구조/링크 기준"}, "sandisk": {"name": "Sandisk", "ticker": "SNDK", "kind": "NAND · SSD · HBF 후보", "heading": "NAND와 SSD를 기반으로 HBF 표준화 후보까지 추적해야 하는 저장장치 기업입니다.", "intro": "순수 NAND/SSD 사이클과 HBF 기대를 분리해서 봐야 합니다. HBF는 흥미로운 방향이지만 표준화와 상용화 초기 단계이므로 실적 기여를 과대해석하면 위험합니다.", "aiRole": "HBF와 SSD/Data 계층에서 AI 추론 보조 저장 계층과 연결됩니다.", "segments": ["NAND", "SSD", "Client/Enterprise Storage", "HBF 표준화 후보"], "financials": [{"label": "매출 추이", "value": "공식 원문/보조 API 확인", "note": "5년 매출 방향과 사업부 mix"}, {"label": "영업이익 추이", "value": "공식 원문/보조 API 확인", "note": "사이클과 마진 회복 확인"}, {"label": "순이익 추이", "value": "공식 원문/보조 API 확인", "note": "비경상손익과 세금 영향 확인"}, {"label": "현금·부채·CAPEX", "value": "공식 원문/보조 API 확인", "note": "투자부담과 재무안전성 확인"}], "checks": ["촉매 확인: NAND ASP 회복, SSD 수요, HBF 표준화/고객 검증", "반증 조건: HBF 상용화 지연, NAND 과잉공급, 분사 이후 재무부담", "다음 이벤트: 분기 실적, HBF 표준화 진전, NAND 가격 코멘트", "Catalyst: NAND ASP, SSD 가격, HBF 표준화/고객", "Invalidation: HBF가 고객 채택 없이 narrative에 머물고 NAND 가격이 둔화되면 재검토", "Next number: NAND ASP, bit shipment, gross margin, HBF milestone", "HBF가 실제 주문/표준으로 이어지는지", "NAND ASP와 SSD 가격", "키옥시아/JV 관계", "분사 이후 재무 구조"], "sources": [["IR", "https://investor.sandisk.com/"], ["HBF", "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-02-25-sandisk-and-sk-hynix-begin-global-standardization-of-next-generation-memory-solution-high-bandwidth-flash-hbf"], ["Yahoo", "https://finance.yahoo.com/quote/SNDK"], ["Chart", "https://www.tradingview.com/chart/?symbol=NASDAQ%3ASNDK"]], "updatedAt": "2026-05 구조 업데이트", "dataStatus": "공식 원문 링크 연결 · 수치 API 보조", "nextEvent": "분기 실적, HBF 표준화 진전, NAND 가격 코멘트", "watchReason": "HBF를 NAND 업체의 AI 추론 보조계층 narrative로 따로 추적할 수 있는 핵심 기업입니다.", "catalyst": "NAND ASP 회복, SSD 수요, HBF 표준화/고객 검증", "invalidation": "HBF 상용화 지연, NAND 과잉공급, 분사 이후 재무부담", "nextNumber": "NAND ASP, bit shipment, gross margin, HBF milestone", "dataCaveat": "현재 재무 필드는 placeholder입니다. 10-K/20-F/DART/IR 원문으로 연도별 수치를 채워야 합니다.", "currency": "USD", "layer": "NAND+HBF 후보 저장계층", "bottleneck": "NAND ASP·SSD 수요·HBF 표준화", "eventChecks": [{"label": "촉매", "value": "NAND 가격 상승, HBF 표준화 진전, 엔터프라이즈 SSD 회복"}, {"label": "무효화", "value": "HBF 상용화 지연, NAND 가격 반락, 분사 이후 재무 변동성"}, {"label": "다음 이벤트", "value": "분기 실적, HBF 표준화 뉴스, SEC 공시"}], "statementTables": [], "valueChain": "NAND · SSD · HBF candidate · storage systems", "stackNote": "HBF 기대와 NAND 가격 사이클을 절대 같은 근거로 묶지 않습니다.", "sourceQuality": "IR·SEC·공식 HBF 발표 우선 / Yahoo 시세 보조", "reportCurrency": "USD", "separationRule": "NAND 업황과 HBF 신기술 기대를 분리해서 봅니다.", "dataPolicy": "공식 IR/SEC와 HBF 공식 발표를 우선합니다.", "lastUpdated": "2026-05-23 · 구조/링크 기준"}, "kioxia": {"name": "Kioxia", "ticker": "285A.T", "kind": "NAND · SSD", "heading": "일본 NAND·SSD 핵심 기업으로 저장장치 사이클과 재무구조 개선을 분리해 봅니다.", "intro": "NAND 가격과 SSD 수요, 생산 조정, 파트너십을 중심으로 봐야 합니다. HBF 기대보다는 순수 NAND/SSD 업황 비교축으로 쓰는 편이 더 정확합니다.", "aiRole": "SSD/Data Lake와 NAND 공급 계층에서 AI 저장 인프라와 연결됩니다.", "segments": ["NAND", "SSD", "Enterprise Storage", "Client Storage"], "financials": [{"label": "매출 추이", "value": "공식 원문/보조 API 확인", "note": "5년 매출 방향과 사업부 mix"}, {"label": "영업이익 추이", "value": "공식 원문/보조 API 확인", "note": "사이클과 마진 회복 확인"}, {"label": "순이익 추이", "value": "공식 원문/보조 API 확인", "note": "비경상손익과 세금 영향 확인"}, {"label": "현금·부채·CAPEX", "value": "공식 원문/보조 API 확인", "note": "투자부담과 재무안전성 확인"}], "checks": ["촉매 확인: NAND ASP 회복, SSD 수요, 가동률 상승, 재무구조 개선", "반증 조건: NAND 가격 둔화, 차입 부담, 엔화 변동, capex 부담", "다음 이벤트: 분기 실적, IR 자료, NAND 가격 동향", "Catalyst: NAND 가격, SSD 수요, Kioxia/WD 공급 전략", "Invalidation: NAND 공급 과잉이 재개되거나 수익성이 개선되지 않으면 재검토", "Next number: 매출, 영업이익, capex, 재고", "NAND ASP와 가동률", "SSD 수요 회복", "Sandisk와 생산/JV 관계", "엔화와 재무구조"], "sources": [["IR", "https://www.kioxia-holdings.com/en-jp/ir.html"], ["Yahoo", "https://finance.yahoo.com/quote/285A.T"], ["Chart", "https://www.tradingview.com/chart/?symbol=TSE%3A285A"], ["Company", "https://www.kioxia.com/"]], "updatedAt": "2026-05 구조 업데이트", "dataStatus": "공식 원문 링크 연결 · 수치 API 보조", "nextEvent": "분기 실적, IR 자료, NAND 가격 동향", "watchReason": "NAND 사이클을 일본 공급망 관점에서 확인하는 비교축입니다.", "catalyst": "NAND ASP 회복, SSD 수요, 가동률 상승, 재무구조 개선", "invalidation": "NAND 가격 둔화, 차입 부담, 엔화 변동, capex 부담", "nextNumber": "매출, 영업이익, capex, 재고", "dataCaveat": "현재 재무 필드는 placeholder입니다. 10-K/20-F/DART/IR 원문으로 연도별 수치를 채워야 합니다.", "currency": "JPY", "layer": "NAND/SSD 저장계층", "bottleneck": "NAND 가격·가동률·재무구조", "eventChecks": [{"label": "촉매", "value": "NAND 가격 상승, SSD 수요 회복, 재무구조 개선"}, {"label": "무효화", "value": "NAND 반락, 차입 부담, capex 부담 확대"}, {"label": "다음 이벤트", "value": "분기 실적, IR 자료, NAND 가격 추이"}], "statementTables": [], "valueChain": "NAND · SSD · storage solutions", "stackNote": "HBF와는 별개로 순수 NAND 공급/가격 사이클을 확인하는 축입니다.", "sourceQuality": "IR 우선 / Yahoo 시세 보조", "reportCurrency": "JPY", "separationRule": "NAND 업황과 HBF 내러티브를 섞지 않습니다.", "dataPolicy": "회사 IR 자료를 우선하고, 시세는 보조로 사용합니다.", "lastUpdated": "2026-05-23 · 구조/링크 기준"}}};
+
+    let companyDetailsDb = null;
+    let selectedCompanyId = 'samsung';
+
     const noteTargets = [['market','시장 메모'],['semiconductor','반도체 구조'],['prices','가격 추이'],['hbf','HBF'],['cxl','CXL'],['socamm','SOCAMM'],['samsung','삼성전자'],['hynix','SK하이닉스'],['micron','마이크론'],['intel','인텔'],['amd','AMD'],['nvidia','엔비디아'],['sandisk','샌디스크'],['kioxia','키옥시아'],['action','다음 행동']];
-    const CACHE_SCHEMA_VERSION = 'v10';
+    const CACHE_SCHEMA_VERSION = 'v12';
     const QUOTE_CACHE_KEY = `ty-market-quotes-${CACHE_SCHEMA_VERSION}`;
     const CACHE_SOFT_LIMIT_MS = 1000 * 60 * 20;
     const CACHE_HARD_LIMIT_MS = 1000 * 60 * 60 * 12;
@@ -1282,6 +1402,7 @@
       const prev = readQuoteCache().items || {};
       localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify({ version: CACHE_SCHEMA_VERSION, updatedAt: Date.now(), items: { ...prev, ...nextItems } }));
     }
+    function purgeOldQuoteCaches() { Object.keys(localStorage).filter(k => k.startsWith('ty-market-quotes-') && k !== QUOTE_CACHE_KEY).forEach(k => localStorage.removeItem(k)); }
 
     function renderQuoteCards() {
       document.getElementById('quote-grid').innerHTML = marketQuotes.map(item => `<a class="quote-card" id="quote-${item.id}" href="${item.url}" target="_blank" rel="noopener noreferrer"><div><div class="quote-kicker">${item.group}</div><div class="quote-name">${item.name}</div></div><div><div class="quote-price">—</div><div class="quote-change flat">대기 중</div><div class="quote-source">—</div></div></a>`).join('');
@@ -1308,7 +1429,7 @@
         if (!res.ok) throw new Error('company details fetch failed');
         companyDetailsDb = await res.json();
       } catch (err) {
-        companyDetailsDb = { companies: {} };
+        companyDetailsDb = embeddedCompanyDetails;
       }
       return companyDetailsDb;
     }
@@ -1318,7 +1439,21 @@
       document.getElementById('company-detail-intro').textContent = '';
       document.getElementById('company-detail-summary').innerHTML = '';
       document.getElementById('company-detail-financials').innerHTML = '';
+      const ids = ['company-detail-provenance','company-detail-role-grid','company-detail-thesis','company-detail-events','company-detail-tables','company-detail-sources'];
+      ids.forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
       document.getElementById('company-detail-checks').innerHTML = '<li>데이터를 불러오고 있습니다.</li>';
+    }
+
+
+    function renderCompanyTables(data) {
+      const tables = data.statementTables || [];
+      if (!tables.length) return '<div class="company-note-card"><h4>5년 재무표</h4><p class="company-empty">공식 IR/공시 원자료 연결 전입니다. 검증되지 않은 수치를 임의로 채우지 않습니다.</p></div>';
+      return tables.map(table => {
+        const years = table.years || [];
+        const header = `<tr><th>${table.title || '항목'}</th>${years.map(y => `<th>${y}</th>`).join('')}</tr>`;
+        const rows = (table.rows || []).map(row => `<tr><td>${row.label}</td>${years.map(y => `<td>${row.values?.[y] || '—'}</td>`).join('')}</tr>`).join('');
+        return `<div class="company-note-card"><h4>${table.title}</h4><table class="statement-table">${header}${rows}</table><p class="company-empty">${table.note || ''}</p></div>`;
+      }).join('');
     }
 
     async function renderCompanyDetail(companyId = selectedCompanyId) {
@@ -1330,21 +1465,133 @@
       document.getElementById('company-detail-kicker').textContent = `${data.name} · ${data.kind}`;
       document.getElementById('company-detail-heading').textContent = data.heading;
       document.getElementById('company-detail-intro').textContent = data.intro;
-      document.getElementById('company-detail-warning').textContent = `${data.aiRole} · 재무 숫자는 공식 IR/공시 원자료로 교체해야 합니다.`;
+      document.getElementById('company-detail-warning').textContent = `${data.aiRole} · ${data.dataPolicy || data.dataStatus || '공식 공시와 IR을 우선하고, 시세 API는 보조 자료로만 사용합니다.'}`;
+      const provenanceEl = document.getElementById('company-detail-provenance');
+      if (provenanceEl) provenanceEl.innerHTML = [
+        ['데이터 상태', data.dataStatus || '공식 자료 연결 필요'],
+        ['업데이트', data.updatedAt || data.lastUpdated || '수동 확인 필요'],
+        ['기준 통화', data.currency || data.reportCurrency || '원자료 기준']
+      ].map(([label,value]) => `<span class="company-data-badge"><b>${label}</b> ${value}</span>`).join('');
+      const roleEl = document.getElementById('company-detail-role-grid');
+      if (roleEl) roleEl.innerHTML = [
+        ['AI 스택 위치', data.valueChain || data.aiRole || '확인 필요'],
+        ['주요 병목', data.bottleneck || '확인 필요'],
+        ['데이터 계층', data.layer || '확인 필요']
+      ].map(([label,value]) => `<div class="role-card"><b>${label}</b><span>${value}</span></div>`).join('');
+      const thesisEl = document.getElementById('company-detail-thesis');
+      if (thesisEl) thesisEl.innerHTML = [
+        ['촉매', data.catalyst || '다음 실적·제품·가격 이벤트 확인'],
+        ['무효화 조건', data.invalidation || '가정과 반대되는 수치가 나오면 관망'],
+        ['다음 확인', data.nextEvent || '공식 IR / 공시 일정 확인']
+      ].map(([label,value]) => `<div class="thesis-card"><b>${label}</b><span>${value}</span></div>`).join('');
+      document.getElementById('company-detail-events').innerHTML = [
+        ['Source tier', data.sourceQuality || '공식 원문 + 보조 API'],
+        ['Updated', data.lastUpdated || data.updatedAt || '업데이트 시점 확인'],
+        ['Currency', data.reportCurrency || data.currency || '원자료 기준']
+      ].map(([label,value]) => `<div class="event-card"><b>${label}</b><span>${value}</span></div>`).join('');
       document.getElementById('company-detail-summary').innerHTML = [
-        { label: '사업 구조', value: (data.segments || []).join(' · '), note: '주요 매출/기술 축' },
-        { label: 'AI 밸류체인 위치', value: data.aiRole, note: '기술 다이어그램과 연결' }
+        { label: '사업 구조', value: Array.isArray(data.segments) ? data.segments.join(' · ') : data.segments, note: '주요 매출/기술 축' },
+        { label: 'AI 스택 위치', value: data.valueChain || data.aiRole, note: data.stackNote || '어느 병목에 노출되는지 확인' },
+        { label: '데이터 기준', value: data.sourceQuality || '공식 원문 + 보조 API', note: data.lastUpdated || '업데이트 시점 확인 필요' },
+        { label: '분리해서 볼 것', value: data.separationRule || '기술 기대와 실적 숫자를 분리', note: '내러티브 과열 방지' }
       ].map(item => `<div class="company-summary-card"><b>${item.label}</b><span>${item.value}</span><small>${item.note}</small></div>`).join('');
-      document.getElementById('company-detail-financials').innerHTML = (data.financials || []).map(item => `<div class="company-fin-card"><b>${item.label}</b><span>${item.value}</span><small>${item.note || ''}</small></div>`).join('');
+      renderCompanyFinancialFallback(data);
+      const tablesEl = document.getElementById('company-detail-tables');
+      if (tablesEl) tablesEl.innerHTML = renderCompanyTables(data);
       document.getElementById('company-detail-checks').innerHTML = (data.checks || []).map(item => `<li>${item}</li>`).join('');
       document.getElementById('company-detail-cta').innerHTML = (data.sources || []).slice(0,4).map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('');
+      document.getElementById('company-detail-sources').innerHTML = (data.sources || []).slice(0,6).map(([label,url]) => `<a class="company-source-card" href="${url}" target="_blank" rel="noopener noreferrer"><b>${label}</b><span>공식/보조 원문 확인</span></a>`).join('');
       document.getElementById('company-chart-title').textContent = `${data.name} 최근 주가 흐름`;
       document.getElementById('company-chart-subtitle').textContent = `${data.ticker} · 6개월 · 주간 종가`;
-      drawCompanyPriceChart(data).catch(() => {
+      try {
+        await drawCompanyPriceChart(data);
+      } catch {
         const svg = document.getElementById('company-price-chart');
-        svg.innerHTML = `<text x="380" y="180" text-anchor="middle" fill="#667085" font-size="16">주가 차트를 불러오지 못했습니다. 원문 링크를 확인하세요.</text>`;
-        document.getElementById('company-price-sources').innerHTML = '<span>Yahoo chart 로딩 실패</span>';
+        svg.innerHTML = '<text x="28" y="60" fill="#6e6e73">주가 차트 데이터를 불러오지 못했습니다.</text>';
+        document.getElementById('company-price-sources').innerHTML = '<span>Yahoo chart 로딩 실패 · 공식/거래소 원문 확인</span>';
+      }
+      loadAndRenderCompanyFinancials(data).catch(() => {
+        document.getElementById('company-financial-sources').innerHTML = '<span>Yahoo 재무 요약 로딩 실패 · 공식 원문 링크를 확인하세요.</span>';
       });
+      document.getElementById('company-detail-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function renderCompanyFinancialFallback(data) {
+      const items = data.financials || [];
+      document.getElementById('company-detail-financials').innerHTML = items.map(item => `<div class="company-fin-card"><b>${item.label}</b><span>${item.value}</span><small>${item.note || ''}</small></div>`).join('');
+      document.getElementById('company-financial-title').textContent = `${data.name} 재무제표 확인 항목`;
+      document.getElementById('company-financial-subtitle').textContent = `${data.reportCurrency || '보고통화'} · 공식 원문 우선`;
+      document.getElementById('company-financial-chart').innerHTML = `<text x="24" y="46" fill="#6e6e73">공식 원문 수치 입력 전입니다. 아래 원문 링크를 먼저 확인하세요.</text>`;
+      document.getElementById('company-financial-sources').innerHTML = '<span>공식 IR/공시 원문 우선 · 보조 API는 숫자 확인용</span>';
+    }
+
+    function formatLargeFinancial(value, currency='USD') {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return '—';
+      const abs = Math.abs(n);
+      const sign = n < 0 ? '-' : '';
+      const prefix = currency === 'KRW' ? '₩' : currency === 'JPY' ? '¥' : '$';
+      if (abs >= 1e12) return `${sign}${prefix}${(abs/1e12).toFixed(1)}T`;
+      if (abs >= 1e9) return `${sign}${prefix}${(abs/1e9).toFixed(1)}B`;
+      if (abs >= 1e6) return `${sign}${prefix}${(abs/1e6).toFixed(0)}M`;
+      return `${sign}${prefix}${Math.round(abs).toLocaleString()}`;
+    }
+
+    async function loadYahooFinancialHistory(company) {
+      const modules = 'incomeStatementHistory,balanceSheetHistory,cashflowStatementHistory,price';
+      const json = await fastJson(`https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(company.ticker)}?modules=${modules}`);
+      const result = json?.quoteSummary?.result?.[0];
+      if (!result) throw new Error('financial summary missing');
+      const income = result.incomeStatementHistory?.incomeStatementHistory || [];
+      const balance = result.balanceSheetHistory?.balanceSheetStatements || [];
+      const cashflow = result.cashflowStatementHistory?.cashflowStatements || [];
+      const currency = result.price?.currency || company.reportCurrency || 'USD';
+      const rows = income.slice(0,4).map((row, idx) => ({
+        year: String(new Date((row.endDate?.raw || 0) * 1000).getFullYear() || ''),
+        revenue: yahooNumber(row.totalRevenue),
+        operatingIncome: yahooNumber(row.operatingIncome),
+        netIncome: yahooNumber(row.netIncome),
+        cash: yahooNumber(balance[idx]?.cash),
+        debt: yahooNumber(balance[idx]?.longTermDebt) ?? yahooNumber(balance[idx]?.shortLongTermDebtTotal),
+        capex: Math.abs(yahooNumber(cashflow[idx]?.capitalExpenditures) || 0)
+      })).filter(row => row.year && (row.revenue || row.netIncome)).reverse();
+      if (!rows.length) throw new Error('empty financial rows');
+      return { rows, currency };
+    }
+
+    async function loadAndRenderCompanyFinancials(company) {
+      const { rows, currency } = await loadYahooFinancialHistory(company);
+      const latest = rows[rows.length - 1];
+      document.getElementById('company-detail-financials').innerHTML = [
+        { label: '최근 매출', value: formatLargeFinancial(latest.revenue, currency), note: `${latest.year} · Yahoo 보조 요약` },
+        { label: '영업이익', value: formatLargeFinancial(latest.operatingIncome, currency), note: `${latest.year} · 공식 원문 재확인` },
+        { label: '순이익', value: formatLargeFinancial(latest.netIncome, currency), note: `${latest.year} · 비경상항목 확인` },
+        { label: 'CAPEX', value: latest.capex ? formatLargeFinancial(latest.capex, currency) : '원문 확인', note: `${latest.year} · cashflow 보조값` }
+      ].map(item => `<div class="company-fin-card"><b>${item.label}</b><span>${item.value}</span><small>${item.note}</small></div>`).join('');
+      drawCompanyFinancialTrend(rows, currency);
+      document.getElementById('company-financial-sources').innerHTML = `<span>Yahoo Finance quoteSummary 보조 요약 · 공식 IR/공시 원문으로 재확인</span>`;
+    }
+
+    function drawCompanyFinancialTrend(rows, currency) {
+      const svg = document.getElementById('company-financial-chart');
+      const width = 760, height = 280, pad = 40;
+      const all = rows.flatMap(row => [row.revenue, row.operatingIncome, row.netIncome]).filter(v => Number.isFinite(Number(v)));
+      const min = Math.min(0, ...all), max = Math.max(...all);
+      const span = max - min || 1;
+      const x = i => rows.length <= 1 ? width/2 : pad + (i * (width - pad*2) / (rows.length - 1));
+      const y = v => height - pad - ((Number(v) - min) / span) * (height - pad*2);
+      const line = key => rows.map((row,i) => `${i?'L':'M'} ${x(i)} ${y(row[key] || 0)}`).join(' ');
+      const labels = rows.map((row,i) => `<text x="${x(i)}" y="${height-12}" text-anchor="middle" fill="#6e6e73" font-size="11">${row.year}</text>`).join('');
+      svg.innerHTML = `
+        <line x1="${pad}" y1="${y(0)}" x2="${width-pad}" y2="${y(0)}" stroke="#d2d2d7" stroke-dasharray="4 4"/>
+        <path d="${line('revenue')}" fill="none" stroke="#007aff" stroke-width="3" stroke-linecap="round"/>
+        <path d="${line('operatingIncome')}" fill="none" stroke="#34c759" stroke-width="3" stroke-linecap="round"/>
+        <path d="${line('netIncome')}" fill="none" stroke="#ff9f0a" stroke-width="3" stroke-linecap="round"/>
+        ${labels}
+        <text x="${pad}" y="18" fill="#1d1d1f" font-size="12" font-weight="700">매출 · 영업이익 · 순이익 (${currency})</text>
+        <text x="${width-pad}" y="18" text-anchor="end" fill="#6e6e73" font-size="11">${formatLargeFinancial(max, currency)}</text>
+        <text x="${width-pad}" y="${height-30}" text-anchor="end" fill="#6e6e73" font-size="11">${formatLargeFinancial(min, currency)}</text>
+      `;
     }
 
     async function drawCompanyPriceChart(company) {
@@ -1379,7 +1626,7 @@
 
 
     function renderStockCards() {
-      document.getElementById('stock-grid').innerHTML = coreStocks.map(stock => `<article class="stock-card selectable" id="stock-${stock.id}" data-company-id="${stock.id}"><div><div class="stock-top"><div><h3>${stock.name}</h3><div class="ticker">${stock.displayTicker}</div></div><span class="tag">${stock.tag}</span></div><p class="stock-thesis">${stock.thesis}</p><div class="stock-risk"><strong>확인 질문</strong>${stockRiskMap[stock.id]?.risk || '가정과 리스크를 따로 기록해야 합니다.'}<br><strong>봐야 할 것</strong>${stockRiskMap[stock.id]?.watch || '실적, 공시, 가격 추이'}</div><div class="stock-metrics"><div class="metric"><div class="metric-label">주가</div><div class="metric-value stock-price">—</div><div class="stock-change flat">대기 중</div></div><div class="metric"><div class="metric-label">시가총액</div><div class="metric-value stock-cap">시총 확인 중</div><div class="quote-source stock-source">—</div></div></div></div><div class="link-row">${stock.links.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></article>`).join('');
+      document.getElementById('stock-grid').innerHTML = coreStocks.map(stock => `<article class="stock-card selectable" id="stock-${stock.id}" data-company-id="${stock.id}"><div><div class="stock-top"><div><h3>${stock.name}</h3><div class="ticker">${stock.displayTicker}</div></div><span class="tag">${stock.tag}</span></div><p class="stock-thesis">${stock.thesis}</p><div class="stock-risk"><strong>가정 리스크</strong>${stockRiskMap[stock.id]?.risk || '가정과 리스크를 따로 기록해야 합니다.'}<br><strong>오늘 추적할 숫자</strong>${stockRiskMap[stock.id]?.watch || '실적, 공시, 가격 추이'}</div><div class="stock-event"><strong>다음 확인</strong>${stockRiskMap[stock.id]?.next || '실적/IR/공시 일정 확인'}</div><div class="stock-metrics"><div class="metric"><div class="metric-label">주가</div><div class="metric-value stock-price">—</div><div class="stock-change flat">대기 중</div></div><div class="metric"><div class="metric-label">시가총액</div><div class="metric-value stock-cap">시총 확인 중</div><div class="quote-source stock-source">—</div></div></div></div><div class="link-row">${stock.links.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></article>`).join('');
       attachStockCardEvents();
     }
 
@@ -1583,7 +1830,7 @@
     }
 
     async function refreshData({ force = false } = {}) {
-      if (force) Object.keys(localStorage).filter(k => k.startsWith('ty-market-quotes-')).forEach(k => localStorage.removeItem(k));
+      if (force) { purgeOldQuoteCaches(); localStorage.removeItem(QUOTE_CACHE_KEY); }
       renderQuoteCards(); renderStockCards();
       const hadCache = hydrateCachedQuotes();
       if (!hadCache) setMarketStatus('최신 가격을 불러오는 중입니다.');
@@ -1603,11 +1850,46 @@
       else setMarketStatus('데이터 로딩 실패 · 각 카드의 원문 링크를 확인하세요.');
     }
 
+
+    const componentAxisMeta = {
+      cpu: { bandwidth: '중간', latency: '낮아야 함', capacity: '캐시+DRAM 의존', note: '범용 제어와 순차 판단에 강합니다. 대규모 행렬 연산은 GPU/NPU가 맡습니다.' },
+      dram: { bandwidth: '높음', latency: '낮음', capacity: '중간', note: '휘발성 작업공간입니다. 가격은 PC·서버·AI 투자 사이클에 민감합니다.' },
+      gpu: { bandwidth: 'HBM/VRAM 의존', latency: '병렬 처리 우선', capacity: '로컬 메모리 제한', note: '연산 코어만 보지 말고 메모리와 패키징 병목을 함께 봅니다.' },
+      nand: { bandwidth: '낮음~중간', latency: '높음', capacity: '매우 큼', note: '속도보다 용량과 비휘발성이 핵심입니다. SSD 가격은 NAND 사이클의 소비자 proxy입니다.' },
+      vram: { bandwidth: '높음', latency: '낮음', capacity: 'GPU별 제한', note: 'GDDR/VRAM과 HBM은 같은 GPU 로컬 메모리라도 패키징과 시장이 다릅니다.' },
+      'host-cpu': { bandwidth: 'PCIe/CXL 의존', latency: '스케줄링 중요', capacity: '시스템 DRAM', note: 'AI 서버에서 CPU는 오케스트레이션·데이터 경로 제어가 핵심입니다.' },
+      'ai-gpu': { bandwidth: '매우 높음 필요', latency: '워크로드별 다름', capacity: 'HBM 제한', note: '학습은 대역폭·네트워크, 추론은 KV cache·전력·지연시간을 함께 봅니다.' },
+      hbm: { bandwidth: '매우 높음', latency: '낮음', capacity: '비싸고 제한적', note: 'HBM은 AI GPU 병목의 핵심이지만 패키징·수율·고객 인증이 같이 중요합니다.' },
+      hbf: { bandwidth: 'SSD보다 높은 목표', latency: 'HBM보다 느림', capacity: 'HBM보다 큼', note: '초기 표준화 후보입니다. HBM 대체가 아니라 추론 저장/용량 보조계층으로 봅니다.' },
+      cxl: { bandwidth: '링크/세대 의존', latency: '검증 필수', capacity: '풀링·확장', note: '메모리 제품명이 아니라 확장/일관성 인터페이스입니다.' },
+      socamm: { bandwidth: 'LPDRAM 기반', latency: 'SoC 근접', capacity: '모듈 구성 의존', note: 'SoC 인접 LPDRAM 모듈입니다. 열·표준화·플랫폼 채택이 리스크입니다.' },
+      'ssd-lake': { bandwidth: '낮음~중간', latency: '높음', capacity: '매우 큼', note: '체크포인트, 벡터DB, 로그, 데이터셋 저장 계층입니다.' },
+      interconnect: { bandwidth: '매우 중요', latency: '클러스터 효율 좌우', capacity: '토폴로지 의존', note: 'GPU 수가 늘수록 네트워크가 전체 시스템의 병목이 됩니다.' }
+    };
+    Object.entries(componentAxisMeta).forEach(([id, meta]) => { if (components[id]) components[id].axis = meta; });
+
+
+    const componentMeta = {
+      cpu: { medium: 'logic silicon', position: 'system control', axis: 'latency / branch' },
+      dram: { medium: 'volatile DRAM', position: 'CPU working memory', axis: 'latency / capacity' },
+      gpu: { medium: 'parallel logic', position: 'accelerator', axis: 'throughput / power' },
+      nand: { medium: 'non-volatile NAND', position: 'storage', axis: 'capacity / cost' },
+      vram: { medium: 'local GPU memory', position: 'GPU attached', axis: 'bandwidth' },
+      'host-cpu': { medium: 'server CPU', position: 'orchestrator', axis: 'I/O / scheduling' },
+      'ai-gpu': { medium: 'AI accelerator', position: 'matrix engine', axis: 'compute / HBM feed' },
+      hbm: { medium: 'stacked DRAM', position: 'GPU package adjacent', axis: 'bandwidth / yield' },
+      hbf: { medium: 'NAND-based flash', position: 'inference support layer', axis: 'capacity / bandwidth' },
+      cxl: { medium: 'coherent interconnect', position: 'memory expansion/pool', axis: 'latency / pooling' },
+      socamm: { medium: 'LPDRAM module', position: 'SoC attached', axis: 'power / form factor' },
+      'ssd-lake': { medium: 'NAND SSD', position: 'data/checkpoint store', axis: 'capacity / cost' },
+      interconnect: { medium: 'network/fabric', position: 'GPU-node-rack link', axis: 'bandwidth / latency' }
+    };
+
     function renderComponentDetail(group, id) {
       activeComponents[group] = id;
       const target = document.getElementById(componentData[group].detailId);
       const item = components[id]; if (!target || !item) return;
-      target.innerHTML = `<div><div class="component-kicker">${item.kind}</div><h3>${item.title}</h3></div><p>${item.desc}</p><div class="detail-block"><strong>기술 상태</strong><p>${componentStatus[id] || '상태 확인 필요'}</p></div><div class="detail-block"><strong>투자 판단에서 보는 이유</strong><p>${item.why}</p></div><div class="detail-block"><strong>대표 회사</strong><div class="chip-list">${item.companies.map(v => `<span class="chip">${v}</span>`).join('')}</div></div><div class="detail-block"><strong>관련 종목</strong><div class="chip-list">${item.related.map(v => `<span class="chip">${v}</span>`).join('')}</div></div><div class="detail-block"><strong>YouTube 학습 링크</strong><div class="video-list">${item.videos.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></div>`;
+      target.innerHTML = `<div><div class="component-kicker">${item.kind}</div><h3>${item.title}</h3></div><p>${item.desc}</p><div class="detail-block"><strong>기술 상태</strong><p>${componentStatus[id] || '상태 확인 필요'}</p></div><div class="detail-block"><strong>판단 축</strong>${item.axis ? `<div class="component-axis"><span>대역폭: ${item.axis.bandwidth}</span><span>지연: ${item.axis.latency}</span><span>용량: ${item.axis.capacity}</span></div><div class="detail-note">${item.axis.note}</div>` : '<p>확인 필요</p>'}</div><div class="detail-block"><strong>투자 판단에서 보는 이유</strong><p>${item.why}</p></div><div class="detail-block"><strong>대표 회사</strong><div class="chip-list">${item.companies.map(v => `<span class="chip">${v}</span>`).join('')}</div></div><div class="detail-block"><strong>관련 종목</strong><div class="chip-list">${item.related.map(v => `<span class="chip">${v}</span>`).join('')}</div></div><div class="detail-block"><strong>YouTube 학습 링크</strong><div class="video-list">${item.videos.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`).join('')}</div></div>`;
       document.querySelectorAll(`#${componentData[group].frameId} .hotspot`).forEach(btn => btn.classList.toggle('active', btn.dataset.componentId === id));
     }
 
